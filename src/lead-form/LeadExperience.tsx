@@ -20,11 +20,17 @@ const themeVars = (c: LeadFormConfig) => {
   } as CSSProperties;
 };
 
+type BannerView = 'form' | 'exit' | 'closed';
+
 interface OverlayCtl {
   open: boolean;
   view: View;
   style: OverlayStyle;
   openForm(): void;
+  bannerView: BannerView;
+  closeBanner(): void;
+  continueBanner(): void;
+  dismissBanner(): void;
 }
 
 const OverlayCtx = createContext<OverlayCtl | null>(null);
@@ -65,13 +71,18 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>('form');
   const autoOpened = useRef(false);
+  const [bannerView, setBannerView] = useState<BannerView>('form');
 
   // When there is no overlay form, exit intent still needs a container.
   const style: OverlayStyle = configured !== 'none' ? configured : device === 'desktop' ? 'popup' : 'mobile-popup';
   const hasOverlayForm = configured !== 'none';
 
   const openForm = useCallback(() => {
-    if (!hasOverlayForm) return onFocusBanner?.();
+    if (!hasOverlayForm) {
+      // No overlay: page CTAs bring a closed banner form back.
+      setBannerView('form');
+      return onFocusBanner?.();
+    }
     setView('form');
     setOpen(true);
   }, [hasOverlayForm, onFocusBanner]);
@@ -88,6 +99,14 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
 
   const dismissExit = () => setOpen(false);
 
+  // Banner ✕ follows the same rule as overlays: exit screen first (if enabled and not submitted), then close.
+  const closeBanner = () => {
+    if (bannerView === 'form' && !flow.submitted && config.exitIntent.enabled) return setBannerView('exit');
+    setBannerView('closed');
+  };
+  const continueBanner = () => setBannerView('form');
+  const dismissBanner = () => setBannerView('closed');
+
   const continueFromExit = () => {
     if (hasOverlayForm) return setView('form');
     setOpen(false);
@@ -98,6 +117,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
   useEffect(() => {
     autoOpened.current = false;
     setOpen(false);
+    setBannerView('form');
   }, [config, device]);
 
   // Auto-open trigger.
@@ -130,7 +150,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     }
   }, [config.overlay, hasOverlayForm, flow.submitted, scrollRoot]);
 
-  const ctl: OverlayCtl = { open, view, style, openForm };
+  const ctl: OverlayCtl = { open, view, style, openForm, bannerView, closeBanner, continueBanner, dismissBanner };
 
   return (
     <OverlayCtx.Provider value={ctl}>
@@ -143,14 +163,21 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
 /** Inline form for the hero banner. */
 export function BannerForm() {
   const { submitted, config } = useLeadFlow();
-  if (!config.banner.enabled) return null;
-  // Like the overlays, the promo image only shows with the form (not on the success screen).
-  const image = config.banner.showImage && config.banner.image && !submitted ? config.banner.image : null;
+  const { bannerView, closeBanner, continueBanner, dismissBanner } = useLeadOverlay();
+  if (!config.banner.enabled || bannerView === 'closed') return null;
+  const exit = bannerView === 'exit' && !submitted;
+  // Like the overlays, the promo image only shows with the form (not on the success or exit screens).
+  const image = config.banner.showImage && config.banner.image && !submitted && !exit ? config.banner.image : null;
   return (
     <div className={`lf lf-card lf-card--banner${image ? ' has-image' : ''}`} style={themeVars(config)}>
+      {config.banner.closable && !exit && (
+        <button type="button" className={`lf-close${image ? ' lf-close--light' : ''}`} aria-label="Close form" onClick={closeBanner}>
+          <CloseX size={10} />
+        </button>
+      )}
       <div className="lf-card__col">
         {image && <img className="lf-top-img" src={image} alt="" />}
-        {submitted ? <SuccessPanel /> : <FormPanel />}
+        {submitted ? <SuccessPanel /> : exit ? <ExitPanel onContinue={continueBanner} onClose={dismissBanner} /> : <FormPanel />}
       </div>
     </div>
   );

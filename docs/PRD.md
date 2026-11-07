@@ -132,7 +132,7 @@ filled forms are not lost. All three calls update the **same lead** (matched by 
 | # | When | What we send | Lead status |
 | --- | --- | --- | --- |
 | 1 | **Phone verified** (correct OTP) | Phone + page context (university, program, form, device, placement, UTMs). For an existing lead, their record is reused | `phone_verified` |
-| 2 | **User closes the form** before submitting (✕, click outside, Esc, or "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
+| 2 | **User closes the form** before submitting: banner ✕, or overlay ✕ / click outside / Esc (incl. "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
 | 3 | **User clicks Sign Up** (always) | All fields | `submitted` |
 
 ```mermaid
@@ -171,24 +171,27 @@ or **real-time** data from an API.
 
 ## 4. Exit intent
 
-Shown **only when someone tries to close the form overlay** before submitting: the ✕ button, clicking outside
-the form, or pressing Esc. It shows **every time** they try to close (not just once).
+Shown **only when someone tries to close the form** before submitting, on both the **banner form** and **overlays**.
+It shows **every time** they try to close (not just once).
 
-Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking. The inline banner form has no
-close button, so exit intent applies to overlays only.
+| Form | How it's closed | Where the exit screen appears |
+| --- | --- | --- |
+| **Banner** | ✕ in the card's top-right corner | Inside the banner card, replacing the form |
+| **Overlay** | ✕, clicking outside, or Esc | Inside the popup / sidebar / drawer |
+
+Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking.
 
 ```mermaid
 flowchart LR
-    A[Form overlay open<br/>not submitted] -->|✕ / click outside / Esc| B[Exit screen]
+    A[Banner or overlay form open<br/>not submitted] -->|✕ · overlay also: click outside / Esc| B[Exit screen]
     B -->|Continue to Get a Call back| C[Back to the form]
     C -->|tries to close again| B
-    B -->|No Thanks, Close| D[Overlay closed]
+    B -->|No Thanks, Close| D[Form closed]
 ```
 
-| | Desktop | Mobile |
-| --- | --- | --- |
-| **Appears as** | Replaces the form inside the popup / sidebar | Replaces the form inside the drawer / popup |
-| **Screen** | <img src="images/exit-intent.png" width="420"> | <img src="images/mobile-exit-intent.png" width="170"> |
+| Banner form with ✕ | Banner: exit screen | Overlay: exit screen (desktop) | Overlay: exit screen (mobile) |
+| --- | --- | --- | --- |
+| <img src="images/banner-close.png" width="300"> | <img src="images/banner-exit.png" width="300"> | <img src="images/exit-intent.png" width="300"> | <img src="images/mobile-exit-intent.png" width="130"> |
 
 **Rules**
 
@@ -196,6 +199,9 @@ flowchart LR
   Only **Continue to Get a Call back** or **No Thanks, Close** leave it.
 - If the visitor has started, show progress: "Your details · 2 of 5 done".
 - Never shown after a successful submit (closing the success screen just closes).
+- **Banner closed** ("No Thanks, Close"): the banner card is hidden. **Download Brochure** / **Apply Now** bring the
+  form back (the overlay if one is configured, otherwise the banner reappears).
+- The banner ✕ can be turned off in the config; then the banner can't be closed and never shows exit intent.
 
 ---
 
@@ -206,6 +212,7 @@ Everything below is set per page through one config object (exportable from the 
 | Area | Control | Options / default |
 | --- | --- | --- |
 | **Placement** | Banner (inline hero form) | On / Off |
+| | Banner close button (✕) | On (default) / Off |
 | | Banner form image | On / Off · **upload** an image (or URL) |
 | | **Desktop** overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
@@ -300,7 +307,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `fields_prefilled` | array of enum | `["name","email","qualification"]` | existing_lead | Fields we filled for them |
 | `fields_complete` | integer 0–5 | `5` | submit_clicked | Valid fields at click time |
 | `progress` | integer 0–5 | `2` | exit_* | Fields done when exit screen shows |
-| `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the form |
+| `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the form (banner: always `close_button`) |
 | `lead_id` | string | `"LD-104382"` | lead_captured, submitted, success_cta_clicked | CRM lead ID, returned when the phone is verified |
 | `lead_stage` | enum | `phone_verified` · `partial` | lead_captured | Which capture point fired |
 | `fields_sent` | array of enum | `["name","email"]` | lead_captured | Fields included in that update |

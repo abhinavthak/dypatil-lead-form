@@ -147,6 +147,9 @@ export default function App() {
             <Section title="Placement">
               <Toggle label="Banner (inline hero form)" checked={config.banner.enabled} onChange={(v) => set('banner.enabled', v)} />
               {config.banner.enabled && (
+                <Toggle label="Close button on banner form" checked={config.banner.closable} onChange={(v) => set('banner.closable', v)} />
+              )}
+              {config.banner.enabled && (
                 <Toggle label="Image at top of banner form" checked={config.banner.showImage} onChange={(v) => set('banner.showImage', v)} />
               )}
               {config.banner.enabled && config.banner.showImage && (

@@ -44,6 +44,8 @@ export interface LeadFormConfig {
   banner: {
     /** Show the inline form inside the hero banner. */
     enabled: boolean;
+    /** Show a ✕ on the banner form. Closing it (before submit) shows the exit screen inside the card. */
+    closable: boolean;
     /** Promo image across the top of the banner form card. */
     showImage: boolean;
     image: string;
