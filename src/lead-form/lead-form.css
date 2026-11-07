@@ -29,9 +29,8 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
   display: flex;
 }
-.lf-card--banner { min-height: 600px; position: relative; }
+.lf-card--banner { position: relative; } /* height follows content: no empty gap above the button */
 .lf-card--banner .lf-exit { justify-content: center; }
-.lf-card--banner.has-image { min-height: 0; }
 .lf-card__col { display: flex; flex-direction: column; width: 100%; }
 .lf-card__col > .lf-panel { flex: 1 0 auto; min-height: 0; }
 .lf-panel { display: flex; flex-direction: column; width: 100%; min-height: 100%; }
@@ -148,7 +147,7 @@
 .lf-link--u { text-decoration: underline; width: fit-content; }
 
 /* ---------- Submit / consent ---------- */
-.lf-grow { flex: 1; min-height: 22px; }
+.lf-grow { flex: 1; min-height: 18px; }
 .lf-submit {
   height: 41px; border: 0; border-radius: 7px; background: var(--lf-cta, var(--lf-primary)); color: var(--lf-cta-text, #fff);
   font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;

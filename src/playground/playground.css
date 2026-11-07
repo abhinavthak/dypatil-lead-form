@@ -89,7 +89,7 @@ body { font-family: 'Poppins', system-ui, sans-serif; background: var(--pg-bg); 
 .pg-page { font-family: 'Poppins', system-ui, sans-serif; }
 .pg-hero-d { position: relative; width: 1430px; min-height: 670px; background-color: #3d0710; background-size: 1430px 670px, 1430px auto; background-repeat: no-repeat; background-position: left top; display: flex; justify-content: flex-end; align-items: flex-start; padding: 35px 80px 35px 0; box-sizing: border-box; }
 .pg-hero-d__form { position: relative; width: 420px; }
-.pg-hero-d__mask { position: absolute; right: 0; top: 0; bottom: 0; width: 560px; background: linear-gradient(90deg, rgba(80,6,16,0) 0%, #4a0610 28%, #4a0610 100%); }
+.pg-hero-d__mask { position: absolute; right: 0; top: 0; bottom: 0; width: 620px; background: linear-gradient(90deg, rgba(74,6,16,0) 0%, #4a0610 20%, #4a0610 100%); }
 .pg-hotspot { position: absolute; border: 0; background: transparent; cursor: pointer; border-radius: 6px; }
 .pg-hotspot:focus-visible { outline: 2px solid #fff; }
 .pg-hero-m { position: relative; background: #50040b; padding-bottom: 28px; }
