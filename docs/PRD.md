@@ -48,7 +48,7 @@ The banner form can show an **optional promo image across its top**, uploaded by
 | **Popup + top image** | <img src="images/popup-top-image.png" width="300"> | Popup with a promo banner on top |
 | **Sidebar** | <img src="images/sidebar.png" width="300"> | Slides in from the right, full height, 423px wide |
 | **Sidebar + top image** | <img src="images/sidebar-top-image.png" width="300"> | Sidebar with a promo banner on top |
-| **None** | n/a | Banner only |
+| **None** | <img src="images/desktop-banner.png" width="300"> | No overlay opens; visitors use the banner form in the hero |
 
 ### 2b. Mobile
 
