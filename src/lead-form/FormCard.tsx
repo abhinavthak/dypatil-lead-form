@@ -73,7 +73,7 @@ export function FormHeader() {
 }
 
 function OtpBlock() {
-  const { values, otp, otpError, phoneStatus, resendIn, setOtp, resendOtp, editPhone, config } = useLeadFlow();
+  const { values, otp, otpError, phoneStatus, resendIn, setOtp, resendOtp, config } = useLeadFlow();
   const refs = useRef<(HTMLInputElement | null)[]>([]);
   const len = config.otp.length;
 
@@ -115,26 +115,12 @@ function OtpBlock() {
   };
 
   return (
-    <div className={`lf-otp${otpError ? ' is-error' : ''}`}>
-      <div className="lf-otp__info">
-        <span>Enter the code sent to</span>
-        <span className="lf-otp__num">
-          {formatPhone(values.phone)}{' '}
-          <button type="button" className="lf-link" onClick={editPhone}>
-            Edit
-          </button>
-        </span>
-        {resendIn > 0 ? (
-          <span>Resend in 0:{pad(resendIn)}</span>
-        ) : (
-          <button type="button" className="lf-link lf-link--u" onClick={resendOtp}>
-            Resend Code
-          </button>
-        )}
+    <div className={`lf-otp${otpError ? ' is-error' : ''}`} role="group" aria-label="One-time password">
+      <div className="lf-otp__label">
+        Enter {len}-digit OTP sent to <b>{formatPhone(values.phone)}</b>
       </div>
-      <div className="lf-otp__right">
-        <div className="lf-otp__boxes" onPaste={onPaste}>
-          {Array.from({ length: len }).map((_, i) => (
+      <div className="lf-otp__boxes" onPaste={onPaste} style={{ gridTemplateColumns: `repeat(${len}, 1fr)` }}>
+        {Array.from({ length: len }).map((_, i) => (
             <input
               key={i}
               ref={(el) => {
@@ -149,23 +135,64 @@ function OtpBlock() {
               onKeyDown={(e) => onKey(i, e)}
               onFocus={(e) => e.target.select()}
             />
-          ))}
-        </div>
-        {otpError && <span className="lf-otp__err">Incorrect code.</span>}
-        {phoneStatus === 'verifying' && <span className="lf-otp__hint">Verifying…</span>}
+        ))}
+      </div>
+      <div className="lf-otp__meta">
+        {otpError ? (
+          <span className="lf-otp__err" role="alert">
+            Incorrect OTP. Please try again.
+          </span>
+        ) : phoneStatus === 'verifying' ? (
+          <span>Verifying…</span>
+        ) : (
+          <span />
+        )}
+        {resendIn > 0 ? (
+          <span>Resend OTP in 0:{pad(resendIn)}</span>
+        ) : (
+          <span>
+            Didn't get it?{' '}
+            <button type="button" className="lf-link lf-link--u" onClick={resendOtp}>
+              Resend OTP
+            </button>
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
+/** Other fields stay locked until the phone is verified (when OTP is on). */
+function useLocked() {
+  const { config, phoneStatus } = useLeadFlow();
+  return config.otp.enabled && phoneStatus !== 'verified';
+}
+
+/** Clicking a locked field sends the visitor back to the phone / OTP step. */
+const focusPhoneStep = (el: HTMLElement) => {
+  const body = el.closest('.lf-body');
+  const target = body?.querySelector<HTMLInputElement>('.lf-otp__boxes input:not([disabled])') ?? body?.querySelector<HTMLInputElement>('input[type="tel"]');
+  target?.focus();
+};
+
+const Lock = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9aa0a8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M8 11V8a4 4 0 018 0v3" />
+  </svg>
+);
+
 function TextField({ field, placeholder, type = 'text' }: { field: Field; placeholder: string; type?: string }) {
   const { values, errors, autofilled, setValue, blur } = useLeadFlow();
-  const err = errors[field];
+  const locked = useLocked();
+  const err = locked ? undefined : errors[field];
   const filled = !!values[field] && !err;
   return (
-    <div className="lf-fieldwrap">
-      <label className={`lf-field${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}${autofilled[field] ? ' is-auto' : ''}`}>
+    <div className="lf-fieldwrap" onClick={locked ? (e) => focusPhoneStep(e.currentTarget) : undefined}>
+      <label className={`lf-field${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}${autofilled[field] ? ' is-auto' : ''}${locked ? ' is-locked' : ''}`}>
         <input
+          disabled={locked}
+          title={locked ? 'Verify your phone number first' : undefined}
           type={type}
           value={values[field]}
           placeholder={placeholder}
@@ -175,6 +202,7 @@ function TextField({ field, placeholder, type = 'text' }: { field: Field; placeh
           onChange={(e) => setValue(field, e.target.value)}
           onBlur={() => blur(field)}
         />
+        {locked && <Lock />}
       </label>
       {err && <span className="lf-err">{err}</span>}
     </div>
@@ -183,12 +211,15 @@ function TextField({ field, placeholder, type = 'text' }: { field: Field; placeh
 
 function SelectField({ field, placeholder, options }: { field: Field; placeholder: string; options: string[] }) {
   const { values, errors, setValue, blur } = useLeadFlow();
-  const err = errors[field];
+  const locked = useLocked();
+  const err = locked ? undefined : errors[field];
   const filled = !!values[field];
   return (
-    <div className="lf-fieldwrap">
-      <label className={`lf-field lf-field--select${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}`}>
+    <div className="lf-fieldwrap" onClick={locked ? (e) => focusPhoneStep(e.currentTarget) : undefined}>
+      <label className={`lf-field lf-field--select${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}${locked ? ' is-locked' : ''}`}>
         <select
+          disabled={locked}
+          title={locked ? 'Verify your phone number first' : undefined}
           value={values[field]}
           aria-label={placeholder}
           className={filled ? '' : 'is-placeholder'}
@@ -207,7 +238,7 @@ function SelectField({ field, placeholder, options }: { field: Field; placeholde
             </option>
           ))}
         </select>
-        <Chevron />
+        {locked ? <Lock /> : <Chevron />}
       </label>
       {err && <span className="lf-err">{err}</span>}
     </div>
@@ -215,7 +246,7 @@ function SelectField({ field, placeholder, options }: { field: Field; placeholde
 }
 
 function PhoneField() {
-  const { values, errors, phoneStatus, setValue, blur, config } = useLeadFlow();
+  const { values, errors, phoneStatus, setValue, blur, editPhone, config } = useLeadFlow();
   const err = errors.phone;
   const locked = config.otp.enabled && phoneStatus !== 'editing';
   const verified = phoneStatus === 'verified';
@@ -240,6 +271,11 @@ function PhoneField() {
           onBlur={() => blur('phone')}
         />
         {phoneStatus === 'sending' && <Spinner />}
+        {(phoneStatus === 'otp' || phoneStatus === 'verifying') && (
+          <button type="button" className="lf-link lf-phone-edit" onClick={editPhone}>
+            Edit
+          </button>
+        )}
         {verified && (
           <span className="lf-verified">
             <VerifiedTick /> VERIFIED
@@ -247,6 +283,9 @@ function PhoneField() {
         )}
       </label>
       {err && !locked && <span className="lf-err">{err}</span>}
+      {config.otp.enabled && phoneStatus === 'editing' && !err && (
+        <span className="lf-hint">We'll send an OTP to verify your number</span>
+      )}
     </div>
   );
 }
@@ -254,8 +293,23 @@ function PhoneField() {
 export function FormBody() {
   const { config, phoneStatus, canSubmit, submitting, submit } = useLeadFlow();
   const showOtp = config.otp.enabled && (phoneStatus === 'otp' || phoneStatus === 'verifying');
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Once verified, move the visitor straight on to the first empty field of the form they're using.
+  useEffect(() => {
+    const form = formRef.current;
+    if (phoneStatus !== 'verified' || !form) return;
+    const t = setTimeout(() => {
+      const active = document.activeElement;
+      if (active && active !== document.body && !form.contains(active)) return;
+      form.querySelector<HTMLInputElement>('.lf-fields input:not([type="tel"]):placeholder-shown:not(:disabled)')?.focus();
+    }, 50);
+    return () => clearTimeout(t);
+  }, [phoneStatus]);
+
   return (
     <form
+      ref={formRef}
       className="lf-body"
       noValidate
       onSubmit={(e) => {
