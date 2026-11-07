@@ -2,6 +2,7 @@
 
 **Owner:** Abhinav Thakur · **Updated:** 7 Nov 2026 · **Status:** Prototype ready for review<br>
 **Live prototype:** https://abhinavthak.github.io/dypatil-lead-form/ · **Code:** this repo<br>
+**Web version:** https://abhinavthak.github.io/dypatil-lead-form/prd/<br>
 **Figma designs:** [D. Y Patil – lead form screens](https://www.figma.com/design/qaf6Kz0KF0k4TEYbwQ0hGB/D.-Y-Patil?node-id=2398-4370&p=f&t=wjuwwmAIwlGHigos-0)
 
 ---

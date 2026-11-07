@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lead Form PRD</title>
+<meta name="description" content="Product requirements for the configurable DY Patil lead form: placements, behaviour, exit intent, configuration and tracking events." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%239f1c34'/%3E%3Cpath d='M10 9h8l4 4v10H10z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M13 17h6M13 20h4' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+<style>
+:root {
+  --bg: #fbfaf9;
+  --surface: #ffffff;
+  --surface-2: #f5f3f1;
+  --text: #1c1a1b;
+  --muted: #66615f;
+  --faint: #8d8784;
+  --line: #e7e3e0;
+  --accent: #9f1c34;
+  --accent-soft: #fbeef0;
+  --accent-text: #8a1730;
+  --green: #18794e;
+  --green-soft: #e8f6ee;
+  --amber: #a15c07;
+  --amber-soft: #fdf3e2;
+  --blue: #1d5bbf;
+  --blue-soft: #eaf1fd;
+  --code-bg: #f4f1ef;
+  --shadow: 0 1px 2px rgba(28, 26, 27, .04), 0 4px 16px rgba(28, 26, 27, .05);
+  --radius: 14px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141213; --surface: #1c1a1b; --surface-2: #232021; --text: #f1edeb; --muted: #b3aca9; --faint: #8a8381;
+    --line: #322d2e; --accent: #e0607a; --accent-soft: #3a1820; --accent-text: #f19aac; --green: #5cc896; --green-soft: #15291f;
+    --amber: #f0b45a; --amber-soft: #2e2212; --blue: #7aa7f3; --blue-soft: #16223a; --code-bg: #232021;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141213; --surface: #1c1a1b; --surface-2: #232021; --text: #f1edeb; --muted: #b3aca9; --faint: #8a8381;
+  --line: #322d2e; --accent: #e0607a; --accent-soft: #3a1820; --accent-text: #f19aac; --green: #5cc896; --green-soft: #15291f;
+  --amber: #f0b45a; --amber-soft: #2e2212; --blue: #7aa7f3; --blue-soft: #16223a; --code-bg: #232021;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.65 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: var(--accent-text); text-underline-offset: 3px; }
+code { font-family: var(--mono); font-size: .86em; background: var(--code-bg); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+img { max-width: 100%; display: block; }
+
+/* ---------- Top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.topbar__in { max-width: 1240px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; color: var(--text); text-decoration: none; white-space: nowrap; }
+.brand__mark { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .3px; }
+.topbar__links { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: 500 13px var(--font); text-decoration: none; cursor: pointer; white-space: nowrap; }
+.btn:hover { border-color: var(--faint); }
+.btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn--primary:hover { filter: brightness(1.06); border-color: var(--accent); }
+.btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.icon-btn { width: 34px; padding: 0; justify-content: center; }
+.btn__label { display: inline; }
+
+/* ---------- Layout ---------- */
+.layout { max-width: 1240px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; }
+.toc { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; padding: 36px 0 24px; }
+.toc__title { font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--faint); margin: 0 0 10px 12px; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc a { display: flex; gap: 10px; padding: 6px 12px; border-radius: 8px; font-size: 13.5px; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; }
+.toc a span { color: var(--faint); font-variant-numeric: tabular-nums; width: 14px; }
+.toc a:hover { color: var(--text); background: var(--surface-2); }
+.toc a.active { color: var(--accent-text); background: var(--accent-soft); font-weight: 500; }
+.toc a.active span { color: var(--accent-text); }
+.toc ol ol a { padding-left: 36px; font-size: 12.5px; }
+main { min-width: 0; padding: 36px 0 96px; }
+
+/* ---------- Hero ---------- */
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--accent-text); }
+h1 { font-size: clamp(30px, 4vw, 42px); line-height: 1.12; letter-spacing: -.8px; margin: 10px 0 12px; font-weight: 700; }
+.lede { font-size: 17px; color: var(--muted); max-width: 680px; margin: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 22px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--text); font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.pill--green { background: var(--green-soft); color: var(--green); }
+.pill--green::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+.tldr { margin-top: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 28px; }
+.tldr h2 { grid-column: 1 / -1; font-size: 12px; letter-spacing: .8px; text-transform: uppercase; color: var(--faint); margin: 0; font-weight: 600; }
+.tldr div { display: flex; gap: 12px; font-size: 14px; }
+.tldr div svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); margin-top: 2px; }
+.tldr b { display: block; font-weight: 600; }
+.tldr span { color: var(--muted); }
+
+/* ---------- Sections ---------- */
+section { padding-top: 56px; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+.sec-num { font: 600 13px var(--mono); color: var(--accent-text); background: var(--accent-soft); padding: 2px 8px; border-radius: 6px; }
+h2 { font-size: 26px; letter-spacing: -.4px; margin: 0; line-height: 1.25; }
+h3 { font-size: 18px; margin: 36px 0 10px; letter-spacing: -.2px; line-height: 1.5; }
+h3 .tag { vertical-align: 2px; margin: 0 2px; }
+h4 { font-size: 15px; margin: 24px 0 8px; }
+.intro { color: var(--muted); max-width: 720px; margin: 8px 0 0; }
+p { margin: 10px 0; }
+.tag { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; letter-spacing: .2px; white-space: nowrap; }
+.tag--desktop { background: var(--blue-soft); color: var(--blue); }
+.tag--mobile { background: var(--amber-soft); color: var(--amber); }
+.tag--new { background: var(--green-soft); color: var(--green); }
+.tag--existing { background: var(--blue-soft); color: var(--blue); }
+.tag--neutral { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.metric { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.metric.is-main { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: inset 0 3px 0 var(--accent); }
+.metric__name { font-weight: 600; font-size: 14px; }
+.metric__formula { font: 12px/1.5 var(--mono); color: var(--accent-text); margin: 6px 0 8px; }
+.metric__q { font-size: 13px; color: var(--muted); }
+
+/* Callouts */
+.callout { display: flex; gap: 12px; padding: 14px 16px; border-radius: 12px; margin: 16px 0; font-size: 14px; border: 1px solid; }
+.callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+.callout--info { background: var(--blue-soft); border-color: color-mix(in srgb, var(--blue) 25%, transparent); }
+.callout--info svg { color: var(--blue); }
+.callout--warn { background: var(--amber-soft); border-color: color-mix(in srgb, var(--amber) 25%, transparent); }
+.callout--warn svg { color: var(--amber); }
+.callout--danger { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+.callout--danger svg { color: var(--accent); }
+.callout p { margin: 0; }
+
+/* Screens */
+.gallery { display: grid; gap: 16px; margin-top: 14px; }
+.g-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.g-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.shot { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.shot__img { background: var(--surface-2); padding: 12px; display: grid; place-items: center; cursor: zoom-in; border: 0; width: 100%; }
+.shot__img img { border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.12); max-height: 420px; width: auto; }
+.shot--wide .shot__img img { width: 100%; max-height: none; }
+.shot figcaption { padding: 12px 14px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); flex: 1; }
+.shot figcaption > b:first-of-type { display: block; color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.shot figcaption b { color: var(--text); font-weight: 600; }
+.shot__step { font: 600 11px var(--mono); color: var(--faint); display: block; margin-bottom: 3px; }
+
+/* Rules list */
+.rules { list-style: none; counter-reset: r; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.rules li { counter-increment: r; display: grid; grid-template-columns: 28px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+.rules li::before { content: counter(r); width: 26px; height: 26px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-text); display: grid; place-items: center; font: 600 12px var(--mono); }
+.rules--bullets li::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin: 8px 9px; }
+.rules b { font-weight: 600; }
+
+/* Diagram */
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; margin-top: 16px; overflow-x: auto; text-align: center; }
+.diagram svg { max-width: min(100%, 720px); height: auto; margin: 0 auto; }
+.diagram__fallback { font: 12.5px/1.6 var(--mono); color: var(--muted); text-align: left; white-space: pre; margin: 0; }
+
+/* Tables */
+.table-wrap { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: auto; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px; color: var(--muted); background: var(--surface-2); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; position: sticky; top: 0; }
+td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: color-mix(in srgb, var(--surface-2) 60%, transparent); }
+td.area { font-weight: 600; white-space: nowrap; color: var(--text); background: var(--surface-2); border-right: 1px solid var(--line); }
+td .opts { display: flex; flex-wrap: wrap; gap: 5px; }
+td .opt { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); font-size: 12.5px; white-space: nowrap; }
+td .opt.is-new { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); color: var(--accent-text); }
+tr.is-main td { background: var(--green-soft); }
+.tbl-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+.search { position: relative; flex: 1; max-width: 320px; }
+.search input { width: 100%; height: 36px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); font: 13.5px var(--font); padding: 0 12px 0 34px; }
+.search input:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
+.search svg { position: absolute; left: 11px; top: 10px; width: 16px; height: 16px; color: var(--faint); }
+.count { font-size: 12.5px; color: var(--faint); }
+
+/* Funnel */
+.funnel { display: flex; margin-top: 16px; gap: 4px; }
+.funnel div { flex: 1; position: relative; background: var(--accent-soft); color: var(--accent-text); padding: 12px 10px 12px 22px; font: 500 12px var(--mono); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%); text-align: center; min-width: 0; overflow-wrap: anywhere; }
+.funnel div:first-child { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); padding-left: 12px; }
+.funnel div:last-child { background: var(--accent); color: #fff; }
+
+/* Code */
+.code { position: relative; margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--code-bg); overflow: hidden; }
+.code__bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); font: 500 12px var(--mono); color: var(--muted); }
+.code pre { margin: 0; padding: 14px 16px; overflow: auto; font: 12.5px/1.7 var(--mono); }
+.code .k { color: var(--accent-text); }
+.code .s { color: var(--green); }
+.code .n { color: var(--blue); }
+
+/* Open items */
+.open-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.open { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; font-size: 14px; }
+.open h4 { margin: 8px 0 6px; }
+.open p { color: var(--muted); margin: 0; font-size: 13.5px; }
+
+footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+/* Lightbox */
+dialog.lightbox { border: 0; padding: 0; background: transparent; max-width: 94vw; max-height: 92vh; }
+dialog.lightbox::backdrop { background: rgba(10, 8, 9, .82); backdrop-filter: blur(4px); }
+dialog.lightbox img { max-width: 94vw; max-height: 84vh; border-radius: 10px; }
+dialog.lightbox p { color: #f1edeb; text-align: center; font-size: 14px; margin: 10px 0 0; }
+dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.14); color: #fff; font-size: 20px; cursor: pointer; }
+
+/* Mobile TOC */
+.toc-mobile { display: none; }
+
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .toc { display: none; }
+  .toc-mobile { display: block; position: sticky; top: 60px; z-index: 15; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .toc-mobile nav { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; }
+  .toc-mobile a { flex-shrink: 0; padding: 5px 11px; border-radius: 999px; font-size: 12.5px; color: var(--muted); text-decoration: none; border: 1px solid var(--line); background: var(--surface); }
+  .toc-mobile a.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  html { scroll-padding-top: 116px; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .topbar__in, .layout { padding: 0 16px; }
+  .btn__label { display: none; }
+  .btn { padding: 0 9px; }
+  .topbar__links { gap: 6px; }
+  .brand { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .brand__text { overflow: hidden; text-overflow: ellipsis; }
+  .tldr { grid-template-columns: 1fr; }
+  .g-2, .g-3 { grid-template-columns: minmax(0, 1fr); }
+  .g-4, .g-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .open-grid { grid-template-columns: 1fr; }
+  .funnel { flex-direction: column; }
+  .funnel div, .funnel div:first-child { clip-path: none; border-radius: 8px; padding: 10px; }
+  h2 { font-size: 22px; }
+  section { padding-top: 44px; }
+}
+@media (max-width: 420px) {
+  .metrics { grid-template-columns: 1fr; }
+  .brand__text { display: none; }
+}
+@media print {
+  .topbar, .toc, .toc-mobile, .search { display: none !important; }
+  .layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__in">
+    <a class="brand" href="#top"><span class="brand__mark">PRD</span><span class="brand__text">Configurable Lead Form</span></a>
+    <div class="topbar__links">
+      <a class="btn btn--primary" href="../" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+        <span class="btn__label">Live prototype</span>
+      </a>
+      <a class="btn" href="https://www.figma.com/design/qaf6Kz0KF0k4TEYbwQ0hGB/D.-Y-Patil?node-id=2398-4370&amp;p=f&amp;t=wjuwwmAIwlGHigos-0" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H8.5a3.5 3.5 0 000 7H12V2zM12 9H8.5a3.5 3.5 0 000 7H12V9zM12 16H8.5A3.5 3.5 0 1012 19.5V16zM12 2h3.5a3.5 3.5 0 010 7H12V2z"/><circle cx="15.5" cy="12.5" r="3.5"/></svg>
+        <span class="btn__label">Figma</span>
+      </a>
+      <a class="btn" href="https://github.com/abhinavthak/dypatil-lead-form" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+        <span class="btn__label">Code</span>
+      </a>
+      <button class="btn icon-btn" id="theme" type="button" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="toc-mobile"><nav aria-label="Sections">
+  <a href="#why">Why</a><a href="#placements">Placements</a><a href="#behaviour">Behaviour</a><a href="#exit">Exit intent</a><a href="#config">Configuration</a><a href="#tracking">Tracking</a><a href="#open">Open items</a>
+</nav></div>
+
+<div class="layout" id="top">
+  <aside class="toc" aria-label="On this page">
+    <p class="toc__title">On this page</p>
+    <ol>
+      <li><a href="#why"><span>1</span>Why</a></li>
+      <li><a href="#placements"><span>2</span>Where it appears</a>
+        <ol><li><a href="#desktop">Desktop</a></li><li><a href="#mobile">Mobile</a></li></ol></li>
+      <li><a href="#behaviour"><span>3</span>How it behaves</a>
+        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li></ol></li>
+      <li><a href="#exit"><span>4</span>Exit intent</a></li>
+      <li><a href="#config"><span>5</span>Configuration</a></li>
+      <li><a href="#tracking"><span>6</span>Tracking events</a>
+        <ol><li><a href="#events">Events</a></li><li><a href="#common-params">Common parameters</a></li><li><a href="#event-params">Event parameters</a></li><li><a href="#example">Example payload</a></li></ol></li>
+      <li><a href="#open"><span>7</span>Open items</a></li>
+    </ol>
+  </aside>
+
+  <main>
+    <span class="eyebrow">Product requirements · DY Patil Online MBA</span>
+    <h1>Configurable Lead Form</h1>
+    <p class="lede">One phone-verified lead form that marketing can place, style and tune per landing page, on desktop and mobile, without engineering work.</p>
+    <ul class="meta">
+      <li><div><b>Owner</b>&nbsp; Abhinav Thakur</div></li>
+      <li><div><b>Updated</b>&nbsp; 7 Nov 2026</div></li>
+      <li><div><span class="pill pill--green">Prototype ready for review</span></div></li>
+    </ul>
+
+    <div class="tldr">
+      <h2>At a glance</h2>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M14 4v16"/></svg><p><b>Banner + overlays</b><span>Inline hero form plus a popup, sidebar or bottom drawer, chosen separately for desktop and mobile.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg><p><b>Phone first, verified by OTP</b><span>Other fields unlock only after verification; existing leads are pre-filled.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><p><b>Exit intent on close</b><span>Closing an unsubmitted form shows a "Before you go" screen, every time.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><p><b>19 tracked events</b><span>Full funnel from view to submit, with no personal data in analytics.</span></p></div>
+    </div>
+
+    <!-- 1 -->
+    <section id="why">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Why</h2></div>
+      <p class="intro">University landing pages need <b>one lead form</b> that marketing can set up per page (where it sits, how it looks, how urgent it feels) <b>without engineering work</b>, and that verifies phone numbers so sales only gets real leads.</p>
+      <h4>We'll know it works when</h4>
+      <div class="metrics">
+        <div class="metric"><div class="metric__name">Form start rate</div><div class="metric__formula">started ÷ viewed</div><div class="metric__q">Is the form inviting?</div></div>
+        <div class="metric is-main"><div class="metric__name">Lead conversion <span class="tag tag--neutral">Main KPI</span></div><div class="metric__formula">submitted ÷ viewed</div><div class="metric__q">Overall performance.</div></div>
+        <div class="metric"><div class="metric__name">OTP success</div><div class="metric__formula">verified ÷ OTP sent</div><div class="metric__q">Is verification a blocker?</div></div>
+        <div class="metric"><div class="metric__name">Exit recovery</div><div class="metric__formula">continue ÷ exit shown</div><div class="metric__q">Is the exit screen saving leads?</div></div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="placements">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Where the form appears</h2></div>
+      <p class="intro">One form, several placements. A page can use the <b>banner</b> (inline in the hero), an <b>overlay</b>, or both. They share one state, so anything typed in one shows up in the other.</p>
+      <div class="callout callout--info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><b>Desktop and mobile are set up separately.</b> Each page picks one desktop overlay and one mobile overlay (e.g. popup with side image on desktop + bottom drawer on mobile). Screens narrower than 760px count as mobile.</p>
+      </div>
+
+      <h3 id="desktop"><span class="tag tag--desktop">Desktop</span> Banner and overlays</h3>
+      <div class="gallery g-2">
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner.png" alt="Desktop hero with the banner lead form on the right" loading="lazy"></button><figcaption><b>Banner</b>Inline form on the right of the hero.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner-image.png" alt="Desktop banner form with a promo image across its top" loading="lazy"></button><figcaption><b>Banner with image</b>Optional promo image, uploaded by the user. Shown only with the form, not on success.</figcaption></figure>
+      </div>
+      <div class="gallery g-3">
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup.png" alt="Centred popup overlay" loading="lazy"></button><figcaption><b>Popup</b>Centred 420px card; page dimmed and blurred behind.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-side-image.png" alt="Popup with promo image on the left" loading="lazy"></button><figcaption><b>Popup + side image</b>725px wide: promo image left, form right.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-top-image.png" alt="Popup with promo banner on top" loading="lazy"></button><figcaption><b>Popup + top image</b>Popup with a promo banner on top.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar.png" alt="Full-height sidebar on the right" loading="lazy"></button><figcaption><b>Sidebar</b>Slides in from the right, full height, 423px wide.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar-top-image.png" alt="Sidebar with promo banner on top" loading="lazy"></button><figcaption><b>Sidebar + top image</b>Sidebar with a promo banner on top.</figcaption></figure>
+        <figure class="shot"><div class="shot__img" style="cursor:default;min-height:120px;color:var(--faint);font-size:13px">Banner only</div><figcaption><b>None</b>No overlay; only the banner form.</figcaption></figure>
+      </div>
+
+      <h3 id="mobile"><span class="tag tag--mobile">Mobile</span> Banner and overlays</h3>
+      <div class="gallery g-5">
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-hero.png" alt="Mobile hero; banner form follows below" loading="lazy"></button><figcaption><b>Hero + banner</b>Banner form follows the hero.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-banner-image.png" alt="Mobile banner form with promo image" loading="lazy"></button><figcaption><b>Banner with image</b>Optional uploaded image.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer.png" alt="Mobile bottom drawer" loading="lazy"></button><figcaption><b>Bottom drawer</b>Slides up; rounded top, larger ✕ for thumbs.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer-top-image.png" alt="Mobile bottom drawer with promo banner" loading="lazy"></button><figcaption><b>Drawer + top image</b>Drawer with promo banner.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-popup.png" alt="Mobile centred popup" loading="lazy"></button><figcaption><b>Popup</b>Centred card, 16px side margins.</figcaption></figure>
+      </div>
+
+      <h4>Rules for both</h4>
+      <ul class="rules rules--bullets">
+        <li><div>Promo images show only on the form; success and exit screens are plain cards.</div></li>
+        <li><div>The overlay opens per the configured trigger (on load, after a delay, after a scroll depth, or only on CTA click), and <b>Download Brochure</b> / <b>Apply Now</b> buttons on the page always open it.</div></li>
+      </ul>
+    </section>
+
+    <!-- 3 -->
+    <section id="behaviour">
+      <div class="sec-head"><span class="sec-num">03</span><h2>How the form behaves</h2></div>
+      <p class="intro">Phone first. Everything else unlocks after the OTP is verified, then the journey splits for <span class="tag tag--new">new</span> and <span class="tag tag--existing">existing</span> leads.</p>
+      <div class="diagram" data-mermaid="flow"></div>
+
+      <h3 id="verify">Step 1 · Verify the phone <span class="tag tag--neutral">everyone</span></h3>
+      <div class="gallery g-4">
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-entry.png" alt="OTP boxes below the phone field; other fields locked" loading="lazy"></button><figcaption><span class="shot__step">1.1</span><b>Enter OTP</b>Typing 10 digits sends the OTP. Other fields stay locked 🔒.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-wrong.png" alt="Wrong OTP with red boxes" loading="lazy"></button><figcaption><span class="shot__step">1.2</span><b>Wrong OTP</b>Boxes turn red. Typing again starts a fresh attempt; resend after 30s.</figcaption></figure>
+      </div>
+      <p>After a correct OTP we check whether this number is already a lead. That decides which journey follows.</p>
+
+      <h3 id="new-lead">Step 2a · <span class="tag tag--new">New lead</span> first time on any of our forms</h3>
+      <div class="gallery g-4">
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-verified.png" alt="Phone verified, empty fields unlocked" loading="lazy"></button><figcaption><span class="shot__step">2a.1</span><b>Verified</b>Fields unlock <b>empty</b>; cursor jumps to Full name.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-error.png" alt="Invalid email error" loading="lazy"></button><figcaption><span class="shot__step">2a.2</span><b>Typing (with error)</b>Errors appear only after typing and leaving a field.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-filled.png" alt="All fields filled, Sign Up enabled" loading="lazy"></button><figcaption><span class="shot__step">2a.3</span><b>All filled</b>Every field valid → Sign Up turns to the CTA colour.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-success.png" alt="Success screen for a new lead" loading="lazy"></button><figcaption><span class="shot__step">2a.4</span><b>Success</b>"Thank you, Priya!" with phone, course and next steps.</figcaption></figure>
+      </div>
+
+      <h3 id="existing-lead">Step 2b · <span class="tag tag--existing">Existing lead</span> number already in our system</h3>
+      <div class="gallery g-4">
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/verified-existing-user.png" alt="Verified existing user with pre-filled details" loading="lazy"></button><figcaption><span class="shot__step">2b.1</span><b>Verified + pre-filled</b>Name, email and qualification pre-filled (editable). Usually only Course is left.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/success.png" alt="Success screen for an existing lead" loading="lazy"></button><figcaption><span class="shot__step">2b.2</span><b>Success</b>Same screen. Their lead is updated, not duplicated.</figcaption></figure>
+      </div>
+
+      <h3 id="form-rules">Rules</h3>
+      <ol class="rules">
+        <li><div><b>Phone first.</b> Name, email, qualification and course are <b>locked</b> (greyed, 🔒) until the phone is verified. Tapping a locked field sends the user back to the phone/OTP step.</div></li>
+        <li><div><b>OTP</b> is sent as soon as a valid 10-digit Indian mobile (starts 6–9) is entered. 4 big boxes, auto-advance, paste supported, resend after 30s, <b>Edit</b> to change the number.</div></li>
+        <li><div><b>New vs existing lead.</b> After verification we look the number up. New → empty fields; existing → pre-fill what we know (still editable) and update the existing lead on submit.</div></li>
+        <li><div><b>Validation</b> shows when the user leaves a field they've typed in (<i>Enter Valid Name</i>, <i>Enter Valid Email Id</i>). Untouched empty fields never show errors.</div></li>
+        <li><div><b>Sign Up</b> stays grey until every field is valid and the phone is verified.</div></li>
+        <li><div><b>Success:</b> "Thank you, {first name}!" with phone, course and a 3-step "What happens next". Two versions: <i>Proceed with My Application</i> (button) or <i>A counsellor will call you</i> (no button).</div></li>
+        <li><div>The urgency countdown and seat bar are <b>display only</b>; they never block submission.</div></li>
+      </ol>
+    </section>
+
+    <!-- 4 -->
+    <section id="exit">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Exit intent</h2></div>
+      <p class="intro">Shown <b>only when someone tries to close the form overlay</b> before submitting (✕, clicking outside, or Esc), <b>every time</b> they try.</p>
+      <div class="callout callout--warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/></svg>
+        <p>Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking. The banner form has no close button, so exit intent applies to <b>overlays only</b>.</p>
+      </div>
+      <div class="diagram" data-mermaid="exit"></div>
+      <div class="gallery" style="grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr)">
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/exit-intent.png" alt="Desktop exit-intent screen in a popup" loading="lazy"></button><figcaption><span class="tag tag--desktop">Desktop</span><br>Replaces the form inside the popup / sidebar.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-exit-intent.png" alt="Mobile exit-intent screen in a bottom drawer" loading="lazy"></button><figcaption><span class="tag tag--mobile">Mobile</span><br>Replaces the form inside the drawer / popup.</figcaption></figure>
+      </div>
+      <h4>Rules</h4>
+      <ul class="rules rules--bullets">
+        <li><div><b>No ✕ on the exit screen</b>; clicking outside or pressing Esc does nothing. Only <b>Continue to Get a Call back</b> or <b>No Thanks, Close</b> leave it.</div></li>
+        <li><div>If the visitor has started, show progress: "Your details · 2 of 5 done".</div></li>
+        <li><div>Never shown after a successful submit; closing the success screen just closes.</div></li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section id="config">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Configuration controls</h2></div>
+      <p class="intro">Everything is set per page through one config object. The prototype exports it via <b>Copy config JSON</b>.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Area</th><th>Control</th><th>Options</th></tr></thead>
+        <tbody>
+          <tr><td class="area" rowspan="6">Placement</td><td>Banner (inline hero form)</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
+          <tr><td>Banner form image</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt is-new">Upload</span><span class="opt">URL</span></div></td></tr>
+          <tr><td><span class="tag tag--desktop">Desktop</span> overlay</td><td><div class="opts"><span class="opt">None</span><span class="opt">Popup</span><span class="opt">Popup + side image</span><span class="opt">Popup + top image</span><span class="opt">Sidebar</span><span class="opt">Sidebar + top image</span></div></td></tr>
+          <tr><td><span class="tag tag--mobile">Mobile</span> overlay <span style="color:var(--faint)">(independent)</span></td><td><div class="opts"><span class="opt">None</span><span class="opt">Bottom drawer</span><span class="opt">Bottom drawer + top image</span><span class="opt">Popup</span></div></td></tr>
+          <tr><td>Open overlay</td><td><div class="opts"><span class="opt">On load</span><span class="opt">After N s (3)</span><span class="opt">After N% scroll (40)</span><span class="opt">Only on CTA click</span></div></td></tr>
+          <tr><td>Side / top promo image</td><td><div class="opts"><span class="opt is-new">Upload</span><span class="opt">URL</span></div></td></tr>
+          <tr><td class="area" rowspan="3">Urgency</td><td>Social proof pill</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Count (146)</span></div></td></tr>
+          <tr><td>Countdown</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Deadline date &amp; time</span></div></td></tr>
+          <tr><td>Seats-filled bar</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">% (82)</span><span class="opt">Batch name</span></div></td></tr>
+          <tr><td class="area" rowspan="2">Trust</td><td>Trust strip</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Badges: icon, title, subtitle</span></div></td></tr>
+          <tr><td>Strip background</td><td><div class="opts"><span class="opt">Brand tint</span><span class="opt">Grey</span><span class="opt">White</span><span class="opt">Solid brand</span><span class="opt is-new">Custom colour</span></div></td></tr>
+          <tr><td class="area" rowspan="3">Look</td><td>Title / subtitle</td><td><div class="opts"><span class="opt">Text</span></div></td></tr>
+          <tr><td>Primary colour</td><td><div class="opts"><span class="opt">Any colour</span><span class="opt">Accents, focus, icons</span></div></td></tr>
+          <tr><td>CTA colour</td><td><div class="opts"><span class="opt is-new">Any colour</span><span class="opt">Sign Up button; text auto black/white</span></div></td></tr>
+          <tr><td class="area" rowspan="2">Flow</td><td>Verify phone with OTP</td><td><div class="opts"><span class="opt">On (default)</span><span class="opt">Off: fields never locked</span></div></td></tr>
+          <tr><td>Success screen</td><td><div class="opts"><span class="opt">Proceed with application</span><span class="opt">Wait for callback</span></div></td></tr>
+          <tr><td class="area" rowspan="2">Exit intent</td><td>Show when the form is closed</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
+          <tr><td>Show progress</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
+          <tr><td class="area" rowspan="2">Data</td><td>Qualification &amp; course lists</td><td><div class="opts"><span class="opt">Lists of options</span></div></td></tr>
+          <tr><td>Terms / Privacy links</td><td><div class="opts"><span class="opt">URLs</span></div></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 6 -->
+    <section id="tracking">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Tracking events</h2></div>
+      <p class="intro">Every event is pushed to the analytics layer (GTM <code>dataLayer</code> → GA4 / Mixpanel) as <code>{ event: "form_…", …parameters }</code>. Names are <code>snake_case</code> and start with <code>form_</code>.</p>
+      <div class="callout callout--danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <p><b>Privacy rule:</b> never send phone number, name or email in any event. Join with the CRM using <code>lead_id</code>.</p>
+      </div>
+
+      <h4>Funnel to build</h4>
+      <div class="funnel" role="list" aria-label="Conversion funnel">
+        <div role="listitem">form_viewed</div><div role="listitem">form_started</div><div role="listitem">form_otp_sent</div><div role="listitem">form_otp_verified</div><div role="listitem">form_submitted</div>
+      </div>
+
+      <h3 id="events">6a · Events</h3>
+      <div class="tbl-tools">
+        <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="ev-search" type="search" placeholder="Filter events or parameters…" aria-label="Filter events"></label>
+        <span class="count" id="ev-count"></span>
+      </div>
+      <div class="table-wrap"><table id="ev-table">
+        <thead><tr><th>Event</th><th>When it fires</th><th>Parameters (besides common)</th></tr></thead>
+        <tbody>
+          <tr><td><code>form_viewed</code></td><td>Form visible on screen (≥ 50% for 1s)</td><td>n/a</td></tr>
+          <tr><td><code>form_overlay_opened</code></td><td>Overlay opens</td><td><code>open_trigger</code></td></tr>
+          <tr><td><code>form_overlay_closed</code></td><td>Overlay closes</td><td><code>stage</code></td></tr>
+          <tr><td><code>form_started</code></td><td>First interaction with any field</td><td><code>first_field</code></td></tr>
+          <tr><td><code>form_locked_field_tapped</code></td><td>User taps a locked field</td><td><code>field</code></td></tr>
+          <tr><td><code>form_otp_sent</code></td><td>OTP requested</td><td><code>attempt</code></td></tr>
+          <tr><td><code>form_otp_resent</code></td><td>"Resend OTP" clicked</td><td><code>attempt</code> <code>seconds_waited</code></td></tr>
+          <tr><td><code>form_otp_failed</code></td><td>Wrong OTP entered</td><td><code>attempt</code></td></tr>
+          <tr><td><code>form_otp_verified</code></td><td>OTP correct</td><td><code>attempts</code> <code>seconds_to_verify</code> <code>lead_type</code></td></tr>
+          <tr><td><code>form_phone_edited</code></td><td>"Edit" on the number</td><td>n/a</td></tr>
+          <tr><td><code>form_existing_lead</code></td><td>Lookup found a past lead</td><td><code>fields_prefilled</code></td></tr>
+          <tr><td><code>form_field_error</code></td><td>Validation error shown</td><td><code>field</code> <code>error</code></td></tr>
+          <tr><td><code>form_submit_clicked</code></td><td>Sign Up clicked</td><td><code>fields_complete</code></td></tr>
+          <tr class="is-main"><td><code>form_submitted</code></td><td>Lead saved ✅ <b>main conversion</b></td><td><code>lead_id</code> <code>lead_type</code> <code>course</code> <code>qualification</code> <code>seconds_to_submit</code></td></tr>
+          <tr><td><code>form_submit_failed</code></td><td>Submit API returned an error</td><td><code>error_code</code></td></tr>
+          <tr><td><code>form_success_cta_clicked</code></td><td>"Proceed with My Application" clicked</td><td><code>lead_id</code></td></tr>
+          <tr><td><code>form_exit_shown</code></td><td>Exit screen shown</td><td><code>exit_trigger</code> <code>progress</code></td></tr>
+          <tr><td><code>form_exit_continue</code></td><td>"Continue to Get a Call back" clicked</td><td><code>exit_trigger</code> <code>progress</code></td></tr>
+          <tr><td><code>form_exit_dismissed</code></td><td>"No Thanks, Close" clicked</td><td><code>exit_trigger</code> <code>progress</code></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="common-params">6b · Common parameters <span class="tag tag--neutral">sent with every event</span></h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Example</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><code>event_id</code></td><td>string</td><td><code>"6f1c…"</code></td><td>Unique ID per event (removes duplicates)</td></tr>
+          <tr><td><code>timestamp</code></td><td>string (ISO 8601)</td><td><code>"2026-11-07T10:20:31Z"</code></td><td>When it happened (UTC)</td></tr>
+          <tr><td><code>session_id</code></td><td>string</td><td><code>"s_8d2a…"</code></td><td>Visitor's browsing session</td></tr>
+          <tr><td><code>form_id</code></td><td>string</td><td><code>"dyp-mba-pm-hero"</code></td><td>Which configured form this is</td></tr>
+          <tr><td><code>variant</code></td><td>string</td><td><code>"B"</code></td><td>A/B config variant (<code>"default"</code> if none)</td></tr>
+          <tr><td><code>university</code></td><td>string</td><td><code>"DY Patil University"</code></td><td>University on the page</td></tr>
+          <tr><td><code>program</code></td><td>string</td><td><code>"Online MBA in Product Management"</code></td><td>Program the page is about</td></tr>
+          <tr><td><code>page_url</code></td><td>string</td><td><code>"https://…/mba-product-management"</code></td><td>Page URL <b>without</b> query string</td></tr>
+          <tr><td><code>referrer</code></td><td>string</td><td><code>"https://www.google.com/"</code></td><td>Previous page</td></tr>
+          <tr><td><code>device</code></td><td>enum</td><td><code>desktop</code> <code>mobile</code></td><td>Screen &lt; 760px = mobile</td></tr>
+          <tr><td><code>placement</code></td><td>enum</td><td><code>banner</code> <code>overlay</code></td><td>Which form surface fired it</td></tr>
+          <tr><td><code>layout</code></td><td>enum</td><td><div class="opts"><code>banner</code><code>popup</code><code>popup-side-image</code><code>popup-top-image</code><code>sidebar</code><code>sidebar-top-image</code><code>bottom-drawer</code><code>bottom-drawer-top-image</code><code>mobile-popup</code></div></td><td>Visual style shown</td></tr>
+          <tr><td><div class="opts"><code>utm_source</code><code>utm_medium</code><code>utm_campaign</code><code>utm_content</code><code>utm_term</code></div></td><td>string</td><td><code>"google"</code>, <code>"cpc"</code> …</td><td>Campaign tags from the landing URL (empty if absent)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="event-params">6c · Event parameters</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Allowed values / example</th><th>Used in</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td><code>open_trigger</code></td><td>enum</td><td><div class="opts"><code>load</code><code>delay</code><code>scroll</code><code>cta</code></div></td><td>overlay_opened</td><td>Why the overlay opened</td></tr>
+          <tr><td><code>stage</code></td><td>enum</td><td><div class="opts"><code>form</code><code>exit</code><code>success</code></div></td><td>overlay_closed</td><td>Screen showing when it closed</td></tr>
+          <tr><td><code>first_field</code></td><td>enum</td><td><div class="opts"><code>phone</code><code>name</code><code>email</code><code>qualification</code><code>course</code></div></td><td>started</td><td>First field touched</td></tr>
+          <tr><td><code>field</code></td><td>enum</td><td>same as above</td><td>locked_field_tapped, field_error</td><td>Field involved</td></tr>
+          <tr><td><code>error</code></td><td>enum</td><td><div class="opts"><code>invalid_phone</code><code>invalid_name</code><code>invalid_email</code><code>missing_qualification</code><code>missing_course</code></div></td><td>field_error</td><td>Which validation failed</td></tr>
+          <tr><td><code>attempt</code></td><td>integer</td><td><code>1</code>, <code>2</code> …</td><td>otp_sent, otp_resent, otp_failed</td><td>Count so far for this number</td></tr>
+          <tr><td><code>attempts</code></td><td>integer</td><td><code>2</code></td><td>otp_verified</td><td>OTP tries needed to verify</td></tr>
+          <tr><td><code>seconds_waited</code></td><td>integer</td><td><code>34</code></td><td>otp_resent</td><td>Seconds since last OTP was sent</td></tr>
+          <tr><td><code>seconds_to_verify</code></td><td>integer</td><td><code>21</code></td><td>otp_verified</td><td>From first OTP sent to verified</td></tr>
+          <tr><td><code>lead_type</code></td><td>enum</td><td><div class="opts"><code>new</code><code>existing</code></div></td><td>otp_verified, submitted</td><td>Was the number already a lead?</td></tr>
+          <tr><td><code>fields_prefilled</code></td><td>array of enum</td><td><code>["name","email","qualification"]</code></td><td>existing_lead</td><td>Fields we filled for them</td></tr>
+          <tr><td><code>fields_complete</code></td><td>integer 0–5</td><td><code>5</code></td><td>submit_clicked</td><td>Valid fields at click time</td></tr>
+          <tr><td><code>progress</code></td><td>integer 0–5</td><td><code>2</code></td><td>exit_*</td><td>Fields done when exit screen shows</td></tr>
+          <tr><td><code>exit_trigger</code></td><td>enum</td><td><div class="opts"><code>close_button</code><code>outside_click</code><code>esc_key</code></div></td><td>exit_*</td><td>How the visitor tried to close</td></tr>
+          <tr><td><code>lead_id</code></td><td>string</td><td><code>"LD-104382"</code></td><td>submitted, success_cta_clicked</td><td>CRM lead ID from the submit API</td></tr>
+          <tr><td><code>course</code></td><td>string</td><td><code>"Online MBA in Product Management"</code></td><td>submitted</td><td>Course selected</td></tr>
+          <tr><td><code>qualification</code></td><td>enum</td><td><div class="opts"><code>12th Pass</code><code>Diploma</code><code>Graduate</code><code>Post Graduate</code><code>Working Professional</code></div></td><td>submitted</td><td>Highest qualification</td></tr>
+          <tr><td><code>seconds_to_submit</code></td><td>integer</td><td><code>95</code></td><td>submitted</td><td>From <code>form_started</code> to submit</td></tr>
+          <tr><td><code>error_code</code></td><td>string</td><td><div class="opts"><code>"http_500"</code><code>"timeout"</code><code>"otp_provider_down"</code></div></td><td>submit_failed</td><td>Why submission failed</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 id="example">Example payload · <code>form_submitted</code></h3>
+      <div class="code">
+        <div class="code__bar"><span>dataLayer.push(…)</span><button class="btn" id="copy-json" type="button" style="height:28px">Copy</button></div>
+<pre id="json"></pre>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="open">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Not in this version · open questions</h2></div>
+      <div class="open-grid">
+        <div class="open"><span class="tag tag--neutral">Backend</span><h4>Real APIs & OTP provider</h4><p>OTP, lead lookup and submit are mocked in the prototype (OTP <code>1111</code> fails; numbers ending <code>2168</code> are existing leads). The submit API must return <code>lead_id</code>.</p></div>
+        <div class="open"><span class="tag tag--neutral">Tracking</span><h4>Wire up events</h4><p>Events are specified, not yet sent. The component needs an <code>onEvent</code> hook that pushes to <code>dataLayer</code>.</p></div>
+        <div class="open"><span class="tag tag--neutral">Open</span><h4>Decisions needed</h4><p>Should OTP be skippable after N failed attempts? Should "Continue" / "Proceed" buttons follow the CTA colour?</p></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Configurable Lead Form · PRD</span>
+      <span><a href="../" target="_blank" rel="noopener">Live prototype</a> · <a href="https://github.com/abhinavthak/dypatil-lead-form/blob/main/docs/PRD.md" target="_blank" rel="noopener">Markdown version</a></span>
+    </footer>
+  </main>
+</div>
+
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot preview">
+  <button type="button" aria-label="Close preview">×</button>
+  <img alt="" />
+  <p></p>
+</dialog>
+
+<script type="text/plain" id="src-flow">
+flowchart TD
+    A[Enter phone] -->|10 valid digits| C[OTP sent automatically]
+    C --> D{OTP correct?}
+    D -->|No| E[Boxes turn red · try again / resend]
+    E --> D
+    D -->|Yes| F[Phone VERIFIED · fields unlock]
+    F --> G{Existing lead?}
+    G -->|No · new lead| I[Fill name, email,<br/>qualification, course]
+    G -->|Yes · existing| H[Name, email, qualification<br/>pre-filled · pick course]
+    I --> J[Sign Up enabled → Success screen]
+    H --> J
+</script>
+<script type="text/plain" id="src-exit">
+flowchart LR
+    A[Form overlay open<br/>not submitted] -->|✕ / click outside / Esc| B[Exit screen]
+    B -->|Continue to Get a Call back| C[Back to the form]
+    C -->|tries to close again| B
+    B -->|No Thanks, Close| D[Overlay closed]
+</script>
+
+<script>
+/* ---------- Theme ---------- */
+(function () {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem('prd-theme'); } catch { return null; } };
+  const saved = get();
+  if (saved) root.dataset.theme = saved;
+  document.getElementById('theme').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('prd-theme', root.dataset.theme); } catch {}
+    window.renderDiagrams && window.renderDiagrams();
+  });
+})();
+
+/* ---------- JSON example ---------- */
+(function () {
+  const payload = {
+    event: 'form_submitted', event_id: '6f1c2b9e-0d6a-4a8e-9b1f-1d2c3e4f5a6b', timestamp: '2026-11-07T10:20:31Z',
+    session_id: 's_8d2a41', form_id: 'dyp-mba-pm-hero', variant: 'default', university: 'DY Patil University',
+    program: 'Online MBA in Product Management', page_url: 'https://example.com/online-mba-product-management',
+    referrer: 'https://www.google.com/', device: 'mobile', placement: 'overlay', layout: 'bottom-drawer',
+    utm_source: 'google', utm_medium: 'cpc', utm_campaign: 'mba_pm_nov', utm_content: '', utm_term: 'online mba',
+    lead_id: 'LD-104382', lead_type: 'new', course: 'Online MBA in Product Management',
+    qualification: 'Working Professional', seconds_to_submit: 95,
+  };
+  const text = JSON.stringify(payload, null, 2);
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  document.getElementById('json').innerHTML = esc(text)
+    .replace(/"([^"]+)":/g, '<span class="k">"$1"</span>:')
+    .replace(/: "([^"]*)"/g, ': <span class="s">"$1"</span>')
+    .replace(/: (\d+)/g, ': <span class="n">$1</span>');
+  const btn = document.getElementById('copy-json');
+  btn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied ✓'; }
+    catch { btn.textContent = 'Copy failed'; }
+    setTimeout(() => (btn.textContent = 'Copy'), 1600);
+  });
+})();
+
+/* ---------- Event filter ---------- */
+(function () {
+  const input = document.getElementById('ev-search');
+  const rows = [...document.querySelectorAll('#ev-table tbody tr')];
+  const count = document.getElementById('ev-count');
+  const update = () => {
+    const q = input.value.trim().toLowerCase();
+    let n = 0;
+    rows.forEach((r) => { const show = !q || r.textContent.toLowerCase().includes(q); r.hidden = !show; if (show) n++; });
+    count.textContent = q ? `${n} of ${rows.length} events` : `${rows.length} events`;
+  };
+  input.addEventListener('input', update);
+  update();
+})();
+
+/* ---------- Lightbox ---------- */
+(function () {
+  const dlg = document.getElementById('lightbox');
+  const img = dlg.querySelector('img');
+  const cap = dlg.querySelector('p');
+  document.querySelectorAll('button.shot__img').forEach((b) => {
+    const i = b.querySelector('img');
+    b.setAttribute('aria-label', `Enlarge: ${i.alt}`);
+    b.addEventListener('click', () => {
+      img.src = i.src; img.alt = i.alt;
+      cap.textContent = b.closest('figure').querySelector('figcaption > b')?.textContent ?? '';
+      dlg.showModal();
+    });
+  });
+  dlg.querySelector('button').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+})();
+
+/* ---------- Scroll spy ---------- */
+(function () {
+  const links = [...document.querySelectorAll('.toc a, .toc-mobile a')];
+  const ids = [...new Set(links.map((a) => a.getAttribute('href').slice(1)))];
+  const targets = ids.map((id) => document.getElementById(id)).filter(Boolean);
+  let lastTop = null;
+  const setActive = (id) => {
+    // Sidebar highlights the exact (sub)section; the mobile chips highlight its parent section.
+    const top = document.getElementById(id)?.closest('section')?.id ?? id;
+    links.forEach((a) => {
+      const target = a.closest('.toc-mobile') ? top : id;
+      a.classList.toggle('active', a.getAttribute('href') === '#' + target);
+    });
+    if (top !== lastTop) {
+      lastTop = top;
+      const m = document.querySelector(`.toc-mobile a[href="#${top}"]`);
+      const bar = m?.parentElement;
+      if (m && bar && getComputedStyle(bar).display !== 'none') bar.scrollTo({ left: m.offsetLeft - 16, behavior: 'smooth' });
+    }
+  };
+  const onScroll = () => {
+    // Last heading that has scrolled past the top bar wins (headings, not whole sections, so nesting doesn't matter).
+    let current = targets[0]?.id;
+    let best = -Infinity;
+    for (const t of targets) {
+      const anchor = t.tagName === 'SECTION' ? t.querySelector('.sec-head') ?? t : t;
+      const top = anchor.getBoundingClientRect().top;
+      if (top < 150 && top > best) { best = top; current = t.id; }
+    }
+    // Only highlight top-level chips in the mobile bar
+    setActive(current);
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+<script type="module">
+/* ---------- Diagrams (Mermaid) ---------- */
+const boxes = [...document.querySelectorAll('[data-mermaid]')];
+let mermaid;
+try {
+  mermaid = (await import('https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs')).default;
+} catch {
+  boxes.forEach((b) => { b.innerHTML = '<pre class="diagram__fallback"></pre>'; b.firstChild.textContent = document.getElementById('src-' + b.dataset.mermaid).textContent.trim(); });
+}
+let n = 0;
+window.renderDiagrams = async () => {
+  if (!mermaid) return;
+  const css = getComputedStyle(document.documentElement);
+  const v = (k) => css.getPropertyValue(k).trim();
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    fontFamily: 'Inter, system-ui, sans-serif',
+    flowchart: { curve: 'basis', padding: 14 },
+    themeVariables: {
+      primaryColor: v('--accent-soft'), primaryBorderColor: v('--accent'), primaryTextColor: v('--text'),
+      lineColor: v('--faint'), textColor: v('--text'), fontSize: '14px',
+      edgeLabelBackground: v('--surface'), tertiaryColor: v('--surface-2'), background: v('--surface'),
+    },
+  });
+  for (const b of boxes) {
+    const src = document.getElementById('src-' + b.dataset.mermaid).textContent.trim();
+    try {
+      const { svg } = await mermaid.render('mmd-' + n++, src);
+      b.innerHTML = svg;
+    } catch {
+      b.innerHTML = '<pre class="diagram__fallback"></pre>';
+      b.firstChild.textContent = src;
+    }
+  }
+};
+window.renderDiagrams();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => window.renderDiagrams());
+</script>
+</body>
+</html>
