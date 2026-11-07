@@ -226,7 +226,7 @@ Everything below is set per page through one config object (exportable from the 
 | | Strip background | Brand tint · Grey · White · Solid brand · **Custom colour** |
 | **Look** | Title / subtitle | Text |
 | | Primary colour | Any colour (accents, focus, icons) |
-| | **CTA colour** | Any colour (Sign Up button; text auto black/white) |
+| | **CTA colour** | Any colour (Sign Up button; button text is always white) |
 | **Flow** | Verify phone with OTP | On (default) / Off: with Off, fields are never locked |
 | | Success screen | Proceed with application · Wait for callback |
 | **Exit intent** | Show when the form is closed | On / Off |

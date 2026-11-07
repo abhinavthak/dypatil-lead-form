@@ -344,7 +344,7 @@ export default function App() {
               <ColorField
                 label="CTA (Sign Up) colour"
                 value={config.brand.ctaColor || config.brand.primaryColor}
-                presets={['#9f1c34', '#111111', '#e8710a', '#1e9e50', '#1a5fd0', '#f5c518']}
+                presets={['#9f1c34', '#111111', '#e8710a', '#1e9e50', '#1a5fd0', '#6d28d9']}
                 onChange={(v) => set('brand.ctaColor', v)}
               />
             </Section>

@@ -6,7 +6,6 @@ import { SuccessPanel } from './SuccessPanel';
 import { ExitPanel } from './ExitPanel';
 import { CloseX } from './icons';
 import { mockApi } from './mockApi';
-import { isDark } from './color';
 import type { Device, LeadApi, LeadData, LeadFormConfig, OverlayStyle } from './types';
 
 type View = 'form' | 'exit';
@@ -16,7 +15,7 @@ const themeVars = (c: LeadFormConfig) => {
   return {
     '--lf-primary': c.brand.primaryColor,
     '--lf-cta': cta,
-    '--lf-cta-text': isDark(cta) ? '#fff' : '#111',
+    '--lf-cta-text': '#fff', // CTA text is always white
   } as CSSProperties;
 };
 
