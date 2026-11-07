@@ -335,7 +335,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <li><a href="#placements"><span>2</span>Where it appears</a>
         <ol><li><a href="#desktop">Desktop</a></li><li><a href="#mobile">Mobile</a></li></ol></li>
       <li><a href="#behaviour"><span>3</span>How it behaves</a>
-        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li><li><a href="#lead-capture">Lead capture</a></li><li><a href="#urgency">Urgency element</a></li></ol></li>
+        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li><li><a href="#lead-capture">Lead capture</a></li><li><a href="#urgency">Urgency elements</a></li></ol></li>
       <li><a href="#exit"><span>4</span>Exit intent</a></li>
       <li><a href="#config"><span>5</span>Configuration</a></li>
       <li><a href="#tracking"><span>6</span>Tracking events</a>
@@ -449,7 +449,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div><b>Validation</b> shows when the user leaves a field they've typed in (<i>Enter Valid Name</i>, <i>Enter Valid Email Id</i>). Untouched empty fields never show errors.</div></li>
         <li><div><b>Sign Up</b> stays grey until every field is valid and the phone is verified.</div></li>
         <li><div><b>Success:</b> "Thank you, {first name}!" with phone, course and a 3-step "What happens next". Two versions: <i>Proceed with My Application</i> (button) or <i>A counsellor will call you</i> (no button).</div></li>
-        <li><div>The urgency element is <b>display only</b>; it never blocks submission.</div></li>
+        <li><div>Urgency elements are <b>display only</b>; they never block submission.</div></li>
         <li><div><b>Course is pre-selected</b> from the landing page's configured course (e.g. the Product Management page opens with <i>Online MBA in Product Management</i>). Until the phone is verified it shows in <b>grey</b> (locked); after verification it turns dark and the visitor can change it from the dropdown; if no course is configured, the dropdown starts empty.</div></li>
       </ol>
 
@@ -465,8 +465,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         </li>
         <li>
           <span class="capture__n">2</span>
-          <div class="capture__when">Form closed early</div>
-          <p>Banner ✕, or overlay ✕ / click outside / Esc, before submitting (incl. "No Thanks, Close").</p>
+          <div class="capture__when">Overlay closed early</div>
+          <p>Overlay ✕ / click outside / Esc before submitting (incl. "No Thanks, Close").</p>
           <div class="capture__what"><b>Sends</b> every field filled <b>up to that point</b>: name, email, qualification, course.</div>
           <span class="capture__status">partial</span>
         </li>
@@ -486,8 +486,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div>A <code>submitted</code> lead is never downgraded to <code>partial</code> by a later close.</div></li>
       </ul>
 
-      <h3 id="urgency">Urgency element <span class="tag tag--neutral">one at a time</span></h3>
-      <p>Each form shows <b>at most one</b> urgency element. Its numbers come from either <b>manual</b> values in the config or <b>real-time</b> data from an API.</p>
+      <h3 id="urgency">Urgency elements <span class="tag tag--neutral">up to two at a time</span></h3>
+      <p>Each form shows <b>up to two</b> urgency elements together (e.g. countdown + seats filled). Once two are selected, the third can't be picked until one is turned off. <b>Each element</b> gets its numbers from either <b>manual</b> values in the config or <b>real-time</b> data from an API, chosen separately.</p>
       <div class="urg-grid">
         <div class="urg">
           <div class="urg__demo"><span class="demo-pill"><span class="demo-av"></span><b>146</b>&nbsp;learners requested a callback today<span class="demo-live"></span></span></div>
@@ -506,7 +506,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         </div>
       </div>
       <ul class="rules rules--bullets">
-        <li><div>Options: <b>None · Social proof · Countdown · Seats filled</b>. Picking one replaces the other.</div></li>
+        <li><div>Pick any <b>two</b> of <b>Social proof · Countdown · Seats filled</b> (or none). Social proof sits under the title; countdown and seats share the pink band.</div></li>
         <li><div><b>Real-time</b> values refresh every N seconds (default 30) and show a small pulsing green <b>live dot</b>.</div></li>
         <li><div>If the API fails or is slow, the form shows the <b>manual values as a fallback</b>, so a real-time element still needs them.</div></li>
         <li><div>The countdown ticks every second either way; real-time only changes where the deadline comes from.</div></li>
@@ -516,25 +516,12 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
     <!-- 4 -->
     <section id="exit">
       <div class="sec-head"><span class="sec-num">04</span><h2>Exit intent</h2></div>
-      <p class="intro">Shown <b>only when someone tries to close the form</b> before submitting, on both the <b>banner form</b> and <b>overlays</b>, <b>every time</b> they try.</p>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Form</th><th>How it's closed</th><th>Where the exit screen appears</th></tr></thead>
-        <tbody>
-          <tr><td><b>Banner</b></td><td>✕ in the card's top-right corner</td><td>Inside the banner card, replacing the form</td></tr>
-          <tr><td><b>Overlay</b></td><td>✕, clicking outside, or Esc</td><td>Inside the popup / sidebar / drawer</td></tr>
-        </tbody>
-      </table></div>
+      <p class="intro">Shown <b>only when someone tries to close the form overlay</b> before submitting (✕, clicking outside, or Esc), <b>every time</b> they try. It appears inside the popup / sidebar / drawer, replacing the form.</p>
       <div class="callout callout--warn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/></svg>
-        <p>Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking.</p>
+        <p>The inline banner form has <b>no close button</b>, so it never shows exit intent. Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking.</p>
       </div>
       <div class="diagram" data-mermaid="exit"></div>
-      <h4>Banner form</h4>
-      <div class="gallery g-2">
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/banner-close.jpg" width="1254" height="586" alt="Banner form with a close button in the top-right corner" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1</span><b>Banner with ✕</b>Close button in the card's top-right corner.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/banner-exit.jpg" width="1254" height="586" alt="Exit screen shown inside the banner card" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2</span><b>Exit screen in the banner</b>Replaces the form inside the card. "No Thanks, Close" hides the banner.</figcaption></figure>
-      </div>
-      <h4>Overlays</h4>
       <div class="gallery" style="grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr)">
         <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/exit-intent.jpg" width="1019" height="578" alt="Desktop exit-intent screen in a popup" loading="lazy" decoding="async"></button><figcaption><span class="tag tag--desktop">Desktop</span><br>Replaces the form inside the popup / sidebar.</figcaption></figure>
         <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-exit-intent.jpg" width="360" height="744" alt="Mobile exit-intent screen in a bottom drawer" loading="lazy" decoding="async"></button><figcaption><span class="tag tag--mobile">Mobile</span><br>Replaces the form inside the drawer / popup.</figcaption></figure>
@@ -544,8 +531,6 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div><b>No ✕ on the exit screen</b>; clicking outside or pressing Esc does nothing. Only <b>Continue to Get a Call back</b> or <b>No Thanks, Close</b> leave it.</div></li>
         <li><div>If the visitor has started, show progress: "Your details · 2 of 5 done".</div></li>
         <li><div>Never shown after a successful submit; closing the success screen just closes.</div></li>
-        <li><div><b>Banner closed</b> ("No Thanks, Close"): the banner card is hidden. <b>Download Brochure</b> / <b>Apply Now</b> bring the form back (the overlay if one is configured, otherwise the banner reappears).</div></li>
-        <li><div>The banner ✕ can be turned off in the config; then the banner can't be closed and never shows exit intent.</div></li>
       </ul>
     </section>
 
@@ -557,14 +542,13 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <thead><tr><th>Area</th><th>Control</th><th>Options</th></tr></thead>
         <tbody>
           <tr><td class="area" rowspan="7">Placement</td><td>Banner (inline hero form)</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
-          <tr><td>Banner close button (✕)</td><td><div class="opts"><span class="opt is-new">On (default)</span><span class="opt">Off</span></div></td></tr>
           <tr><td>Banner form image</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt is-new">Upload</span><span class="opt">URL</span></div></td></tr>
           <tr><td><span class="tag tag--desktop">Desktop</span> overlay</td><td><div class="opts"><span class="opt">None</span><span class="opt">Popup</span><span class="opt">Popup + side image</span><span class="opt">Popup + top image</span><span class="opt">Sidebar</span><span class="opt">Sidebar + top image</span></div></td></tr>
           <tr><td><span class="tag tag--mobile">Mobile</span> overlay <span style="color:var(--faint)">(independent)</span></td><td><div class="opts"><span class="opt">None</span><span class="opt">Bottom drawer</span><span class="opt">Bottom drawer + top image</span><span class="opt">Popup</span></div></td></tr>
           <tr><td>Open overlay</td><td><div class="opts"><span class="opt">On load</span><span class="opt">After N s (3)</span><span class="opt">After N% scroll (40)</span><span class="opt">Only on CTA click</span></div></td></tr>
           <tr><td>Side / top promo image</td><td><div class="opts"><span class="opt is-new">Upload</span><span class="opt">URL</span></div></td></tr>
-          <tr><td class="area" rowspan="4">Urgency</td><td>Urgency element <span style="color:var(--faint)">(one at a time)</span></td><td><div class="opts"><span class="opt">None</span><span class="opt">Social proof</span><span class="opt">Countdown</span><span class="opt">Seats filled</span></div></td></tr>
-          <tr><td>Data source</td><td><div class="opts"><span class="opt is-new">Manual</span><span class="opt is-new">Real-time (API)</span></div></td></tr>
+          <tr><td class="area" rowspan="4">Urgency</td><td>Urgency elements <span style="color:var(--faint)">(up to two)</span></td><td><div class="opts"><span class="opt">Social proof</span><span class="opt">Countdown</span><span class="opt">Seats filled</span><span class="opt is-new">Any two, or none</span></div></td></tr>
+          <tr><td>Data source <span style="color:var(--faint)">(per element)</span></td><td><div class="opts"><span class="opt is-new">Manual</span><span class="opt is-new">Real-time (API)</span></div></td></tr>
           <tr><td>Refresh interval</td><td><div class="opts"><span class="opt">Seconds (30), real-time only</span></div></td></tr>
           <tr><td>Manual values / fallback</td><td><div class="opts"><span class="opt">Count (146)</span><span class="opt">Deadline</span><span class="opt">% (82) + batch</span></div></td></tr>
           <tr><td class="area" rowspan="3">Trust</td><td>Trust strip</td><td><div class="opts"><span class="opt">On / Off</span></div></td></tr>
@@ -619,7 +603,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>form_phone_edited</code></td><td>"Edit" on the number</td><td>n/a</td></tr>
           <tr><td><code>form_existing_lead</code></td><td>Lookup found a past lead</td><td><code>fields_prefilled</code></td></tr>
           <tr><td><code>form_field_error</code></td><td>Validation error shown</td><td><code>field</code> <code>error</code></td></tr>
-          <tr><td><code>form_lead_captured</code></td><td>Lead created or updated in the CRM (phone verified · form closed early)</td><td><code>lead_id</code> <code>lead_stage</code> <code>fields_sent</code></td></tr>
+          <tr><td><code>form_lead_captured</code></td><td>Lead created or updated in the CRM (phone verified · overlay closed early)</td><td><code>lead_id</code> <code>lead_stage</code> <code>fields_sent</code></td></tr>
           <tr><td><code>form_submit_clicked</code></td><td>Sign Up clicked</td><td><code>fields_complete</code></td></tr>
           <tr class="is-main"><td><code>form_submitted</code></td><td>Lead saved ✅ <b>main conversion</b></td><td><code>lead_id</code> <code>lead_type</code> <code>course</code> <code>course_changed</code> <code>qualification</code> <code>seconds_to_submit</code></td></tr>
           <tr><td><code>form_submit_failed</code></td><td>Submit API returned an error</td><td><code>error_code</code></td></tr>
@@ -645,8 +629,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>referrer</code></td><td>string</td><td><code>"https://www.google.com/"</code></td><td>Previous page</td></tr>
           <tr><td><code>device</code></td><td>enum</td><td><code>desktop</code> <code>mobile</code></td><td>Screen &lt; 760px = mobile</td></tr>
           <tr><td><code>placement</code></td><td>enum</td><td><code>banner</code> <code>overlay</code></td><td>Which form surface fired it</td></tr>
-          <tr><td><code>urgency_type</code></td><td>enum</td><td><div class="opts"><code>none</code><code>social_proof</code><code>countdown</code><code>seats</code></div></td><td>Urgency element shown</td></tr>
-          <tr><td><code>urgency_source</code></td><td>enum</td><td><div class="opts"><code>manual</code><code>live</code></div></td><td>Where its data came from (<code>manual</code> also when live fell back)</td></tr>
+          <tr><td><code>urgency_types</code></td><td>array of enum</td><td><code>["countdown","seats"]</code> (0–2 of <code>social_proof</code> · <code>countdown</code> · <code>seats</code>)</td><td>Urgency elements shown</td></tr>
+          <tr><td><code>urgency_live</code></td><td>array of enum</td><td><code>["seats"]</code></td><td>Elements showing real-time data (a live element that fell back to manual is not listed)</td></tr>
           <tr><td><code>layout</code></td><td>enum</td><td><div class="opts"><code>banner</code><code>popup</code><code>popup-side-image</code><code>popup-top-image</code><code>sidebar</code><code>sidebar-top-image</code><code>bottom-drawer</code><code>bottom-drawer-top-image</code><code>mobile-popup</code></div></td><td>Visual style shown</td></tr>
           <tr><td><div class="opts"><code>utm_source</code><code>utm_medium</code><code>utm_campaign</code><code>utm_content</code><code>utm_term</code></div></td><td>string</td><td><code>"google"</code>, <code>"cpc"</code> …</td><td>Campaign tags from the landing URL (empty if absent)</td></tr>
         </tbody>
@@ -669,7 +653,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>fields_prefilled</code></td><td>array of enum</td><td><code>["name","email","qualification"]</code></td><td>existing_lead</td><td>Fields we filled for them</td></tr>
           <tr><td><code>fields_complete</code></td><td>integer 0–5</td><td><code>5</code></td><td>submit_clicked</td><td>Valid fields at click time</td></tr>
           <tr><td><code>progress</code></td><td>integer 0–5</td><td><code>2</code></td><td>exit_*</td><td>Fields done when exit screen shows</td></tr>
-          <tr><td><code>exit_trigger</code></td><td>enum</td><td><div class="opts"><code>close_button</code><code>outside_click</code><code>esc_key</code></div></td><td>exit_*</td><td>How the visitor tried to close (banner: always <code>close_button</code>)</td></tr>
+          <tr><td><code>exit_trigger</code></td><td>enum</td><td><div class="opts"><code>close_button</code><code>outside_click</code><code>esc_key</code></div></td><td>exit_*</td><td>How the visitor tried to close the overlay</td></tr>
           <tr><td><code>lead_id</code></td><td>string</td><td><code>"LD-104382"</code></td><td>lead_captured, submitted, success_cta_clicked</td><td>CRM lead ID, returned when the phone is verified</td></tr>
           <tr><td><code>lead_stage</code></td><td>enum</td><td><div class="opts"><code>phone_verified</code><code>partial</code></div></td><td>lead_captured</td><td>Which capture point fired</td></tr>
           <tr><td><code>fields_sent</code></td><td>array of enum</td><td><code>["name","email"]</code></td><td>lead_captured</td><td>Fields included in that update</td></tr>
@@ -716,10 +700,10 @@ flowchart TD
 </script>
 <script type="text/plain" id="src-exit">
 flowchart LR
-    A[Banner or overlay form open<br/>not submitted] -->|✕ · overlay also: click outside / Esc| B[Exit screen]
+    A[Overlay form open<br/>not submitted] -->|✕ / click outside / Esc| B[Exit screen]
     B -->|Continue to Get a Call back| C[Back to the form]
     C -->|tries to close again| B
-    B -->|No Thanks, Close| D[Form closed]
+    B -->|No Thanks, Close| D[Overlay closed]
 </script>
 
 <script>
@@ -744,6 +728,7 @@ flowchart LR
     session_id: 's_8d2a41', form_id: 'dyp-mba-pm-hero', variant: 'default', university: 'DY Patil University',
     program: 'Online MBA in Product Management', page_url: 'https://example.com/online-mba-product-management',
     referrer: 'https://www.google.com/', device: 'mobile', placement: 'overlay', layout: 'bottom-drawer',
+    urgency_types: ['countdown', 'seats'], urgency_live: ['seats'],
     utm_source: 'google', utm_medium: 'cpc', utm_campaign: 'mba_pm_nov', utm_content: '', utm_term: 'online mba',
     lead_id: 'LD-104382', lead_type: 'new', course: 'Online MBA in Product Management',
     qualification: 'Working Professional', seconds_to_submit: 95,

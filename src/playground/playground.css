@@ -67,6 +67,10 @@ body { font-family: 'Poppins', system-ui, sans-serif; background: var(--pg-bg); 
 .pg-badge__btn { width: 28px; height: 28px; flex-shrink: 0; border: 1px solid var(--pg-line); border-radius: 6px; background: #fff; cursor: pointer; font-size: 12px; color: var(--pg-muted); }
 .pg-badge__btn:hover { border-color: #bdbdc5; color: var(--pg-text); }
 .pg-add { align-self: flex-start; margin-top: 4px; border: 1px dashed #bdbdc5; background: #fff; border-radius: 7px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+.pg-check { display: flex; align-items: center; gap: 8px; font-size: 12.5px; cursor: pointer; }
+.pg-check input { width: 16px; height: 16px; accent-color: var(--pg-accent); margin: 0; }
+.pg-badge.is-disabled { opacity: .5; }
+.pg-badge.is-disabled .pg-check { cursor: not-allowed; }
 .pg-toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12.5px; cursor: pointer; }
 .pg-toggle input { position: absolute; opacity: 0; pointer-events: none; }
 .pg-toggle i { width: 32px; height: 18px; border-radius: 999px; background: #cfcfd6; position: relative; flex-shrink: 0; transition: background .15s; }

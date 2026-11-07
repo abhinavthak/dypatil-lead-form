@@ -122,7 +122,7 @@ After a correct OTP we check whether this number is already a lead. That decides
 5. **Sign Up** stays grey until every field is valid and the phone is verified.
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
-7. The urgency element is **display only**; it never blocks submission.
+7. Urgency elements are **display only**; they never block submission.
 8. **Course is pre-selected** from the landing page's configured course (e.g. the Product Management page opens with *Online MBA in Product Management*). Until the phone is verified it shows in **grey** (locked); after verification it turns dark and the visitor can change it from the dropdown; if no course is configured, the dropdown starts empty.
 
 ### Lead capture: when details are sent to the CRM
@@ -133,13 +133,13 @@ filled forms are not lost. All three calls update the **same lead** (matched by 
 | # | When | What we send | Lead status |
 | --- | --- | --- | --- |
 | 1 | **Phone verified** (correct OTP) | Phone + pre-selected course + page context (university, program, form, device, placement, UTMs). For an existing lead, their record is reused | `phone_verified` |
-| 2 | **User closes the form** before submitting: banner ✕, or overlay ✕ / click outside / Esc (incl. "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
+| 2 | **User closes the overlay** before submitting: ✕ / click outside / Esc (incl. "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
 | 3 | **User clicks Sign Up** (always) | All fields | `submitted` |
 
 ```mermaid
 flowchart LR
     A[OTP verified] -->|1 create lead| CRM[(CRM lead)]
-    B[Form closed early] -->|2 update with fields so far| CRM
+    B[Overlay closed early] -->|2 update with fields so far| CRM
     C[Sign Up clicked] -->|3 final update| CRM
 ```
 
@@ -152,14 +152,14 @@ flowchart LR
 - Step 3 is required and must succeed: if the submit call fails, show an error and keep the form open with **Retry**.
 - A lead marked `submitted` is never downgraded back to `partial` by a later close.
 
-### Urgency element (one at a time)
+### Urgency elements (up to two at a time)
 
-Each form shows **at most one** urgency element. Its numbers come from either **manual** values set in the config
-or **real-time** data from an API.
+Each form shows **up to two** urgency elements together (e.g. countdown + seats filled). Once two are selected, the
+third can't be picked until one is turned off. **Each element** gets its numbers from either **manual** values in the
+config or **real-time** data from an API, chosen separately (e.g. countdown manual, seats real-time).
 
 | Element | Shows | Manual data | Real-time data (API returns) |
 | --- | --- | --- | --- |
-| **None** | n/a | n/a | n/a |
 | **Social proof** | "146 learners requested a callback today" pill under the title | Count | `count`: callbacks today |
 | **Countdown** | "Admissions close on 9th Nov'26" + live d / h / m / s timer | Deadline date & time | `deadline` (ISO date-time) |
 | **Seats filled** | Red progress bar "82% Seat Filled for October Batch" | % filled · batch name | `percent`, `batch` |
@@ -172,27 +172,23 @@ or **real-time** data from an API.
 
 ## 4. Exit intent
 
-Shown **only when someone tries to close the form** before submitting, on both the **banner form** and **overlays**.
-It shows **every time** they try to close (not just once).
+Shown **only when someone tries to close the form overlay** before submitting (✕, clicking outside, or Esc). It shows
+**every time** they try to close (not just once). It appears inside the popup / sidebar / drawer, replacing the form.
 
-| Form | How it's closed | Where the exit screen appears |
-| --- | --- | --- |
-| **Banner** | ✕ in the card's top-right corner | Inside the banner card, replacing the form |
-| **Overlay** | ✕, clicking outside, or Esc | Inside the popup / sidebar / drawer |
-
-Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking.
+The inline banner form has **no close button**, so it never shows exit intent. Nothing else triggers it: no
+cursor-leave detection, no back-button or tab tracking.
 
 ```mermaid
 flowchart LR
-    A[Banner or overlay form open<br/>not submitted] -->|✕ · overlay also: click outside / Esc| B[Exit screen]
+    A[Overlay form open<br/>not submitted] -->|✕ / click outside / Esc| B[Exit screen]
     B -->|Continue to Get a Call back| C[Back to the form]
     C -->|tries to close again| B
-    B -->|No Thanks, Close| D[Form closed]
+    B -->|No Thanks, Close| D[Overlay closed]
 ```
 
-| Banner form with ✕ | Banner: exit screen | Overlay: exit screen (desktop) | Overlay: exit screen (mobile) |
-| --- | --- | --- | --- |
-| <img src="images/banner-close.png" width="300"> | <img src="images/banner-exit.png" width="300"> | <img src="images/exit-intent.png" width="300"> | <img src="images/mobile-exit-intent.png" width="130"> |
+| Desktop | Mobile |
+| --- | --- |
+| <img src="images/exit-intent.png" width="420"> | <img src="images/mobile-exit-intent.png" width="170"> |
 
 **Rules**
 
@@ -200,9 +196,6 @@ flowchart LR
   Only **Continue to Get a Call back** or **No Thanks, Close** leave it.
 - If the visitor has started, show progress: "Your details · 2 of 5 done".
 - Never shown after a successful submit (closing the success screen just closes).
-- **Banner closed** ("No Thanks, Close"): the banner card is hidden. **Download Brochure** / **Apply Now** bring the
-  form back (the overlay if one is configured, otherwise the banner reappears).
-- The banner ✕ can be turned off in the config; then the banner can't be closed and never shows exit intent.
 
 ---
 
@@ -213,14 +206,13 @@ Everything below is set per page through one config object (exportable from the 
 | Area | Control | Options / default |
 | --- | --- | --- |
 | **Placement** | Banner (inline hero form) | On / Off |
-| | Banner close button (✕) | On (default) / Off |
 | | Banner form image | On / Off · **upload** an image (or URL) |
 | | **Desktop** overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |
 | | Side / top promo image | **Upload** an image (or set an image URL) |
-| **Urgency** | Urgency element (**one at a time**) | None · Social proof · Countdown · Seats filled |
-| | Data source | **Manual** · **Real-time** (API) |
+| **Urgency** | Urgency elements (**up to two**) | Any two of: Social proof · Countdown · Seats filled (or none) |
+| | Data source, **per element** | **Manual** · **Real-time** (API) |
 | | Refresh interval (real-time) | Seconds (30) |
 | | Manual values / fallback | Count (146) · deadline · % (82) + batch name |
 | **Trust** | Trust strip | On / Off |
@@ -263,7 +255,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `form_phone_edited` | "Edit" on the number | n/a |
 | `form_existing_lead` | Lookup found a past lead | `fields_prefilled` |
 | `form_field_error` | Validation error shown | `field`, `error` |
-| `form_lead_captured` | Lead created or updated in the CRM (phone verified · form closed early) | `lead_id`, `lead_stage`, `fields_sent` |
+| `form_lead_captured` | Lead created or updated in the CRM (phone verified · overlay closed early) | `lead_id`, `lead_stage`, `fields_sent` |
 | `form_submit_clicked` | Sign Up clicked | `fields_complete` |
 | `form_submitted` | Lead saved ✅ (**main conversion**) | `lead_id`, `lead_type`, `course`, `course_changed`, `qualification`, `seconds_to_submit` |
 | `form_submit_failed` | Submit API returned an error | `error_code` |
@@ -289,8 +281,8 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `referrer` | string | `"https://www.google.com/"` | Previous page |
 | `device` | enum | `desktop` · `mobile` | Screen < 760px = mobile |
 | `placement` | enum | `banner` · `overlay` | Which form surface fired it |
-| `urgency_type` | enum | `none` · `social_proof` · `countdown` · `seats` | Urgency element shown |
-| `urgency_source` | enum | `manual` · `live` | Where its data came from (`manual` also when live fell back) |
+| `urgency_types` | array of enum | `["countdown","seats"]` (0–2 of `social_proof` · `countdown` · `seats`) | Urgency elements shown |
+| `urgency_live` | array of enum | `["seats"]` | Elements showing real-time data (a live element that fell back to manual is not listed) |
 | `layout` | enum | `popup` · `popup-side-image` · `popup-top-image` · `sidebar` · `sidebar-top-image` · `bottom-drawer` · `bottom-drawer-top-image` · `mobile-popup` · `banner` | Visual style shown |
 | `utm_source` · `utm_medium` · `utm_campaign` · `utm_content` · `utm_term` | string | `"google"`, `"cpc"` … | Campaign tags from the landing URL (empty if absent) |
 
@@ -311,7 +303,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `fields_prefilled` | array of enum | `["name","email","qualification"]` | existing_lead | Fields we filled for them |
 | `fields_complete` | integer 0–5 | `5` | submit_clicked | Valid fields at click time |
 | `progress` | integer 0–5 | `2` | exit_* | Fields done when exit screen shows |
-| `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the form (banner: always `close_button`) |
+| `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the overlay |
 | `lead_id` | string | `"LD-104382"` | lead_captured, submitted, success_cta_clicked | CRM lead ID, returned when the phone is verified |
 | `lead_stage` | enum | `phone_verified` · `partial` | lead_captured | Which capture point fired |
 | `fields_sent` | array of enum | `["name","email"]` | lead_captured | Fields included in that update |
@@ -338,6 +330,8 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
   "device": "mobile",
   "placement": "overlay",
   "layout": "bottom-drawer",
+  "urgency_types": ["countdown", "seats"],
+  "urgency_live": ["seats"],
   "utm_source": "google",
   "utm_medium": "cpc",
   "utm_campaign": "mba_pm_nov",

@@ -1,8 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { LeadExperience, defaultConfig, useLeadOverlay } from '../lead-form';
-import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustBadge, TrustStyle, UrgencyType } from '../lead-form';
+import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustBadge, TrustStyle, UrgencyElement, UrgencySource } from '../lead-form';
 import { DesktopPage, MobilePage } from './Pages';
+import { MAX_URGENCY } from '../lead-form/types';
 import { assets } from '../lead-form/defaults';
 import { trustIconNames, trustIcons } from '../lead-form/icons';
 
@@ -34,7 +35,7 @@ function loadConfig(): LeadFormConfig {
       // Keep the countdown live: a saved past deadline falls back to the design default.
       if (new Date(saved.urgency.countdown.deadline).getTime() < Date.now()) saved.urgency.countdown.deadline = defaultConfig.urgency.countdown.deadline;
       if (!saved.trust?.style) saved.trust = defaultConfig.trust;
-      if (!saved.urgency?.type) saved.urgency = defaultConfig.urgency;
+      if (!Array.isArray(saved.urgency?.types)) saved.urgency = defaultConfig.urgency;
       saved.banner = { ...defaultConfig.banner, ...saved.banner };
       saved.fields = { ...defaultConfig.fields, ...saved.fields };
       saved.brand = { ...defaultConfig.brand, ...saved.brand };
@@ -122,7 +123,6 @@ export default function App() {
     setTimeout(() => el?.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true }), 400);
   };
 
-  const u = config.urgency;
   const restart = () => setRunId((n) => n + 1);
 
   return (
@@ -150,9 +150,6 @@ export default function App() {
           <aside className="pg-panel">
             <Section title="Placement">
               <Toggle label="Banner (inline hero form)" checked={config.banner.enabled} onChange={(v) => set('banner.enabled', v)} />
-              {config.banner.enabled && (
-                <Toggle label="Close button on banner form" checked={config.banner.closable} onChange={(v) => set('banner.closable', v)} />
-              )}
               {config.banner.enabled && (
                 <Toggle label="Image at top of banner form" checked={config.banner.showImage} onChange={(v) => set('banner.showImage', v)} />
               )}
@@ -203,54 +200,7 @@ export default function App() {
             </Section>
 
             <Section title="Urgency & trust">
-              <Select<UrgencyType>
-                label="Urgency element (one at a time)"
-                value={u.type}
-                options={[
-                  ['none', 'None'],
-                  ['social-proof', 'Social proof (callbacks today)'],
-                  ['countdown', 'Countdown to deadline'],
-                  ['seats', 'Seats filled bar'],
-                ]}
-                onChange={(v) => set('urgency.type', v)}
-              />
-              {u.type !== 'none' && (
-                <div className="pg-field">
-                  <span>Data</span>
-                  <div className="pg-seg pg-seg--full" role="radiogroup" aria-label="Urgency data source">
-                    {(['manual', 'live'] as const).map((src) => (
-                      <button key={src} type="button" role="radio" aria-checked={u.source === src} className={u.source === src ? 'on' : ''} onClick={() => set('urgency.source', src)}>
-                        {src === 'manual' ? 'Manual' : 'Real-time'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {u.type !== 'none' && u.source === 'live' && (
-                <>
-                  <Num label="Refresh every (s)" value={u.refreshSeconds} min={10} max={600} onChange={(v) => set('urgency.refreshSeconds', v)} />
-                  <p className="pg-small">Fetched from the urgency API (mocked here; values drift up). The manual values below are the fallback if the API fails.</p>
-                </>
-              )}
-              {u.type === 'social-proof' && (
-                <Num label={u.source === 'live' ? 'Fallback count' : 'Callbacks today'} value={u.socialProof.count} min={0} max={9999} onChange={(v) => set('urgency.socialProof.count', v)} />
-              )}
-              {u.type === 'countdown' && (
-                <label className="pg-field">
-                  <span>{u.source === 'live' ? 'Fallback deadline' : 'Admissions close'}</span>
-                  <input
-                    type="datetime-local"
-                    value={toLocalInput(u.countdown.deadline)}
-                    onChange={(e) => e.target.value && set('urgency.countdown.deadline', new Date(e.target.value).toISOString())}
-                  />
-                </label>
-              )}
-              {u.type === 'seats' && (
-                <>
-                  <Num label={u.source === 'live' ? 'Fallback seats filled (%)' : 'Seats filled (%)'} value={u.seats.percent} min={0} max={100} onChange={(v) => set('urgency.seats.percent', v)} />
-                  <Text label="Batch" value={u.seats.batch} onChange={(v) => set('urgency.seats.batch', v)} />
-                </>
-              )}
+              <UrgencyEditor config={config} set={set} />
               <Toggle label="Trust badges strip" checked={config.trust.enabled} onChange={(v) => set('trust.enabled', v)} />
               {config.trust.enabled && (
                 <Select<TrustStyle>
@@ -432,6 +382,74 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
+const URGENCY: { type: UrgencyElement; key: 'socialProof' | 'countdown' | 'seats'; label: string }[] = [
+  { type: 'social-proof', key: 'socialProof', label: 'Social proof (callbacks today)' },
+  { type: 'countdown', key: 'countdown', label: 'Countdown to deadline' },
+  { type: 'seats', key: 'seats', label: 'Seats filled bar' },
+];
+
+function UrgencyEditor({ config, set }: { config: LeadFormConfig; set(path: string, value: unknown): void }) {
+  const u = config.urgency;
+  const full = u.types.length >= MAX_URGENCY;
+  const toggle = (t: UrgencyElement, on: boolean) =>
+    set('urgency.types', on ? [...u.types, t].slice(0, MAX_URGENCY) : u.types.filter((x) => x !== t));
+  const anyLive = u.types.some((t) => u[URGENCY.find((x) => x.type === t)!.key].source === 'live');
+  return (
+    <div className="pg-field">
+      <span>Urgency elements (up to {MAX_URGENCY})</span>
+      <div className="pg-badges">
+        {URGENCY.map(({ type, key, label }) => {
+          const on = u.types.includes(type);
+          const disabled = !on && full;
+          const src = u[key].source;
+          const fallback = src === 'live' ? 'Fallback ' : '';
+          return (
+            <div key={type} className={`pg-badge${disabled ? ' is-disabled' : ''}`}>
+              <label className="pg-check" title={disabled ? `Only ${MAX_URGENCY} can be shown at a time. Turn one off first.` : undefined}>
+                <input type="checkbox" checked={on} disabled={disabled} onChange={(e) => toggle(type, e.target.checked)} />
+                <span>{label}</span>
+              </label>
+              {on && (
+                <>
+                  <div className="pg-seg pg-seg--full" role="radiogroup" aria-label={`${label} data source`}>
+                    {(['manual', 'live'] as UrgencySource[]).map((s) => (
+                      <button key={s} type="button" role="radio" aria-checked={src === s} className={src === s ? 'on' : ''} onClick={() => set(`urgency.${key}.source`, s)}>
+                        {s === 'manual' ? 'Manual' : 'Real-time'}
+                      </button>
+                    ))}
+                  </div>
+                  {type === 'social-proof' && (
+                    <Num label={`${fallback}Callbacks today`} value={u.socialProof.count} min={0} max={9999} onChange={(v) => set('urgency.socialProof.count', v)} />
+                  )}
+                  {type === 'countdown' && (
+                    <label className="pg-field">
+                      <span>{fallback ? 'Fallback deadline' : 'Admissions close'}</span>
+                      <input type="datetime-local" value={toLocalInput(u.countdown.deadline)} onChange={(e) => e.target.value && set('urgency.countdown.deadline', new Date(e.target.value).toISOString())} />
+                    </label>
+                  )}
+                  {type === 'seats' && (
+                    <>
+                      <Num label={`${fallback}Seats filled (%)`} value={u.seats.percent} min={0} max={100} onChange={(v) => set('urgency.seats.percent', v)} />
+                      <Text label="Batch" value={u.seats.batch} onChange={(v) => set('urgency.seats.batch', v)} />
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {full && <p className="pg-small">{MAX_URGENCY} selected, the maximum. Turn one off to pick another.</p>}
+      {anyLive && (
+        <>
+          <Num label="Real-time refresh (s)" value={u.refreshSeconds} min={10} max={600} onChange={(v) => set('urgency.refreshSeconds', v)} />
+          <p className="pg-small">Real-time values come from the urgency API (mocked; values drift up). Manual values are the fallback if it fails.</p>
+        </>
+      )}
+    </div>
+  );
+}
+
 function TrustEditor({ badges, onChange }: { badges: TrustBadge[]; onChange(b: TrustBadge[]): void }) {
   const fileRefs = useRef<(HTMLInputElement | null)[]>([]);
   const update = (i: number, patch: Partial<TrustBadge>) => onChange(badges.map((b, j) => (j === i ? { ...b, ...patch } : b)));

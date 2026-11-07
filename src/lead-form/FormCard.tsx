@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import type { UrgencyLive } from './types';
+import { MAX_URGENCY } from './types';
+import type { UrgencyElement, UrgencyLive } from './types';
 import { isDark } from './color';
 import type { ClipboardEvent, KeyboardEvent } from 'react';
 import { formatPhone, useLeadFlow } from './LeadFlow';
@@ -30,35 +31,49 @@ function Countdown({ deadline }: { deadline: string }) {
   );
 }
 
-/** Resolves the single urgency element's values: manual config, or live API data (manual as fallback). */
-function useUrgency() {
+const urgencyKey = { 'social-proof': 'socialProof', countdown: 'countdown', seats: 'seats' } as const;
+
+/** Polls the API for one element when it is shown and set to real-time. */
+function useLiveUrgency(type: UrgencyElement, on: boolean) {
   const { config, api } = useLeadFlow();
-  const u = config.urgency;
   const [live, setLive] = useState<UrgencyLive | null>(null);
+  const seconds = config.urgency.refreshSeconds;
   useEffect(() => {
     setLive(null);
-    if (u.source !== 'live' || u.type === 'none') return;
+    if (!on) return;
     let alive = true;
-    const type = u.type;
     const load = () =>
       api.getUrgency(type).then(
         (v) => alive && setLive(v),
         () => {}, // keep last value / manual fallback
       );
     load();
-    const id = setInterval(load, Math.max(10, u.refreshSeconds) * 1000);
+    const id = setInterval(load, Math.max(10, seconds) * 1000);
     return () => {
       alive = false;
       clearInterval(id);
     };
-  }, [api, u.source, u.type, u.refreshSeconds]);
+  }, [api, type, on, seconds]);
+  return live;
+}
+
+/** Resolves the (up to two) urgency elements: manual config, or live API data with manual as fallback. */
+function useUrgency() {
+  const { config } = useLeadFlow();
+  const u = config.urgency;
+  const shown = (t: UrgencyElement) => u.types.slice(0, MAX_URGENCY).includes(t);
+  const isLive = (t: UrgencyElement) => shown(t) && u[urgencyKey[t]].source === 'live';
+  const proof = useLiveUrgency('social-proof', isLive('social-proof'));
+  const cd = useLiveUrgency('countdown', isLive('countdown'));
+  const seats = useLiveUrgency('seats', isLive('seats'));
   return {
-    type: u.type,
-    isLive: u.source === 'live' && !!live,
-    count: live?.count ?? u.socialProof.count,
-    deadline: live?.deadline ?? u.countdown.deadline,
-    percent: live?.percent ?? u.seats.percent,
-    batch: live?.batch ?? u.seats.batch,
+    shown,
+    proofLive: isLive('social-proof') && !!proof,
+    seatsLive: isLive('seats') && !!seats,
+    count: proof?.count ?? u.socialProof.count,
+    deadline: cd?.deadline ?? u.countdown.deadline,
+    percent: seats?.percent ?? u.seats.percent,
+    batch: seats?.batch ?? u.seats.batch,
   };
 }
 
@@ -73,19 +88,19 @@ export function FormHeader() {
       <div className="lf-head">
         <h2 className="lf-title">{config.brand.title}</h2>
         <p className="lf-sub">{config.brand.subtitle}</p>
-        {u.type === 'social-proof' && (
+        {u.shown('social-proof') && (
           <div className="lf-proof">
             <img src={socialProof.avatars} alt="" />
             <span>
               <b>{u.count}</b> {socialProof.text}
             </span>
-            {u.isLive && <LiveDot />}
+            {u.proofLive && <LiveDot />}
           </div>
         )}
       </div>
-      {(u.type === 'countdown' || u.type === 'seats') && (
+      {(u.shown('countdown') || u.shown('seats')) && (
         <div className="lf-urgency">
-          {u.type === 'countdown' && (
+          {u.shown('countdown') && (
             <div className="lf-urgency__row">
               <span className="lf-urgency__label">
                 {countdown.label} <b>{formatDeadline(u.deadline)}</b>
@@ -93,7 +108,7 @@ export function FormHeader() {
               <Countdown deadline={u.deadline} />
             </div>
           )}
-          {u.type === 'seats' && (
+          {u.shown('seats') && (
             <div className="lf-seats">
               <div className="lf-seats__fill" style={{ width: `${Math.min(100, Math.max(0, u.percent))}%` }} />
               <span className="lf-seats__text">
@@ -101,7 +116,7 @@ export function FormHeader() {
                 <span>
                   <b>{u.percent}% Seat Filled</b> for {u.batch}
                 </span>
-                {u.isLive && <LiveDot />}
+                {u.seatsLive && <LiveDot />}
               </span>
             </div>
           )}

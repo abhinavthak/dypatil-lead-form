@@ -14,7 +14,10 @@ export type OverlayStyle =
 
 export type OverlayTrigger = 'load' | 'delay' | 'scroll' | 'manual';
 
-export type UrgencyType = 'none' | 'social-proof' | 'countdown' | 'seats';
+export type UrgencyElement = 'social-proof' | 'countdown' | 'seats';
+export type UrgencySource = 'manual' | 'live';
+/** At most this many urgency elements can be shown at once. */
+export const MAX_URGENCY = 2;
 
 /** Live urgency values returned by the API. Only the field for the requested type is needed. */
 export interface UrgencyLive {
@@ -46,8 +49,6 @@ export interface LeadFormConfig {
   banner: {
     /** Show the inline form inside the hero banner. */
     enabled: boolean;
-    /** Show a ✕ on the banner form. Closing it (before submit) shows the exit screen inside the card. */
-    closable: boolean;
     /** Promo image across the top of the banner form card. */
     showImage: boolean;
     image: string;
@@ -62,15 +63,14 @@ export interface LeadFormConfig {
     topImage: string;
   };
   urgency: {
-    /** Only one urgency element is shown at a time. */
-    type: UrgencyType;
-    /** `manual`: values below. `live`: fetched from the API (manual values are the fallback). */
-    source: 'manual' | 'live';
-    /** How often live values refresh. */
+    /** Up to two urgency elements shown together (empty = none). */
+    types: UrgencyElement[];
+    /** How often real-time values refresh. */
     refreshSeconds: number;
-    socialProof: { count: number; text: string; avatars: string };
-    countdown: { label: string; deadline: string /* ISO */ };
-    seats: { percent: number; batch: string };
+    /** Each element: `manual` values, or `live` from the API (manual values are the fallback). */
+    socialProof: { source: UrgencySource; count: number; text: string; avatars: string };
+    countdown: { source: UrgencySource; label: string; deadline: string /* ISO */ };
+    seats: { source: UrgencySource; percent: number; batch: string };
   };
   trust: {
     enabled: boolean;
@@ -116,5 +116,5 @@ export interface LeadApi {
   lookupLead(phone: string): Promise<Partial<LeadData> | null>;
   submitLead(lead: LeadData): Promise<void>;
   /** Real-time urgency data (callbacks today, admission deadline, seats filled). */
-  getUrgency(type: Exclude<UrgencyType, 'none'>): Promise<UrgencyLive>;
+  getUrgency(type: UrgencyElement): Promise<UrgencyLive>;
 }

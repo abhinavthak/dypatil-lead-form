@@ -14,7 +14,7 @@ export const defaultConfig: LeadFormConfig = {
     ctaColor: '#9f1c34',
     ctaText: 'Sign Up',
   },
-  banner: { enabled: true, closable: true, showImage: false, image: `${A}top-image.jpg` },
+  banner: { enabled: true, showImage: false, image: `${A}top-image.jpg` },
   overlay: {
     desktopStyle: 'popup',
     mobileStyle: 'bottom-drawer',
@@ -25,12 +25,11 @@ export const defaultConfig: LeadFormConfig = {
     topImage: `${A}top-image.jpg`,
   },
   urgency: {
-    type: 'countdown',
-    source: 'manual',
+    types: ['countdown', 'seats'],
     refreshSeconds: 30,
-    socialProof: { count: 146, text: 'learners requested a callback today', avatars: `${A}avatars.png` },
-    countdown: { label: 'Admissions close on', deadline: designDeadline() },
-    seats: { percent: 82, batch: 'October Batch' },
+    socialProof: { source: 'manual', count: 146, text: 'learners requested a callback today', avatars: `${A}avatars.png` },
+    countdown: { source: 'manual', label: 'Admissions close on', deadline: designDeadline() },
+    seats: { source: 'manual', percent: 82, batch: 'October Batch' },
   },
   trust: {
     enabled: true,
