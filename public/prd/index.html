@@ -228,11 +228,11 @@ tr.is-main td { background: var(--green-soft); }
 .demo-live { width: 6px; height: 6px; border-radius: 50%; background: #1fae5b; margin-left: 5px; animation: pulse 1.8s infinite; }
 .demo-live--w { background: #fff; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 5px rgba(31,174,91,0); } 0% { box-shadow: 0 0 0 0 rgba(31,174,91,.5); } }
-.demo-cd { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #faf2f3; padding: 8px 10px; border-radius: 8px; width: 100%; }
+.demo-cd { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; background: #faf2f3; padding: 8px 8px; border-radius: 8px; width: 100%; white-space: nowrap; font-size: 9px; }
 .demo-cd b { color: #9f1c34; }
-.demo-boxes { display: flex; gap: 4px; }
-.demo-boxes i { font-style: normal; font-weight: 600; font-size: 13px; background: #fff; border: 1px solid #cfcfcf; border-radius: 6px; padding: 2px 6px; }
-.demo-boxes small { font-size: 8px; font-weight: 400; color: #555; }
+.demo-boxes { display: flex; gap: 2px; flex-shrink: 0; }
+.demo-boxes i { font-style: normal; font-weight: 600; font-size: 11px; background: #fff; border: 1px solid #cfcfcf; border-radius: 5px; padding: 2px 3px; }
+.demo-boxes small { font-size: 7px; font-weight: 400; color: #555; }
 .demo-bar { position: relative; display: block; width: 100%; height: 22px; border: 1px solid #d42d2d; border-radius: 999px; overflow: hidden; background: #fff; }
 .demo-bar__fill { position: absolute; inset: 0 18% 0 0; background: #d42d2d; border-radius: 999px; }
 .demo-bar__txt { position: relative; display: flex; align-items: center; height: 100%; padding-left: 10px; color: #fff; white-space: nowrap; }
