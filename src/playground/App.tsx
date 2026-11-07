@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { LeadExperience, defaultConfig, useLeadOverlay } from '../lead-form';
 import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustStyle } from '../lead-form';
 import { DesktopPage, MobilePage } from './Pages';
+import { assets } from '../lead-form/defaults';
 
 const STORE = 'dyp-lead-form-config-v1';
 const DESKTOP_W = 1430;
@@ -67,10 +68,22 @@ export default function App() {
   const [scale, setScale] = useState(1);
   const [stageH, setStageH] = useState(800);
   const [copied, setCopied] = useState(false);
+  const [heroDesktop, setHeroDesktop] = useState<string | undefined>();
+  const [heroMobile, setHeroMobile] = useState<string | undefined>();
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORE, JSON.stringify(config));
+      // Uploaded images live only in this tab (blob: URLs); don't persist them.
+      const o = config.overlay;
+      const persistable = {
+        ...config,
+        overlay: {
+          ...o,
+          sideImage: o.sideImage.startsWith('blob:') ? defaultConfig.overlay.sideImage : o.sideImage,
+          topImage: o.topImage.startsWith('blob:') ? defaultConfig.overlay.topImage : o.topImage,
+        },
+      };
+      localStorage.setItem(STORE, JSON.stringify(persistable));
     } catch {
       /* ignore */
     }
@@ -248,6 +261,44 @@ export default function App() {
               )}
             </Section>
 
+            <Section title="Images">
+              <ImageField
+                label="Popup side image"
+                hint="Portrait, ~600×1200"
+                value={config.overlay.sideImage}
+                onChange={(v) => set('overlay.sideImage', v)}
+                onReset={() => set('overlay.sideImage', defaultConfig.overlay.sideImage)}
+              />
+              <ImageField
+                label="Top banner image"
+                hint="Wide, ~1200×290"
+                value={config.overlay.topImage}
+                onChange={(v) => set('overlay.topImage', v)}
+                onReset={() => set('overlay.topImage', defaultConfig.overlay.topImage)}
+              />
+              <ImageField
+                label="Page hero (desktop preview)"
+                hint="1430×670; form sits on the right"
+                value={heroDesktop ?? assets.heroDesktop}
+                onChange={(v) => {
+                  setHeroDesktop(v);
+                  setDevice('desktop');
+                }}
+                onReset={() => setHeroDesktop(undefined)}
+              />
+              <ImageField
+                label="Page hero (mobile preview)"
+                hint="375 wide; form follows below"
+                value={heroMobile ?? assets.heroMobile}
+                onChange={(v) => {
+                  setHeroMobile(v);
+                  setDevice('mobile');
+                }}
+                onReset={() => setHeroMobile(undefined)}
+              />
+              <p className="pg-small">Uploads stay in this browser tab only. Use an image URL in the config for real pages.</p>
+            </Section>
+
             <Section title="Brand">
               <Text label="Title" value={config.brand.title} onChange={(v) => set('brand.title', v)} />
               <Text label="Subtitle" value={config.brand.subtitle} onChange={(v) => set('brand.subtitle', v)} />
@@ -305,7 +356,7 @@ export default function App() {
                   }}
                 />
                 <div className="pg-scroll" ref={setScrollRoot}>
-                  {device === 'desktop' ? <DesktopPage bannerOn={config.banner.enabled} /> : <MobilePage bannerOn={config.banner.enabled} />}
+                  {device === 'desktop' ? <DesktopPage bannerOn={config.banner.enabled} hero={heroDesktop} /> : <MobilePage bannerOn={config.banner.enabled} hero={heroMobile} />}
                 </div>
               </LeadExperience>
             </div>
@@ -330,6 +381,55 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
+function ImageField({
+  label,
+  hint,
+  value,
+  onChange,
+  onReset,
+}: {
+  label: string;
+  hint: string;
+  value: string;
+  onChange(url: string): void;
+  onReset(): void;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+  const isUpload = value.startsWith('blob:');
+  return (
+    <div className="pg-field">
+      <span>{label}</span>
+      <div className="pg-image">
+        <img src={value} alt="" />
+        <div className="pg-image__meta">
+          <small>{isUpload ? 'Uploaded image' : hint}</small>
+          <div className="pg-image__btns">
+            <button type="button" onClick={() => input.current?.click()}>
+              Upload
+            </button>
+            {isUpload && (
+              <button type="button" onClick={onReset}>
+                Reset
+              </button>
+            )}
+          </div>
+        </div>
+        <input
+          ref={input}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) onChange(URL.createObjectURL(file));
+            e.target.value = '';
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 const HEX = /^#[0-9a-f]{6}$/i;
 
 function ColorField({

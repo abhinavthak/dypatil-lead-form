@@ -170,7 +170,7 @@ Everything below is set per page through one config object (exportable from the 
 | | **Desktop** overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |
-| | Side / top image | Image URL |
+| | Side / top promo image | **Upload** an image (or set an image URL) |
 | **Urgency** | Social proof pill | On/Off · count ("146 learners requested a callback today") |
 | | Countdown | On/Off · deadline date & time |
 | | Seats-filled bar | On/Off · % (82) · batch name |
@@ -300,6 +300,5 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 
 - **Backend:** OTP, lead lookup and submit are mocked in the prototype (OTP `1111` fails; numbers ending `2168` are
   existing leads). Need the real API endpoints and OTP provider.
-- **Assets:** the hero images still contain design typos ("AICT APPROVED" twice, "Jan 2025 session"). Need clean re-exports.
 - **Tracking:** events above are specified, not yet wired; the component needs an `onEvent` hook.
 - **Open:** should OTP be skippable after N failed attempts? Should "Continue" / "Proceed" buttons follow the CTA colour?

@@ -21,6 +21,7 @@ npm run build      # static build in dist/
 
 - **Desktop / Mobile** toggle renders the real landing page in a 1430px desktop frame or a 375px phone frame.
 - Left panel configures every option live (saved in localStorage); **Copy config JSON** exports it.
+- **Images**: upload your own popup side image, top banner image and page hero images (desktop / mobile) to preview them.
 - **Open form**, **Simulate exit intent** and **Restart** drive the flows. The page's *Download Brochure* and
   *Apply Now* buttons also open the form.
 

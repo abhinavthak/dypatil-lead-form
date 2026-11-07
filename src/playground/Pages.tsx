@@ -31,11 +31,11 @@ function WhyChoose({ mobile }: { mobile?: boolean }) {
   );
 }
 
-export function DesktopPage({ bannerOn }: { bannerOn: boolean }) {
+export function DesktopPage({ bannerOn, hero = assets.heroDesktop }: { bannerOn: boolean; hero?: string }) {
   const { openForm } = useLeadOverlay();
   return (
     <div className="pg-page">
-      <section className="pg-hero-d" style={{ backgroundImage: `url(${assets.heroDesktop})` }}>
+      <section className="pg-hero-d" style={{ backgroundImage: `url(${hero})` }}>
         {!bannerOn && <div className="pg-hero-d__mask" />}
         <button className="pg-hotspot" style={{ left: 80, top: 573, width: 242, height: 56 }} onClick={openForm} aria-label="Download Brochure" />
         <div className="pg-hero-d__form" id="lead-banner">
@@ -48,12 +48,12 @@ export function DesktopPage({ bannerOn }: { bannerOn: boolean }) {
   );
 }
 
-export function MobilePage({ bannerOn }: { bannerOn: boolean }) {
+export function MobilePage({ bannerOn, hero = assets.heroMobile }: { bannerOn: boolean; hero?: string }) {
   const { openForm } = useLeadOverlay();
   return (
     <div className="pg-page">
       <section className="pg-hero-m">
-        <img src={assets.heroMobile} alt="India's 1st Online MBA in Product Management" />
+        <img src={hero} alt="India's 1st Online MBA in Product Management" />
         <button className="pg-hotspot" style={{ left: 24, top: 632, width: 326, height: 56 }} onClick={openForm} aria-label="Download Brochure" />
         {bannerOn && (
           <div className="pg-hero-m__form" id="lead-banner">
