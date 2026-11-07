@@ -132,13 +132,11 @@ flowchart LR
     end
     subgraph Mobile
       A2[Back button]
-      A3[Fast scroll up]
       A4[Returns to tab]
     end
     A5[Closes the form overlay]
     A1 --> A
     A2 --> A
-    A3 --> A
     A4 --> A
     A5 --> A
     B -->|Continue to Get a Call back| C[Back to the form]
@@ -147,7 +145,7 @@ flowchart LR
 
 | | Desktop | Mobile |
 | --- | --- | --- |
-| **Shown when** | Cursor leaves through the top of the window · visitor closes the overlay | Back button · fast scroll back up (25% of screen within 0.4s) · returns to the tab · closes the overlay |
+| **Shown when** | Cursor leaves through the top of the window · visitor closes the overlay | Back button · returns to the tab · closes the overlay |
 | **Appears as** | Centred card over the page (or inside the sidebar) | Bottom drawer (or centred popup, matching the mobile overlay) |
 | **Screen** | <img src="images/exit-intent.png" width="420"> | <img src="images/mobile-exit-intent.png" width="170"> |
 
@@ -156,7 +154,7 @@ flowchart LR
 - **No ✕ button**; clicking outside or pressing Esc does nothing. Only **Continue** or **No Thanks, Close** leave it.
 - If the visitor has started, show progress: "Your details · 2 of 5 done".
 - Never shown after a successful submit.
-- After "No Thanks", passive triggers (cursor, scroll, tab return) wait **4 seconds** before showing it again.
+- After "No Thanks", passive triggers (cursor, tab return) wait **4 seconds** before showing it again.
 - Mobile back button: first press shows the exit screen; after "No Thanks" the next press leaves the page
   (we never trap users).
 
@@ -184,7 +182,7 @@ Everything below is set per page through one config object (exportable from the 
 | **Flow** | Verify phone with OTP | On (default) / Off: with Off, fields are never locked |
 | | Success screen | Proceed with application · Wait for callback |
 | **Exit intent** | Enabled | On / Off |
-| | Triggers | Leave intent (cursor / back / scroll / tab) · Closing the overlay |
+| | Triggers | Leave intent (cursor / back / tab) · Closing the overlay |
 | | Show progress | On / Off |
 | **Data** | Qualification & course lists | Lists of options |
 | | Terms / Privacy links | URLs |
@@ -216,7 +214,7 @@ Fire to the analytics layer (GTM `dataLayer` / Mixpanel). **Never send phone, na
 | `lf_submitted` | Lead saved ✅ (**main conversion**) | `course`, `qualification`, `lead_type`: new / existing, `seconds_to_submit` |
 | `lf_submit_failed` | API error | `error_code` |
 | `lf_success_cta_clicked` | "Proceed with My Application" | n/a |
-| `lf_exit_shown` | Exit screen shown | `trigger`: mouse_leave / back / scroll_up / tab_return / close, `progress` (0–5) |
+| `lf_exit_shown` | Exit screen shown | `trigger`: mouse_leave / back / tab_return / close, `progress` (0–5) |
 | `lf_exit_continue` | "Continue to Get a Call back" | `progress` |
 | `lf_exit_dismissed` | "No Thanks, Close" | `progress` |
 

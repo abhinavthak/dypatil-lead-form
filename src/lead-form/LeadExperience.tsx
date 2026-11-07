@@ -161,25 +161,8 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
       return () => document.removeEventListener('mouseout', onOut);
     }
     // Mobile has no cursor, so use the signals phones do give us.
-    const el = scrollRoot ?? document.documentElement;
-    const target: HTMLElement | Window = scrollRoot ?? window;
 
-    // 1) Scroll back up: ≥ 25% of the screen upwards within 400ms, after reading at least one screen down.
-    //    Measured over a time window (not event-to-event) so it works with touch + momentum scrolling.
-    let maxY = 0;
-    let samples: { y: number; t: number }[] = [];
-    const onScroll = () => {
-      const y = el.scrollTop;
-      const t = performance.now();
-      maxY = Math.max(maxY, y);
-      samples.push({ y, t });
-      samples = samples.filter((p) => t - p.t <= 400);
-      const peak = Math.max(...samples.map((p) => p.y));
-      if (maxY > el.clientHeight && peak - y > el.clientHeight * 0.25) triggerExitIntent();
-    };
-    target.addEventListener('scroll', onScroll, { passive: true });
-
-    // 2) Back button: park one history entry; pressing back shows the exit screen instead of leaving.
+    // 1) Back button: park one history entry; pressing back shows the exit screen instead of leaving.
     //    A second press then leaves normally.
     if (!(history.state as { lfExitTrap?: boolean } | null)?.lfExitTrap) {
       history.pushState({ ...(history.state ?? {}), lfExitTrap: true }, '');
@@ -187,7 +170,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     const onPop = () => triggerExitIntent();
     window.addEventListener('popstate', onPop);
 
-    // 3) Coming back after switching to another app or tab.
+    // 2) Coming back after switching to another app or tab.
     let hiddenAt = 0;
     const onVisibility = () => {
       if (document.visibilityState === 'hidden') hiddenAt = Date.now();
@@ -196,11 +179,10 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      target.removeEventListener('scroll', onScroll);
       window.removeEventListener('popstate', onPop);
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [config.exitIntent, device, scrollRoot, triggerExitIntent]);
+  }, [config.exitIntent, device, triggerExitIntent]);
 
   const ctl: OverlayCtl = { open, view, style, openForm, triggerExitIntent };
 

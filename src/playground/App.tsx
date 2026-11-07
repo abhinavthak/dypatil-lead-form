@@ -238,7 +238,7 @@ export default function App() {
               {config.exitIntent.enabled && (
                 <>
                   <Toggle
-                    label={device === 'desktop' ? 'On cursor leaving the page' : 'On back button, scroll up or tab return'}
+                    label={device === 'desktop' ? 'On cursor leaving the page' : 'On back button or tab return'}
                     checked={config.exitIntent.onLeaveIntent}
                     onChange={(v) => set('exitIntent.onLeaveIntent', v)}
                   />

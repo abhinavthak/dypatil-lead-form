@@ -37,7 +37,7 @@ Mock backend (`src/lead-form/mockApi.ts`):
 | Urgency | Social-proof pill (count) · countdown to a deadline · seats-filled bar (% and batch) |
 | Trust | UGC / NAAC / No-cost EMI strip (badges are data) |
 | Flow | Inline OTP verification on/off · success screen: "Proceed with application" or "Wait for a callback" |
-| Exit intent | On cursor leaving the window (desktop) / fast scroll up (mobile) · on closing an overlay · show "n of 5 done" progress |
+| Exit intent | On cursor leaving the window (desktop) / back button or returning to the tab (mobile) · on closing an overlay · show "n of 5 done" progress |
 | Brand | Title, subtitle, primary colour |
 
 The banner and overlay share one lead state, so anything typed in one carries over to the other.
