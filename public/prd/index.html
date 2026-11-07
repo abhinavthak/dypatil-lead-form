@@ -145,7 +145,11 @@ p { margin: 10px 0; }
 .g-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .shot { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 .shot__img { background: var(--surface-2); padding: 12px; display: grid; place-items: center; cursor: zoom-in; border: 0; width: 100%; }
-.shot__img img { border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.12); max-height: 420px; width: auto; }
+.shot__img img { border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.12); max-height: 420px; width: auto; height: auto;
+  background: linear-gradient(100deg, var(--line) 30%, var(--surface) 50%, var(--line) 70%) 0 0 / 300% 100%; animation: shimmer 1.2s linear infinite; }
+.shot__img img.is-loaded { animation: none; background: none; }
+@keyframes shimmer { to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) { .shot__img img { animation: none; } }
 .shot--wide .shot__img img { width: 100%; max-height: none; }
 .shot figcaption { padding: 12px 14px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); flex: 1; }
 .shot figcaption > b:first-of-type { display: block; color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 2px; }
@@ -340,25 +344,25 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
 
       <h3 id="desktop"><span class="tag tag--desktop">Desktop</span> Banner and overlays</h3>
       <div class="gallery g-2">
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner.png" alt="Desktop hero with the banner lead form on the right" loading="lazy"></button><figcaption><b>Banner</b>Inline form on the right of the hero.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner-image.png" alt="Desktop banner form with a promo image across its top" loading="lazy"></button><figcaption><b>Banner with image</b>Optional promo image, uploaded by the user. Shown only with the form, not on success.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner.jpg" width="1254" height="586" alt="Desktop hero with the banner lead form on the right" loading="lazy" decoding="async"></button><figcaption><b>Banner</b>Inline form on the right of the hero.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/desktop-banner-image.jpg" width="988" height="588" alt="Desktop banner form with a promo image across its top" loading="lazy" decoding="async"></button><figcaption><b>Banner with image</b>Optional promo image, uploaded by the user. Shown only with the form, not on success.</figcaption></figure>
       </div>
       <div class="gallery g-3">
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup.png" alt="Centred popup overlay" loading="lazy"></button><figcaption><b>Popup</b>Centred 420px card; page dimmed and blurred behind.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-side-image.png" alt="Popup with promo image on the left" loading="lazy"></button><figcaption><b>Popup + side image</b>725px wide: promo image left, form right.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-top-image.png" alt="Popup with promo banner on top" loading="lazy"></button><figcaption><b>Popup + top image</b>Popup with a promo banner on top.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar.png" alt="Full-height sidebar on the right" loading="lazy"></button><figcaption><b>Sidebar</b>Slides in from the right, full height, 423px wide.</figcaption></figure>
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar-top-image.png" alt="Sidebar with promo banner on top" loading="lazy"></button><figcaption><b>Sidebar + top image</b>Sidebar with a promo banner on top.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup.jpg" width="783" height="462" alt="Centred popup overlay" loading="lazy" decoding="async"></button><figcaption><b>Popup</b>Centred 420px card; page dimmed and blurred behind.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-side-image.jpg" width="801" height="454" alt="Popup with promo image on the left" loading="lazy" decoding="async"></button><figcaption><b>Popup + side image</b>725px wide: promo image left, form right.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/popup-top-image.jpg" width="801" height="454" alt="Popup with promo banner on top" loading="lazy" decoding="async"></button><figcaption><b>Popup + top image</b>Popup with a promo banner on top.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar.jpg" width="783" height="462" alt="Full-height sidebar on the right" loading="lazy" decoding="async"></button><figcaption><b>Sidebar</b>Slides in from the right, full height, 423px wide.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/sidebar-top-image.jpg" width="783" height="462" alt="Sidebar with promo banner on top" loading="lazy" decoding="async"></button><figcaption><b>Sidebar + top image</b>Sidebar with a promo banner on top.</figcaption></figure>
         <figure class="shot"><div class="shot__img" style="cursor:default;min-height:120px;color:var(--faint);font-size:13px">Banner only</div><figcaption><b>None</b>No overlay; only the banner form.</figcaption></figure>
       </div>
 
       <h3 id="mobile"><span class="tag tag--mobile">Mobile</span> Banner and overlays</h3>
       <div class="gallery g-5">
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-hero.png" alt="Mobile hero; banner form follows below" loading="lazy"></button><figcaption><b>Hero + banner</b>Banner form follows the hero.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-banner-image.png" alt="Mobile banner form with promo image" loading="lazy"></button><figcaption><b>Banner with image</b>Optional uploaded image.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer.png" alt="Mobile bottom drawer" loading="lazy"></button><figcaption><b>Bottom drawer</b>Slides up; rounded top, larger ✕ for thumbs.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer-top-image.png" alt="Mobile bottom drawer with promo banner" loading="lazy"></button><figcaption><b>Drawer + top image</b>Drawer with promo banner.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-popup.png" alt="Mobile centred popup" loading="lazy"></button><figcaption><b>Popup</b>Centred card, 16px side margins.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-hero.jpg" width="360" height="744" alt="Mobile hero; banner form follows below" loading="lazy" decoding="async"></button><figcaption><b>Hero + banner</b>Banner form follows the hero.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-banner-image.jpg" width="360" height="744" alt="Mobile banner form with promo image" loading="lazy" decoding="async"></button><figcaption><b>Banner with image</b>Optional uploaded image.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer.jpg" width="360" height="744" alt="Mobile bottom drawer" loading="lazy" decoding="async"></button><figcaption><b>Bottom drawer</b>Slides up; rounded top, larger ✕ for thumbs.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-drawer-top-image.jpg" width="360" height="744" alt="Mobile bottom drawer with promo banner" loading="lazy" decoding="async"></button><figcaption><b>Drawer + top image</b>Drawer with promo banner.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-popup.jpg" width="360" height="744" alt="Mobile centred popup" loading="lazy" decoding="async"></button><figcaption><b>Popup</b>Centred card, 16px side margins.</figcaption></figure>
       </div>
 
       <h4>Rules for both</h4>
@@ -376,23 +380,23 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
 
       <h3 id="verify">Step 1 · Verify the phone <span class="tag tag--neutral">everyone</span></h3>
       <div class="gallery g-4">
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-entry.png" alt="OTP boxes below the phone field; other fields locked" loading="lazy"></button><figcaption><span class="shot__step">1.1</span><b>Enter OTP</b>Typing 10 digits sends the OTP. Other fields stay locked 🔒.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-wrong.png" alt="Wrong OTP with red boxes" loading="lazy"></button><figcaption><span class="shot__step">1.2</span><b>Wrong OTP</b>Boxes turn red. Typing again starts a fresh attempt; resend after 30s.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-entry.jpg" width="371" height="616" alt="OTP boxes below the phone field; other fields locked" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1.1</span><b>Enter OTP</b>Typing 10 digits sends the OTP. Other fields stay locked 🔒.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-wrong.jpg" width="371" height="616" alt="Wrong OTP with red boxes" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1.2</span><b>Wrong OTP</b>Boxes turn red. Typing again starts a fresh attempt; resend after 30s.</figcaption></figure>
       </div>
       <p>After a correct OTP we check whether this number is already a lead. That decides which journey follows.</p>
 
       <h3 id="new-lead">Step 2a · <span class="tag tag--new">New lead</span> first time on any of our forms</h3>
       <div class="gallery g-4">
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-verified.png" alt="Phone verified, empty fields unlocked" loading="lazy"></button><figcaption><span class="shot__step">2a.1</span><b>Verified</b>Fields unlock <b>empty</b>; cursor jumps to Full name.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-error.png" alt="Invalid email error" loading="lazy"></button><figcaption><span class="shot__step">2a.2</span><b>Typing (with error)</b>Errors appear only after typing and leaving a field.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-filled.png" alt="All fields filled, Sign Up enabled" loading="lazy"></button><figcaption><span class="shot__step">2a.3</span><b>All filled</b>Every field valid → Sign Up turns to the CTA colour.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-success.png" alt="Success screen for a new lead" loading="lazy"></button><figcaption><span class="shot__step">2a.4</span><b>Success</b>"Thank you, Priya!" with phone, course and next steps.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-verified.jpg" width="371" height="545" alt="Phone verified, empty fields unlocked" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2a.1</span><b>Verified</b>Fields unlock <b>empty</b>; cursor jumps to Full name.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-error.jpg" width="371" height="545" alt="Invalid email error" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2a.2</span><b>Typing (with error)</b>Errors appear only after typing and leaving a field.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-filled.jpg" width="371" height="545" alt="All fields filled, Sign Up enabled" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2a.3</span><b>All filled</b>Every field valid → Sign Up turns to the CTA colour.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/new-success.jpg" width="371" height="545" alt="Success screen for a new lead" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2a.4</span><b>Success</b>"Thank you, Priya!" with phone, course and next steps.</figcaption></figure>
       </div>
 
       <h3 id="existing-lead">Step 2b · <span class="tag tag--existing">Existing lead</span> number already in our system</h3>
       <div class="gallery g-4">
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/verified-existing-user.png" alt="Verified existing user with pre-filled details" loading="lazy"></button><figcaption><span class="shot__step">2b.1</span><b>Verified + pre-filled</b>Name, email and qualification pre-filled (editable). Usually only Course is left.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/success.png" alt="Success screen for an existing lead" loading="lazy"></button><figcaption><span class="shot__step">2b.2</span><b>Success</b>Same screen. Their lead is updated, not duplicated.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/verified-existing-user.jpg" width="371" height="524" alt="Verified existing user with pre-filled details" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2b.1</span><b>Verified + pre-filled</b>Name, email and qualification pre-filled (editable). Usually only Course is left.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/success.jpg" width="371" height="524" alt="Success screen for an existing lead" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">2b.2</span><b>Success</b>Same screen. Their lead is updated, not duplicated.</figcaption></figure>
       </div>
 
       <h3 id="form-rules">Rules</h3>
@@ -417,8 +421,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       </div>
       <div class="diagram" data-mermaid="exit"></div>
       <div class="gallery" style="grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr)">
-        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/exit-intent.png" alt="Desktop exit-intent screen in a popup" loading="lazy"></button><figcaption><span class="tag tag--desktop">Desktop</span><br>Replaces the form inside the popup / sidebar.</figcaption></figure>
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-exit-intent.png" alt="Mobile exit-intent screen in a bottom drawer" loading="lazy"></button><figcaption><span class="tag tag--mobile">Mobile</span><br>Replaces the form inside the drawer / popup.</figcaption></figure>
+        <figure class="shot shot--wide"><button class="shot__img" type="button"><img src="images/exit-intent.jpg" width="1019" height="578" alt="Desktop exit-intent screen in a popup" loading="lazy" decoding="async"></button><figcaption><span class="tag tag--desktop">Desktop</span><br>Replaces the form inside the popup / sidebar.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/mobile-exit-intent.jpg" width="360" height="744" alt="Mobile exit-intent screen in a bottom drawer" loading="lazy" decoding="async"></button><figcaption><span class="tag tag--mobile">Mobile</span><br>Replaces the form inside the drawer / popup.</figcaption></figure>
       </div>
       <h4>Rules</h4>
       <ul class="rules rules--bullets">
@@ -654,6 +658,12 @@ flowchart LR
   input.addEventListener('input', update);
   update();
 })();
+
+/* ---------- Image loading ---------- */
+document.querySelectorAll('.shot__img img').forEach((img) => {
+  const done = () => img.classList.add('is-loaded');
+  if (img.complete && img.naturalWidth) done(); else { img.addEventListener('load', done); img.addEventListener('error', done); }
+});
 
 /* ---------- Lightbox ---------- */
 (function () {
