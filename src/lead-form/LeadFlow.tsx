@@ -154,7 +154,15 @@ export function LeadFlowProvider({
     [otpOn, startOtp, prefillExisting],
   );
 
-  const blur = useCallback((field: Field) => setTouched((t) => ({ ...t, [field]: true })), []);
+  // Leaving an empty field shows nothing (the grey Sign Up already says the form is incomplete);
+  // once something is typed, leaving the field validates its format.
+  const blur = useCallback(
+    (field: Field) => {
+      if (!values[field]) return;
+      setTouched((t) => ({ ...t, [field]: true }));
+    },
+    [values],
+  );
 
   const setOtp = useCallback(
     async (code: string) => {

@@ -80,9 +80,28 @@ flowchart TD
     J --> K[Success screen]
 ```
 
-| Enter OTP | Wrong OTP | Verified (existing user) | Success |
+### Step 1: verify the phone (same for everyone)
+
+| Enter OTP | Wrong OTP |
+| --- | --- |
+| <img src="images/otp-entry.png" width="190"> | <img src="images/otp-wrong.png" width="190"> |
+| Typing 10 digits sends the OTP. Other fields stay locked 🔒. | Boxes turn red, "Incorrect OTP". Typing again starts a fresh attempt; resend after 30s. |
+
+After a correct OTP we check whether this number is already a lead. That decides which journey follows.
+
+### Step 2a: new lead (first time on any of our forms)
+
+| Verified | Typing (with error) | All filled | Success |
 | --- | --- | --- | --- |
-| <img src="images/otp-entry.png" width="190"> | <img src="images/otp-wrong.png" width="190"> | <img src="images/verified-existing-user.png" width="190"> | <img src="images/success.png" width="190"> |
+| <img src="images/new-verified.png" width="190"> | <img src="images/new-error.png" width="190"> | <img src="images/new-filled.png" width="190"> | <img src="images/new-success.png" width="190"> |
+| Phone shows **VERIFIED**. Fields unlock **empty** and the cursor jumps to Full name. | Errors appear only after the user types and leaves a field (e.g. "Enter Valid Email Id"). | Every field valid → **Sign Up** turns to the CTA colour. | "Thank you, Priya!" with phone, course and next steps. |
+
+### Step 2b: existing lead (number already in our system)
+
+| Verified + pre-filled | Success |
+| --- | --- |
+| <img src="images/verified-existing-user.png" width="190"> | <img src="images/success.png" width="190"> |
+| Name, email and qualification are **pre-filled** (light blue) and can still be edited. Usually only Course is left. | Same success screen. Their details are updated, not duplicated. |
 
 **Rules**
 
@@ -90,8 +109,10 @@ flowchart TD
    Tapping a locked field sends the user back to the phone/OTP step.
 2. **OTP** is sent as soon as a valid 10-digit Indian mobile (starts 6–9) is entered. 4 big boxes, auto-advance,
    paste supported, resend after 30s, **Edit** to change the number.
-3. **Existing lead:** after verification we look the number up and pre-fill what we know.
-4. **Validation** shows on leaving a field: *Enter Valid Name / Email Id*, *Select Highest Qualification / Course*.
+3. **New vs existing lead:** after verification we look the number up. New → empty fields; existing → pre-fill
+   what we know (the user can still edit it) and update the existing lead on submit.
+4. **Validation** shows when the user leaves a field they've typed in (*Enter Valid Name*, *Enter Valid Email Id*).
+   Untouched empty fields never show errors; the grey Sign Up already signals "not done".
 5. **Sign Up** stays grey until every field is valid and the phone is verified.
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
@@ -187,12 +208,12 @@ Fire to the analytics layer (GTM `dataLayer` / Mixpanel). **Never send phone, na
 | `lf_otp_sent` | OTP requested | `attempt` (1, 2…) |
 | `lf_otp_resent` | Resend clicked | `seconds_waited` |
 | `lf_otp_failed` | Wrong OTP | `attempt` |
-| `lf_otp_verified` | OTP correct | `attempts`, `seconds_to_verify` |
+| `lf_otp_verified` | OTP correct | `attempts`, `seconds_to_verify`, `lead_type`: new / existing |
 | `lf_phone_edited` | "Edit" on the number | n/a |
 | `lf_existing_lead` | Lookup found a past lead | `fields_prefilled` |
 | `lf_field_error` | Validation error shown | `field`, `error` |
 | `lf_submit_clicked` | Sign Up clicked | `fields_complete` (0–5) |
-| `lf_submitted` | Lead saved ✅ (**main conversion**) | `course`, `qualification`, `existing_lead`, `seconds_to_submit` |
+| `lf_submitted` | Lead saved ✅ (**main conversion**) | `course`, `qualification`, `lead_type`: new / existing, `seconds_to_submit` |
 | `lf_submit_failed` | API error | `error_code` |
 | `lf_success_cta_clicked` | "Proceed with My Application" | n/a |
 | `lf_exit_shown` | Exit screen shown | `trigger`: mouse_leave / back / scroll_up / tab_return / close, `progress` (0–5) |
