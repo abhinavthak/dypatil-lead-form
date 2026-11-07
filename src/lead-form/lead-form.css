@@ -319,9 +319,13 @@
   .lf-urgency { gap: 6px; }
   .lf-urgency__label { font-size: 10.5px; }
   .lf-urgency__label b { font-size: 11px; }
+  /* Mobile countdown, measured from the mobile design: one row, label left, 4 boxes right. */
+  .lf-urgency__row { flex-wrap: nowrap; gap: 8px; }
+  .lf-urgency__label { font-size: 9.5px; }
+  .lf-urgency__label b { font-size: 10px; }
   .lf-countdown { gap: 3px; }
-  .lf-countdown__box { min-width: 32px; height: 25px; font-size: 13.5px; line-height: 17px; padding-top: 3px; border-radius: 6px; }
-  .lf-countdown__box small { font-size: 8px; }
+  .lf-countdown__box { min-width: 31px; height: 27px; padding: 4px 3px 0; font-size: 15px; line-height: 19px; border-radius: 6px; }
+  .lf-countdown__box small { font-size: 9px; }
   .lf-seats__text { font-size: 10px; }
   .lf-otp__boxes { gap: 8px; }
   .lf-otp__boxes input { height: 44px; }
@@ -335,15 +339,23 @@
   .lf-success { padding: 20px 16px 20px; }
   .lf-success__chip { font-size: 11px; }
 }
+/* Mobile card (design: 327px card, 13px side padding). */
 @container (max-width: 345px) {
-  .lf-head { padding: 16px 14px 0; }
-  .lf-urgency { padding: 8px 14px; }
-  .lf-body { padding: 10px 14px 0; }
-  .lf-urgency__row { flex-direction: column; align-items: stretch; }
-  .lf-urgency__label { font-size: 10.5px; text-align: center; }
-  .lf-urgency__label b { font-size: 11px; }
-  .lf-countdown { justify-content: center; }
-  .lf-countdown__box { min-width: 29px; }
+  .lf-head { padding: 16px 13px 0; }
+  .lf-urgency { padding: 6px 13px 8px; }
+  .lf-body { padding: 10px 13px 0; }
+}
+/* Very narrow phones (≤ 320px screens): same single row, scaled down so it still fits. */
+@container (max-width: 300px) {
+  .lf-head { padding-left: 10px; padding-right: 10px; }
+  .lf-urgency { padding-left: 10px; padding-right: 10px; }
+  .lf-body { padding-left: 10px; padding-right: 10px; }
+  .lf-urgency__row { gap: 6px; }
+  .lf-urgency__label { font-size: 8px; }
+  .lf-urgency__label b { font-size: 8.5px; }
+  .lf-countdown { gap: 2px; }
+  .lf-countdown__box { min-width: 26px; height: 24px; padding: 3px 2px 0; font-size: 12.5px; line-height: 17px; }
+  .lf-countdown__box small { font-size: 8px; }
 }
 
 /* Cropped 3D art carries its original backdrop; feather the edges so it melts into any gradient. */
