@@ -123,7 +123,7 @@ After a correct OTP we check whether this number is already a lead. That decides
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
 7. The urgency element is **display only**; it never blocks submission.
-8. **Course is pre-selected** from the landing page's configured course (e.g. the Product Management page opens with *Online MBA in Product Management*). The visitor can change it from the dropdown once the phone is verified; if no course is configured, the dropdown starts empty.
+8. **Course is pre-selected** from the landing page's configured course (e.g. the Product Management page opens with *Online MBA in Product Management*). Until the phone is verified it shows in **grey** (locked); after verification it turns dark and the visitor can change it from the dropdown; if no course is configured, the dropdown starts empty.
 
 ### Lead capture: when details are sent to the CRM
 

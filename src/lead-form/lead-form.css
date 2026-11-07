@@ -142,6 +142,8 @@
 .lf-field.is-locked { background: #f3f4f6; border-color: #e1e3e7; cursor: not-allowed; }
 .lf-field.is-locked input, .lf-field.is-locked select { cursor: not-allowed; pointer-events: none; }
 .lf-field.is-locked input::placeholder, .lf-field.is-locked select.is-placeholder { color: #b0b4ba; }
+/* Pre-selected course (or any value) stays grey until the phone is verified, then turns normal. */
+.lf-field.is-locked input, .lf-field.is-locked select, .lf-field.is-locked select:disabled { color: #b0b4ba; -webkit-text-fill-color: #b0b4ba; opacity: 1; }
 .lf-link { border: 0; background: none; padding: 0; cursor: pointer; color: var(--lf-primary); font-size: inherit; text-align: left; font-weight: 500; }
 .lf-link--u { text-decoration: underline; width: fit-content; }
 
