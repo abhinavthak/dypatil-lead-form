@@ -191,34 +191,108 @@ Everything below is set per page through one config object (exportable from the 
 
 ## 6. Tracking events
 
-Fire to the analytics layer (GTM `dataLayer` / Mixpanel). **Never send phone, name or email in events.**
+Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel) as
+`{ event: "form_…", …parameters }`. Names are `snake_case` and every event starts with `form_`.
 
-**Sent with every event:** `page_url`, `program`, `device` (desktop/mobile), `placement` (banner/overlay),
-`layout` (desktop e.g. `popup-side-image`, mobile e.g. `bottom-drawer`), `config_id` (A/B variant), `session_id`, `utm_*`.
+> **Privacy rule:** never send phone number, name or email in any event. Join with the CRM using `lead_id`.
 
-| Event | When it fires | Extra properties |
+### 6a. Events
+
+| Event | When it fires | Parameters (besides the common ones) |
 | --- | --- | --- |
-| `lf_viewed` | Form is visible on screen (≥ 50% for 1s) | n/a |
-| `lf_overlay_opened` | Overlay opens | `trigger`: load / delay / scroll / cta |
-| `lf_overlay_closed` | Overlay closes | `stage`: form / success |
-| `lf_started` | First interaction with any field | `first_field` |
-| `lf_locked_field_tapped` | User taps a locked field | `field` |
-| `lf_otp_sent` | OTP requested | `attempt` (1, 2…) |
-| `lf_otp_resent` | Resend clicked | `seconds_waited` |
-| `lf_otp_failed` | Wrong OTP | `attempt` |
-| `lf_otp_verified` | OTP correct | `attempts`, `seconds_to_verify`, `lead_type`: new / existing |
-| `lf_phone_edited` | "Edit" on the number | n/a |
-| `lf_existing_lead` | Lookup found a past lead | `fields_prefilled` |
-| `lf_field_error` | Validation error shown | `field`, `error` |
-| `lf_submit_clicked` | Sign Up clicked | `fields_complete` (0–5) |
-| `lf_submitted` | Lead saved ✅ (**main conversion**) | `course`, `qualification`, `lead_type`: new / existing, `seconds_to_submit` |
-| `lf_submit_failed` | API error | `error_code` |
-| `lf_success_cta_clicked` | "Proceed with My Application" | n/a |
-| `lf_exit_shown` | Exit screen shown | `trigger`: mouse_leave / back / tab_return / close, `progress` (0–5) |
-| `lf_exit_continue` | "Continue to Get a Call back" | `progress` |
-| `lf_exit_dismissed` | "No Thanks, Close" | `progress` |
+| `form_viewed` | Form is visible on screen (≥ 50% for 1s) | n/a |
+| `form_overlay_opened` | Overlay opens | `open_trigger` |
+| `form_overlay_closed` | Overlay closes | `stage` |
+| `form_started` | First interaction with any field | `first_field` |
+| `form_locked_field_tapped` | User taps a locked field | `field` |
+| `form_otp_sent` | OTP requested | `attempt` |
+| `form_otp_resent` | "Resend OTP" clicked | `attempt`, `seconds_waited` |
+| `form_otp_failed` | Wrong OTP entered | `attempt` |
+| `form_otp_verified` | OTP correct | `attempts`, `seconds_to_verify`, `lead_type` |
+| `form_phone_edited` | "Edit" on the number | n/a |
+| `form_existing_lead` | Lookup found a past lead | `fields_prefilled` |
+| `form_field_error` | Validation error shown | `field`, `error` |
+| `form_submit_clicked` | Sign Up clicked | `fields_complete` |
+| `form_submitted` | Lead saved ✅ (**main conversion**) | `lead_id`, `lead_type`, `course`, `qualification`, `seconds_to_submit` |
+| `form_submit_failed` | Submit API returned an error | `error_code` |
+| `form_success_cta_clicked` | "Proceed with My Application" clicked | `lead_id` |
+| `form_exit_shown` | Exit screen shown | `exit_trigger`, `progress` |
+| `form_exit_continue` | "Continue to Get a Call back" clicked | `exit_trigger`, `progress` |
+| `form_exit_dismissed` | "No Thanks, Close" clicked | `exit_trigger`, `progress` |
 
-**Funnel to build:** `lf_viewed → lf_started → lf_otp_sent → lf_otp_verified → lf_submitted`
+**Funnel to build:** `form_viewed → form_started → form_otp_sent → form_otp_verified → form_submitted`
+
+### 6b. Common parameters (sent with every event)
+
+| Parameter | Type | Example | What it is |
+| --- | --- | --- | --- |
+| `event_id` | string | `"6f1c…"` | Unique ID per event (removes duplicates) |
+| `timestamp` | string (ISO 8601) | `"2026-11-07T10:20:31Z"` | When it happened (UTC) |
+| `session_id` | string | `"s_8d2a…"` | Visitor's browsing session |
+| `form_id` | string | `"dyp-mba-pm-hero"` | Which configured form this is |
+| `variant` | string | `"B"` | A/B config variant (`"default"` if none) |
+| `university` | string | `"DY Patil University"` | University on the page |
+| `program` | string | `"Online MBA in Product Management"` | Program the page is about |
+| `page_url` | string | `"https://…/mba-product-management"` | Page URL **without** query string |
+| `referrer` | string | `"https://www.google.com/"` | Previous page |
+| `device` | enum | `desktop` · `mobile` | Screen < 760px = mobile |
+| `placement` | enum | `banner` · `overlay` | Which form surface fired it |
+| `layout` | enum | `popup` · `popup-side-image` · `popup-top-image` · `sidebar` · `sidebar-top-image` · `bottom-drawer` · `bottom-drawer-top-image` · `mobile-popup` · `banner` | Visual style shown |
+| `utm_source` · `utm_medium` · `utm_campaign` · `utm_content` · `utm_term` | string | `"google"`, `"cpc"` … | Campaign tags from the landing URL (empty if absent) |
+
+### 6c. Event parameters
+
+| Parameter | Type | Allowed values / example | Used in | What it is |
+| --- | --- | --- | --- | --- |
+| `open_trigger` | enum | `load` · `delay` · `scroll` · `cta` | overlay_opened | Why the overlay opened |
+| `stage` | enum | `form` · `exit` · `success` | overlay_closed | Screen showing when it closed |
+| `first_field` | enum | `phone` · `name` · `email` · `qualification` · `course` | started | First field touched |
+| `field` | enum | same as above | locked_field_tapped, field_error | Field involved |
+| `error` | enum | `invalid_phone` · `invalid_name` · `invalid_email` · `missing_qualification` · `missing_course` | field_error | Which validation failed |
+| `attempt` | integer | `1`, `2` … | otp_sent, otp_resent, otp_failed | Count so far for this number |
+| `attempts` | integer | `2` | otp_verified | OTP tries needed to verify |
+| `seconds_waited` | integer | `34` | otp_resent | Seconds since last OTP was sent |
+| `seconds_to_verify` | integer | `21` | otp_verified | Seconds from first OTP sent to verified |
+| `lead_type` | enum | `new` · `existing` | otp_verified, submitted | Was the number already a lead? |
+| `fields_prefilled` | array of enum | `["name","email","qualification"]` | existing_lead | Fields we filled for them |
+| `fields_complete` | integer 0–5 | `5` | submit_clicked | Valid fields at click time |
+| `progress` | integer 0–5 | `2` | exit_* | Fields done when exit screen shows |
+| `exit_trigger` | enum | `mouse_leave` · `back` · `tab_return` · `close` | exit_* | What caused the exit screen |
+| `lead_id` | string | `"LD-104382"` | submitted, success_cta_clicked | CRM lead ID returned by the submit API |
+| `course` | string | `"Online MBA in Product Management"` | submitted | Course selected |
+| `qualification` | enum | `12th Pass` · `Diploma` · `Graduate` · `Post Graduate` · `Working Professional` | submitted | Highest qualification |
+| `seconds_to_submit` | integer | `95` | submitted | Seconds from `form_started` to submit |
+| `error_code` | string | `"http_500"` · `"timeout"` · `"otp_provider_down"` | submit_failed | Why submission failed |
+
+**Example: `form_submitted`**
+
+```json
+{
+  "event": "form_submitted",
+  "event_id": "6f1c2b9e-0d6a-4a8e-9b1f-1d2c3e4f5a6b",
+  "timestamp": "2026-11-07T10:20:31Z",
+  "session_id": "s_8d2a41",
+  "form_id": "dyp-mba-pm-hero",
+  "variant": "default",
+  "university": "DY Patil University",
+  "program": "Online MBA in Product Management",
+  "page_url": "https://example.com/online-mba-product-management",
+  "referrer": "https://www.google.com/",
+  "device": "mobile",
+  "placement": "overlay",
+  "layout": "bottom-drawer",
+  "utm_source": "google",
+  "utm_medium": "cpc",
+  "utm_campaign": "mba_pm_nov",
+  "utm_content": "",
+  "utm_term": "online mba",
+  "lead_id": "LD-104382",
+  "lead_type": "new",
+  "course": "Online MBA in Product Management",
+  "qualification": "Working Professional",
+  "seconds_to_submit": 95
+}
+```
 
 ---
 
