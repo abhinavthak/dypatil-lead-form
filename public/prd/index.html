@@ -201,6 +201,31 @@ tr.is-main td { background: var(--green-soft); }
 .code .s { color: var(--green); }
 .code .n { color: var(--blue); }
 
+/* Urgency demos */
+.urg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.urg { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.urg__demo { background: #fff; border-bottom: 1px solid var(--line); min-height: 76px; display: grid; place-items: center; padding: 14px 10px; color: #111; font-size: 11px; }
+.urg h4 { margin: 12px 14px 6px; }
+.urg dl { margin: 0 14px 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 13px; }
+.urg dt { color: var(--faint); }
+.urg dd { margin: 0; }
+.demo-pill { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #d4d4d4; border-radius: 999px; padding: 3px 10px 3px 5px; color: #555; white-space: nowrap; }
+.demo-pill b { color: #111; }
+.demo-av { width: 30px; height: 14px; border-radius: 7px; background: linear-gradient(90deg, #6b4f45 0 33%, #8b6b5f 33% 66%, #a9877a 66%); }
+.demo-live { width: 6px; height: 6px; border-radius: 50%; background: #1fae5b; margin-left: 5px; animation: pulse 1.8s infinite; }
+.demo-live--w { background: #fff; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 5px rgba(31,174,91,0); } 0% { box-shadow: 0 0 0 0 rgba(31,174,91,.5); } }
+.demo-cd { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #faf2f3; padding: 8px 10px; border-radius: 8px; width: 100%; }
+.demo-cd b { color: #9f1c34; }
+.demo-boxes { display: flex; gap: 4px; }
+.demo-boxes i { font-style: normal; font-weight: 600; font-size: 13px; background: #fff; border: 1px solid #cfcfcf; border-radius: 6px; padding: 2px 6px; }
+.demo-boxes small { font-size: 8px; font-weight: 400; color: #555; }
+.demo-bar { position: relative; display: block; width: 100%; height: 22px; border: 1px solid #d42d2d; border-radius: 999px; overflow: hidden; background: #fff; }
+.demo-bar__fill { position: absolute; inset: 0 18% 0 0; background: #d42d2d; border-radius: 999px; }
+.demo-bar__txt { position: relative; display: flex; align-items: center; height: 100%; padding-left: 10px; color: #fff; white-space: nowrap; }
+@media (max-width: 720px) { .urg-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .demo-live { animation: none; } }
+
 /* Open items */
 .open-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
 .open { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; font-size: 14px; }
@@ -293,7 +318,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <li><a href="#placements"><span>2</span>Where it appears</a>
         <ol><li><a href="#desktop">Desktop</a></li><li><a href="#mobile">Mobile</a></li></ol></li>
       <li><a href="#behaviour"><span>3</span>How it behaves</a>
-        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li></ol></li>
+        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li><li><a href="#urgency">Urgency element</a></li></ol></li>
       <li><a href="#exit"><span>4</span>Exit intent</a></li>
       <li><a href="#config"><span>5</span>Configuration</a></li>
       <li><a href="#tracking"><span>6</span>Tracking events</a>
@@ -406,8 +431,34 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div><b>Validation</b> shows when the user leaves a field they've typed in (<i>Enter Valid Name</i>, <i>Enter Valid Email Id</i>). Untouched empty fields never show errors.</div></li>
         <li><div><b>Sign Up</b> stays grey until every field is valid and the phone is verified.</div></li>
         <li><div><b>Success:</b> "Thank you, {first name}!" with phone, course and a 3-step "What happens next". Two versions: <i>Proceed with My Application</i> (button) or <i>A counsellor will call you</i> (no button).</div></li>
-        <li><div>The urgency countdown and seat bar are <b>display only</b>; they never block submission.</div></li>
+        <li><div>The urgency element is <b>display only</b>; it never blocks submission.</div></li>
       </ol>
+
+      <h3 id="urgency">Urgency element <span class="tag tag--neutral">one at a time</span></h3>
+      <p>Each form shows <b>at most one</b> urgency element. Its numbers come from either <b>manual</b> values in the config or <b>real-time</b> data from an API.</p>
+      <div class="urg-grid">
+        <div class="urg">
+          <div class="urg__demo"><span class="demo-pill"><span class="demo-av"></span><b>146</b>&nbsp;learners requested a callback today<span class="demo-live"></span></span></div>
+          <h4>Social proof</h4>
+          <dl><dt>Manual</dt><dd>Count</dd><dt>Real-time</dt><dd><code>count</code>: callbacks today</dd></dl>
+        </div>
+        <div class="urg">
+          <div class="urg__demo"><span class="demo-cd"><span>Admissions close on <b>9th Nov’26</b></span><span class="demo-boxes"><i>01<small>d</small></i><i>23<small>h</small></i><i>12<small>m</small></i><i>08<small>s</small></i></span></span></div>
+          <h4>Countdown</h4>
+          <dl><dt>Manual</dt><dd>Deadline date &amp; time</dd><dt>Real-time</dt><dd><code>deadline</code> (ISO date-time)</dd></dl>
+        </div>
+        <div class="urg">
+          <div class="urg__demo"><span class="demo-bar"><span class="demo-bar__fill"></span><span class="demo-bar__txt"><b>82% Seat Filled</b>&nbsp;for October Batch<span class="demo-live demo-live--w"></span></span></span></div>
+          <h4>Seats filled</h4>
+          <dl><dt>Manual</dt><dd>% filled · batch name</dd><dt>Real-time</dt><dd><code>percent</code>, <code>batch</code></dd></dl>
+        </div>
+      </div>
+      <ul class="rules rules--bullets">
+        <li><div>Options: <b>None · Social proof · Countdown · Seats filled</b>. Picking one replaces the other.</div></li>
+        <li><div><b>Real-time</b> values refresh every N seconds (default 30) and show a small pulsing green <b>live dot</b>.</div></li>
+        <li><div>If the API fails or is slow, the form shows the <b>manual values as a fallback</b>, so a real-time element still needs them.</div></li>
+        <li><div>The countdown ticks every second either way; real-time only changes where the deadline comes from.</div></li>
+      </ul>
     </section>
 
     <!-- 4 -->
@@ -444,9 +495,10 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><span class="tag tag--mobile">Mobile</span> overlay <span style="color:var(--faint)">(independent)</span></td><td><div class="opts"><span class="opt">None</span><span class="opt">Bottom drawer</span><span class="opt">Bottom drawer + top image</span><span class="opt">Popup</span></div></td></tr>
           <tr><td>Open overlay</td><td><div class="opts"><span class="opt">On load</span><span class="opt">After N s (3)</span><span class="opt">After N% scroll (40)</span><span class="opt">Only on CTA click</span></div></td></tr>
           <tr><td>Side / top promo image</td><td><div class="opts"><span class="opt is-new">Upload</span><span class="opt">URL</span></div></td></tr>
-          <tr><td class="area" rowspan="3">Urgency</td><td>Social proof pill</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Count (146)</span></div></td></tr>
-          <tr><td>Countdown</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Deadline date &amp; time</span></div></td></tr>
-          <tr><td>Seats-filled bar</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">% (82)</span><span class="opt">Batch name</span></div></td></tr>
+          <tr><td class="area" rowspan="4">Urgency</td><td>Urgency element <span style="color:var(--faint)">(one at a time)</span></td><td><div class="opts"><span class="opt">None</span><span class="opt">Social proof</span><span class="opt">Countdown</span><span class="opt">Seats filled</span></div></td></tr>
+          <tr><td>Data source</td><td><div class="opts"><span class="opt is-new">Manual</span><span class="opt is-new">Real-time (API)</span></div></td></tr>
+          <tr><td>Refresh interval</td><td><div class="opts"><span class="opt">Seconds (30), real-time only</span></div></td></tr>
+          <tr><td>Manual values / fallback</td><td><div class="opts"><span class="opt">Count (146)</span><span class="opt">Deadline</span><span class="opt">% (82) + batch</span></div></td></tr>
           <tr><td class="area" rowspan="2">Trust</td><td>Trust strip</td><td><div class="opts"><span class="opt">On / Off</span><span class="opt">Badges: icon, title, subtitle</span></div></td></tr>
           <tr><td>Strip background</td><td><div class="opts"><span class="opt">Brand tint</span><span class="opt">Grey</span><span class="opt">White</span><span class="opt">Solid brand</span><span class="opt is-new">Custom colour</span></div></td></tr>
           <tr><td class="area" rowspan="3">Look</td><td>Title / subtitle</td><td><div class="opts"><span class="opt">Text</span></div></td></tr>
@@ -521,6 +573,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>referrer</code></td><td>string</td><td><code>"https://www.google.com/"</code></td><td>Previous page</td></tr>
           <tr><td><code>device</code></td><td>enum</td><td><code>desktop</code> <code>mobile</code></td><td>Screen &lt; 760px = mobile</td></tr>
           <tr><td><code>placement</code></td><td>enum</td><td><code>banner</code> <code>overlay</code></td><td>Which form surface fired it</td></tr>
+          <tr><td><code>urgency_type</code></td><td>enum</td><td><div class="opts"><code>none</code><code>social_proof</code><code>countdown</code><code>seats</code></div></td><td>Urgency element shown</td></tr>
+          <tr><td><code>urgency_source</code></td><td>enum</td><td><div class="opts"><code>manual</code><code>live</code></div></td><td>Where its data came from (<code>manual</code> also when live fell back)</td></tr>
           <tr><td><code>layout</code></td><td>enum</td><td><div class="opts"><code>banner</code><code>popup</code><code>popup-side-image</code><code>popup-top-image</code><code>sidebar</code><code>sidebar-top-image</code><code>bottom-drawer</code><code>bottom-drawer-top-image</code><code>mobile-popup</code></div></td><td>Visual style shown</td></tr>
           <tr><td><div class="opts"><code>utm_source</code><code>utm_medium</code><code>utm_campaign</code><code>utm_content</code><code>utm_term</code></div></td><td>string</td><td><code>"google"</code>, <code>"cpc"</code> …</td><td>Campaign tags from the landing URL (empty if absent)</td></tr>
         </tbody>

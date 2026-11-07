@@ -19,6 +19,7 @@ export const formatPhone = (p: string) => `+91 ${p.slice(0, 5)} ${p.slice(5)}`;
 
 interface LeadFlowValue {
   config: LeadFormConfig;
+  api: LeadApi;
   device: Device;
   values: LeadData;
   errors: Partial<Record<Field, string>>;
@@ -216,6 +217,7 @@ export function LeadFlowProvider({
 
   const value: LeadFlowValue = {
     config,
+    api,
     device,
     values,
     errors,

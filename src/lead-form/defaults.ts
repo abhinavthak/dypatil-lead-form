@@ -24,9 +24,12 @@ export const defaultConfig: LeadFormConfig = {
     topImage: `${A}top-image.jpg`,
   },
   urgency: {
-    socialProof: { enabled: true, count: 146, text: 'learners requested a callback today', avatars: `${A}avatars.png` },
-    countdown: { enabled: true, label: 'Admissions close on', deadline: designDeadline() },
-    seats: { enabled: true, percent: 82, batch: 'October Batch' },
+    type: 'countdown',
+    source: 'manual',
+    refreshSeconds: 30,
+    socialProof: { count: 146, text: 'learners requested a callback today', avatars: `${A}avatars.png` },
+    countdown: { label: 'Admissions close on', deadline: designDeadline() },
+    seats: { percent: 82, batch: 'October Batch' },
   },
   trust: {
     enabled: true,

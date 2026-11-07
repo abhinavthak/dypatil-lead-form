@@ -1,5 +1,10 @@
 import type { LeadApi, LeadData } from './types';
 
+// Live urgency mock: numbers drift upward like real traffic would.
+let liveCount = 151;
+let livePercent = 84;
+const liveDeadline = new Date(Date.now() + ((2 * 24 + 5) * 3600 + 40 * 60) * 1000).toISOString();
+
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
@@ -22,6 +27,15 @@ export const mockApi: LeadApi = {
       return { name: 'Himanshu Potdar', email: 'himanshu@upgrad.com', qualification: 'Graduate' };
     }
     return null;
+  },
+  async getUrgency(type) {
+    await wait(400);
+    if (type === 'social-proof') return { count: (liveCount += Math.floor(Math.random() * 3)) };
+    if (type === 'seats') {
+      livePercent = Math.min(99, livePercent + (Math.random() < 0.35 ? 1 : 0));
+      return { percent: livePercent, batch: 'October Batch' };
+    }
+    return { deadline: liveDeadline };
   },
   async submitLead(lead: LeadData) {
     await wait(800);

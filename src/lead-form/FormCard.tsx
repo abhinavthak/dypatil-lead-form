@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import type { UrgencyLive } from './types';
 import { isDark } from './color';
 import type { ClipboardEvent, KeyboardEvent } from 'react';
 import { formatPhone, useLeadFlow } from './LeadFlow';
@@ -29,42 +30,78 @@ function Countdown({ deadline }: { deadline: string }) {
   );
 }
 
+/** Resolves the single urgency element's values: manual config, or live API data (manual as fallback). */
+function useUrgency() {
+  const { config, api } = useLeadFlow();
+  const u = config.urgency;
+  const [live, setLive] = useState<UrgencyLive | null>(null);
+  useEffect(() => {
+    setLive(null);
+    if (u.source !== 'live' || u.type === 'none') return;
+    let alive = true;
+    const type = u.type;
+    const load = () =>
+      api.getUrgency(type).then(
+        (v) => alive && setLive(v),
+        () => {}, // keep last value / manual fallback
+      );
+    load();
+    const id = setInterval(load, Math.max(10, u.refreshSeconds) * 1000);
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
+  }, [api, u.source, u.type, u.refreshSeconds]);
+  return {
+    type: u.type,
+    isLive: u.source === 'live' && !!live,
+    count: live?.count ?? u.socialProof.count,
+    deadline: live?.deadline ?? u.countdown.deadline,
+    percent: live?.percent ?? u.seats.percent,
+    batch: live?.batch ?? u.seats.batch,
+  };
+}
+
+const LiveDot = () => <span className="lf-live" title="Live" aria-label="Live data" />;
+
 export function FormHeader() {
   const { config } = useLeadFlow();
-  const { socialProof, countdown, seats } = config.urgency;
-  const showBand = countdown.enabled || seats.enabled;
+  const u = useUrgency();
+  const { socialProof, countdown } = config.urgency;
   return (
     <>
       <div className="lf-head">
         <h2 className="lf-title">{config.brand.title}</h2>
         <p className="lf-sub">{config.brand.subtitle}</p>
-        {socialProof.enabled && (
+        {u.type === 'social-proof' && (
           <div className="lf-proof">
             <img src={socialProof.avatars} alt="" />
             <span>
-              <b>{socialProof.count}</b> {socialProof.text}
+              <b>{u.count}</b> {socialProof.text}
             </span>
+            {u.isLive && <LiveDot />}
           </div>
         )}
       </div>
-      {showBand && (
+      {(u.type === 'countdown' || u.type === 'seats') && (
         <div className="lf-urgency">
-          {countdown.enabled && (
+          {u.type === 'countdown' && (
             <div className="lf-urgency__row">
               <span className="lf-urgency__label">
-                {countdown.label} <b>{formatDeadline(countdown.deadline)}</b>
+                {countdown.label} <b>{formatDeadline(u.deadline)}</b>
               </span>
-              <Countdown deadline={countdown.deadline} />
+              <Countdown deadline={u.deadline} />
             </div>
           )}
-          {seats.enabled && (
+          {u.type === 'seats' && (
             <div className="lf-seats">
-              <div className="lf-seats__fill" style={{ width: `${Math.min(100, Math.max(0, seats.percent))}%` }} />
+              <div className="lf-seats__fill" style={{ width: `${Math.min(100, Math.max(0, u.percent))}%` }} />
               <span className="lf-seats__text">
                 <Users />
                 <span>
-                  <b>{seats.percent}% Seat Filled</b> for {seats.batch}
+                  <b>{u.percent}% Seat Filled</b> for {u.batch}
                 </span>
+                {u.isLive && <LiveDot />}
               </span>
             </div>
           )}

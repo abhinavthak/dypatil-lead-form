@@ -14,6 +14,16 @@ export type OverlayStyle =
 
 export type OverlayTrigger = 'load' | 'delay' | 'scroll' | 'manual';
 
+export type UrgencyType = 'none' | 'social-proof' | 'countdown' | 'seats';
+
+/** Live urgency values returned by the API. Only the field for the requested type is needed. */
+export interface UrgencyLive {
+  count?: number;
+  deadline?: string;
+  percent?: number;
+  batch?: string;
+}
+
 export type TrustStyle = 'tint' | 'grey' | 'white' | 'brand' | 'custom';
 
 export interface TrustBadge {
@@ -48,9 +58,15 @@ export interface LeadFormConfig {
     topImage: string;
   };
   urgency: {
-    socialProof: { enabled: boolean; count: number; text: string; avatars: string };
-    countdown: { enabled: boolean; label: string; deadline: string /* ISO */ };
-    seats: { enabled: boolean; percent: number; batch: string };
+    /** Only one urgency element is shown at a time. */
+    type: UrgencyType;
+    /** `manual`: values below. `live`: fetched from the API (manual values are the fallback). */
+    source: 'manual' | 'live';
+    /** How often live values refresh. */
+    refreshSeconds: number;
+    socialProof: { count: number; text: string; avatars: string };
+    countdown: { label: string; deadline: string /* ISO */ };
+    seats: { percent: number; batch: string };
   };
   trust: {
     enabled: boolean;
@@ -93,4 +109,6 @@ export interface LeadApi {
   /** Returns saved details when the phone belongs to an existing lead. */
   lookupLead(phone: string): Promise<Partial<LeadData> | null>;
   submitLead(lead: LeadData): Promise<void>;
+  /** Real-time urgency data (callbacks today, admission deadline, seats filled). */
+  getUrgency(type: Exclude<UrgencyType, 'none'>): Promise<UrgencyLive>;
 }

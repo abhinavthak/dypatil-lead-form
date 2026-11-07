@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { LeadExperience, defaultConfig, useLeadOverlay } from '../lead-form';
-import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustStyle } from '../lead-form';
+import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustStyle, UrgencyType } from '../lead-form';
 import { DesktopPage, MobilePage } from './Pages';
 import { assets } from '../lead-form/defaults';
 
@@ -33,6 +33,7 @@ function loadConfig(): LeadFormConfig {
       // Keep the countdown live: a saved past deadline falls back to the design default.
       if (new Date(saved.urgency.countdown.deadline).getTime() < Date.now()) saved.urgency.countdown.deadline = defaultConfig.urgency.countdown.deadline;
       if (!saved.trust?.style) saved.trust = defaultConfig.trust;
+      if (!saved.urgency?.type) saved.urgency = defaultConfig.urgency;
       saved.banner = { ...defaultConfig.banner, ...saved.banner };
       return { ...defaultConfig, ...saved };
     }
@@ -195,14 +196,41 @@ export default function App() {
             </Section>
 
             <Section title="Urgency & trust">
-              <Toggle label="Social proof pill" checked={u.socialProof.enabled} onChange={(v) => set('urgency.socialProof.enabled', v)} />
-              {u.socialProof.enabled && (
-                <Num label="Callbacks today" value={u.socialProof.count} min={0} max={9999} onChange={(v) => set('urgency.socialProof.count', v)} />
+              <Select<UrgencyType>
+                label="Urgency element (one at a time)"
+                value={u.type}
+                options={[
+                  ['none', 'None'],
+                  ['social-proof', 'Social proof (callbacks today)'],
+                  ['countdown', 'Countdown to deadline'],
+                  ['seats', 'Seats filled bar'],
+                ]}
+                onChange={(v) => set('urgency.type', v)}
+              />
+              {u.type !== 'none' && (
+                <div className="pg-field">
+                  <span>Data</span>
+                  <div className="pg-seg pg-seg--full" role="radiogroup" aria-label="Urgency data source">
+                    {(['manual', 'live'] as const).map((src) => (
+                      <button key={src} type="button" role="radio" aria-checked={u.source === src} className={u.source === src ? 'on' : ''} onClick={() => set('urgency.source', src)}>
+                        {src === 'manual' ? 'Manual' : 'Real-time'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
-              <Toggle label="Countdown timer" checked={u.countdown.enabled} onChange={(v) => set('urgency.countdown.enabled', v)} />
-              {u.countdown.enabled && (
+              {u.type !== 'none' && u.source === 'live' && (
+                <>
+                  <Num label="Refresh every (s)" value={u.refreshSeconds} min={10} max={600} onChange={(v) => set('urgency.refreshSeconds', v)} />
+                  <p className="pg-small">Fetched from the urgency API (mocked here; values drift up). The manual values below are the fallback if the API fails.</p>
+                </>
+              )}
+              {u.type === 'social-proof' && (
+                <Num label={u.source === 'live' ? 'Fallback count' : 'Callbacks today'} value={u.socialProof.count} min={0} max={9999} onChange={(v) => set('urgency.socialProof.count', v)} />
+              )}
+              {u.type === 'countdown' && (
                 <label className="pg-field">
-                  <span>Admissions close</span>
+                  <span>{u.source === 'live' ? 'Fallback deadline' : 'Admissions close'}</span>
                   <input
                     type="datetime-local"
                     value={toLocalInput(u.countdown.deadline)}
@@ -210,10 +238,9 @@ export default function App() {
                   />
                 </label>
               )}
-              <Toggle label="Seats filled bar" checked={u.seats.enabled} onChange={(v) => set('urgency.seats.enabled', v)} />
-              {u.seats.enabled && (
+              {u.type === 'seats' && (
                 <>
-                  <Num label="Seats filled (%)" value={u.seats.percent} min={0} max={100} onChange={(v) => set('urgency.seats.percent', v)} />
+                  <Num label={u.source === 'live' ? 'Fallback seats filled (%)' : 'Seats filled (%)'} value={u.seats.percent} min={0} max={100} onChange={(v) => set('urgency.seats.percent', v)} />
                   <Text label="Batch" value={u.seats.batch} onChange={(v) => set('urgency.seats.batch', v)} />
                 </>
               )}

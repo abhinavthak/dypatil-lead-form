@@ -121,7 +121,23 @@ After a correct OTP we check whether this number is already a lead. That decides
 5. **Sign Up** stays grey until every field is valid and the phone is verified.
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
-7. The urgency countdown and seat bar are **display only**; they never block submission.
+7. The urgency element is **display only**; it never blocks submission.
+
+### Urgency element (one at a time)
+
+Each form shows **at most one** urgency element. Its numbers come from either **manual** values set in the config
+or **real-time** data from an API.
+
+| Element | Shows | Manual data | Real-time data (API returns) |
+| --- | --- | --- | --- |
+| **None** | n/a | n/a | n/a |
+| **Social proof** | "146 learners requested a callback today" pill under the title | Count | `count`: callbacks today |
+| **Countdown** | "Admissions close on 9th Nov'26" + live d / h / m / s timer | Deadline date & time | `deadline` (ISO date-time) |
+| **Seats filled** | Red progress bar "82% Seat Filled for October Batch" | % filled · batch name | `percent`, `batch` |
+
+- **Real-time** values refresh every N seconds (default 30) and show a small pulsing green **live dot**.
+- If the API fails or is slow, the form shows the **manual values as a fallback**, so a real-time element still needs them.
+- The countdown ticks every second either way; real-time only changes where the deadline comes from.
 
 ---
 
@@ -167,9 +183,10 @@ Everything below is set per page through one config object (exportable from the 
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |
 | | Side / top promo image | **Upload** an image (or set an image URL) |
-| **Urgency** | Social proof pill | On/Off · count ("146 learners requested a callback today") |
-| | Countdown | On/Off · deadline date & time |
-| | Seats-filled bar | On/Off · % (82) · batch name |
+| **Urgency** | Urgency element (**one at a time**) | None · Social proof · Countdown · Seats filled |
+| | Data source | **Manual** · **Real-time** (API) |
+| | Refresh interval (real-time) | Seconds (30) |
+| | Manual values / fallback | Count (146) · deadline · % (82) + batch name |
 | **Trust** | Trust strip | On/Off · badges (icon, title, subtitle) |
 | | Strip background | Brand tint · Grey · White · Solid brand · **Custom colour** |
 | **Look** | Title / subtitle | Text |
@@ -232,6 +249,8 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `referrer` | string | `"https://www.google.com/"` | Previous page |
 | `device` | enum | `desktop` · `mobile` | Screen < 760px = mobile |
 | `placement` | enum | `banner` · `overlay` | Which form surface fired it |
+| `urgency_type` | enum | `none` · `social_proof` · `countdown` · `seats` | Urgency element shown |
+| `urgency_source` | enum | `manual` · `live` | Where its data came from (`manual` also when live fell back) |
 | `layout` | enum | `popup` · `popup-side-image` · `popup-top-image` · `sidebar` · `sidebar-top-image` · `bottom-drawer` · `bottom-drawer-top-image` · `mobile-popup` · `banner` | Visual style shown |
 | `utm_source` · `utm_medium` · `utm_campaign` · `utm_content` · `utm_term` | string | `"google"`, `"cpc"` … | Campaign tags from the landing URL (empty if absent) |
 
