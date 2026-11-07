@@ -288,12 +288,3 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
   "seconds_to_submit": 95
 }
 ```
-
----
-
-## 7. Not in this version / open questions
-
-- **Backend:** OTP, lead lookup and submit are mocked in the prototype (OTP `1111` fails; numbers ending `2168` are
-  existing leads). Need the real API endpoints and OTP provider.
-- **Tracking:** events above are specified, not yet wired; the component needs an `onEvent` hook.
-- **Open:** should OTP be skippable after N failed attempts? Should "Continue" / "Proceed" buttons follow the CTA colour?

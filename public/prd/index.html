@@ -282,7 +282,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
 </header>
 
 <div class="toc-mobile"><nav aria-label="Sections">
-  <a href="#why">Why</a><a href="#placements">Placements</a><a href="#behaviour">Behaviour</a><a href="#exit">Exit intent</a><a href="#config">Configuration</a><a href="#tracking">Tracking</a><a href="#open">Open items</a>
+  <a href="#why">Why</a><a href="#placements">Placements</a><a href="#behaviour">Behaviour</a><a href="#exit">Exit intent</a><a href="#config">Configuration</a><a href="#tracking">Tracking</a>
 </nav></div>
 
 <div class="layout" id="top">
@@ -298,7 +298,6 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <li><a href="#config"><span>5</span>Configuration</a></li>
       <li><a href="#tracking"><span>6</span>Tracking events</a>
         <ol><li><a href="#events">Events</a></li><li><a href="#common-params">Common parameters</a></li><li><a href="#event-params">Event parameters</a></li><li><a href="#example">Example payload</a></li></ol></li>
-      <li><a href="#open"><span>7</span>Open items</a></li>
     </ol>
   </aside>
 
@@ -557,16 +556,6 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <div class="code">
         <div class="code__bar"><span>dataLayer.push(…)</span><button class="btn" id="copy-json" type="button" style="height:28px">Copy</button></div>
 <pre id="json"></pre>
-      </div>
-    </section>
-
-    <!-- 7 -->
-    <section id="open">
-      <div class="sec-head"><span class="sec-num">07</span><h2>Not in this version · open questions</h2></div>
-      <div class="open-grid">
-        <div class="open"><span class="tag tag--neutral">Backend</span><h4>Real APIs & OTP provider</h4><p>OTP, lead lookup and submit are mocked in the prototype (OTP <code>1111</code> fails; numbers ending <code>2168</code> are existing leads). The submit API must return <code>lead_id</code>.</p></div>
-        <div class="open"><span class="tag tag--neutral">Tracking</span><h4>Wire up events</h4><p>Events are specified, not yet sent. The component needs an <code>onEvent</code> hook that pushes to <code>dataLayer</code>.</p></div>
-        <div class="open"><span class="tag tag--neutral">Open</span><h4>Decisions needed</h4><p>Should OTP be skippable after N failed attempts? Should "Continue" / "Proceed" buttons follow the CTA colour?</p></div>
       </div>
     </section>
 
