@@ -25,8 +25,6 @@ interface OverlayCtl {
   view: View;
   style: OverlayStyle;
   openForm(): void;
-  /** Show the exit-intent screen (once per page view, never after submit). */
-  triggerExitIntent(): void;
 }
 
 const OverlayCtx = createContext<OverlayCtl | null>(null);
@@ -67,8 +65,6 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>('form');
   const autoOpened = useRef(false);
-  /** When the exit screen was last dismissed; passive triggers wait a moment before showing it again. */
-  const lastExitDismiss = useRef(0);
 
   // When there is no overlay form, exit intent still needs a container.
   const style: OverlayStyle = configured !== 'none' ? configured : device === 'desktop' ? 'popup' : 'mobile-popup';
@@ -80,42 +76,26 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     setOpen(true);
   }, [hasOverlayForm, onFocusBanner]);
 
-  /** Shows the exit screen every time the visitor tries to leave (never after they've submitted). */
-  const triggerExitIntent = useCallback(() => {
-    if (!config.exitIntent.enabled || flow.submitted) return;
-    // Cooldown so one gesture (e.g. a long upward flick) doesn't reopen it immediately after dismissal.
-    if (Date.now() - lastExitDismiss.current < 4000) return;
-    setView('exit');
-    setOpen(true);
-  }, [config.exitIntent.enabled, flow.submitted]);
-
   const requestClose = () => {
     if (view === 'exit' && !flow.submitted) return; // only "No Thanks, Close" or "Continue" leave the exit screen
-    if (view === 'form' && !flow.submitted && config.exitIntent.enabled && config.exitIntent.onClose) {
+    // Exit intent: closing the form before submitting shows the "Before you go" screen (every time).
+    if (view === 'form' && !flow.submitted && config.exitIntent.enabled) {
       setView('exit');
       return;
     }
     setOpen(false);
   };
 
-  const dismissExit = () => {
-    lastExitDismiss.current = Date.now();
-    setOpen(false);
-  };
+  const dismissExit = () => setOpen(false);
 
   const continueFromExit = () => {
-    // Re-arm the mobile back-button trap that showing the screen may have used up.
-    if (device === 'mobile' && config.exitIntent.onLeaveIntent && !(history.state as { lfExitTrap?: boolean } | null)?.lfExitTrap) {
-      history.pushState({ ...(history.state ?? {}), lfExitTrap: true }, '');
-    }
     if (hasOverlayForm) return setView('form');
     setOpen(false);
     onFocusBanner?.();
   };
 
-  // Reset one-shot guards whenever the configuration changes (playground).
+  // Reset the auto-open guard whenever the configuration changes (playground).
   useEffect(() => {
-    lastExitDismiss.current = 0;
     autoOpened.current = false;
     setOpen(false);
   }, [config, device]);
@@ -150,41 +130,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     }
   }, [config.overlay, hasOverlayForm, flow.submitted, scrollRoot]);
 
-  // Exit-intent detection.
-  useEffect(() => {
-    if (!config.exitIntent.enabled || !config.exitIntent.onLeaveIntent) return;
-    if (device === 'desktop') {
-      const onOut = (e: MouseEvent) => {
-        if (!e.relatedTarget && e.clientY <= 4) triggerExitIntent();
-      };
-      document.addEventListener('mouseout', onOut);
-      return () => document.removeEventListener('mouseout', onOut);
-    }
-    // Mobile has no cursor, so use the signals phones do give us.
-
-    // 1) Back button: park one history entry; pressing back shows the exit screen instead of leaving.
-    //    A second press then leaves normally.
-    if (!(history.state as { lfExitTrap?: boolean } | null)?.lfExitTrap) {
-      history.pushState({ ...(history.state ?? {}), lfExitTrap: true }, '');
-    }
-    const onPop = () => triggerExitIntent();
-    window.addEventListener('popstate', onPop);
-
-    // 2) Coming back after switching to another app or tab.
-    let hiddenAt = 0;
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') hiddenAt = Date.now();
-      else if (hiddenAt && Date.now() - hiddenAt > 1500) triggerExitIntent();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-
-    return () => {
-      window.removeEventListener('popstate', onPop);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [config.exitIntent, device, triggerExitIntent]);
-
-  const ctl: OverlayCtl = { open, view, style, openForm, triggerExitIntent };
+  const ctl: OverlayCtl = { open, view, style, openForm };
 
   return (
     <OverlayCtx.Provider value={ctl}>

@@ -22,7 +22,7 @@ npm run build      # static build in dist/
 - **Desktop / Mobile** toggle renders the real landing page in a 1430px desktop frame or a 375px phone frame.
 - Left panel configures every option live (saved in localStorage); **Copy config JSON** exports it.
 - **Images**: upload your own banner-form image, popup side image, top banner image and page hero images (desktop / mobile).
-- **Open form**, **Simulate exit intent** and **Restart** drive the flows. The page's *Download Brochure* and
+- **Open form** and **Restart** drive the flows; close an open form to see the exit-intent screen. The page's *Download Brochure* and
   *Apply Now* buttons also open the form.
 
 Mock backend (`src/lead-form/mockApi.ts`):
@@ -38,7 +38,7 @@ Mock backend (`src/lead-form/mockApi.ts`):
 | Urgency | Social-proof pill (count) · countdown to a deadline · seats-filled bar (% and batch) |
 | Trust | UGC / NAAC / No-cost EMI strip (badges are data) |
 | Flow | Inline OTP verification on/off · success screen: "Proceed with application" or "Wait for a callback" |
-| Exit intent | On cursor leaving the window (desktop) / back button or returning to the tab (mobile) · on closing an overlay · show "n of 5 done" progress |
+| Exit intent | Shown when the visitor closes the form overlay before submitting · show "n of 5 done" progress |
 | Brand | Title, subtitle, primary colour |
 
 The banner and overlay share one lead state, so anything typed in one carries over to the other.

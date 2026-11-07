@@ -72,13 +72,10 @@ export interface LeadFormConfig {
     counsellorName: string;
   };
   exitIntent: {
+    /** Show the "Before you go" screen when someone tries to close the form overlay (✕, outside click, Esc). */
     enabled: boolean;
     /** Show "1 of 5 done" progress when the visitor has started filling the form. */
     showProgress: boolean;
-    /** Desktop: cursor leaves through the top of the window. Mobile: fast scroll up / back button. */
-    onLeaveIntent: boolean;
-    /** Intercept closing an open overlay before submitting. */
-    onClose: boolean;
   };
 }
 

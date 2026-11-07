@@ -126,41 +126,31 @@ After a correct OTP we check whether this number is already a lead. That decides
 
 ## 4. Exit intent
 
-Shown when a visitor who **hasn't submitted** tries to leave. It shows **every time** they try to leave (not just once).
+Shown **only when someone tries to close the form overlay** before submitting: the ✕ button, clicking outside
+the form, or pressing Esc. It shows **every time** they try to close (not just once).
+
+Nothing else triggers it: no cursor-leave detection, no back-button or tab tracking. The inline banner form has no
+close button, so exit intent applies to overlays only.
 
 ```mermaid
 flowchart LR
-    A{Visitor tries to leave} --> B[Exit screen]
-    subgraph Desktop
-      A1[Cursor leaves top of window]
-    end
-    subgraph Mobile
-      A2[Back button]
-      A4[Returns to tab]
-    end
-    A5[Closes the form overlay]
-    A1 --> A
-    A2 --> A
-    A4 --> A
-    A5 --> A
+    A[Form overlay open<br/>not submitted] -->|✕ / click outside / Esc| B[Exit screen]
     B -->|Continue to Get a Call back| C[Back to the form]
-    B -->|No Thanks, Close| D[Closed<br/>4s cool-down]
+    C -->|tries to close again| B
+    B -->|No Thanks, Close| D[Overlay closed]
 ```
 
 | | Desktop | Mobile |
 | --- | --- | --- |
-| **Shown when** | Cursor leaves through the top of the window · visitor closes the overlay | Back button · returns to the tab · closes the overlay |
-| **Appears as** | Centred card over the page (or inside the sidebar) | Bottom drawer (or centred popup, matching the mobile overlay) |
+| **Appears as** | Replaces the form inside the popup / sidebar | Replaces the form inside the drawer / popup |
 | **Screen** | <img src="images/exit-intent.png" width="420"> | <img src="images/mobile-exit-intent.png" width="170"> |
 
 **Rules**
 
-- **No ✕ button**; clicking outside or pressing Esc does nothing. Only **Continue** or **No Thanks, Close** leave it.
+- **No ✕ button** on the exit screen; clicking outside or pressing Esc does nothing.
+  Only **Continue to Get a Call back** or **No Thanks, Close** leave it.
 - If the visitor has started, show progress: "Your details · 2 of 5 done".
-- Never shown after a successful submit.
-- After "No Thanks", passive triggers (cursor, tab return) wait **4 seconds** before showing it again.
-- Mobile back button: first press shows the exit screen; after "No Thanks" the next press leaves the page
-  (we never trap users).
+- Never shown after a successful submit (closing the success screen just closes).
 
 ---
 
@@ -186,8 +176,7 @@ Everything below is set per page through one config object (exportable from the 
 | | **CTA colour** | Any colour (Sign Up button; text auto black/white) |
 | **Flow** | Verify phone with OTP | On (default) / Off: with Off, fields are never locked |
 | | Success screen | Proceed with application · Wait for callback |
-| **Exit intent** | Enabled | On / Off |
-| | Triggers | Leave intent (cursor / back / tab) · Closing the overlay |
+| **Exit intent** | Show when the form is closed | On / Off |
 | | Show progress | On / Off |
 | **Data** | Qualification & course lists | Lists of options |
 | | Terms / Privacy links | URLs |
@@ -262,7 +251,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `fields_prefilled` | array of enum | `["name","email","qualification"]` | existing_lead | Fields we filled for them |
 | `fields_complete` | integer 0–5 | `5` | submit_clicked | Valid fields at click time |
 | `progress` | integer 0–5 | `2` | exit_* | Fields done when exit screen shows |
-| `exit_trigger` | enum | `mouse_leave` · `back` · `tab_return` · `close` | exit_* | What caused the exit screen |
+| `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the form |
 | `lead_id` | string | `"LD-104382"` | submitted, success_cta_clicked | CRM lead ID returned by the submit API |
 | `course` | string | `"Online MBA in Product Management"` | submitted | Course selected |
 | `qualification` | enum | `12th Pass` · `Diploma` · `Graduate` · `Post Graduate` · `Working Professional` | submitted | Highest qualification |

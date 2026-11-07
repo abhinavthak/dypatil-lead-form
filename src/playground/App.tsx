@@ -136,10 +136,6 @@ export default function App() {
         </div>
         <div className="pg-actions">
           <button onClick={() => ctlRef.current?.openForm()}>Open form</button>
-          <button onClick={() => ctlRef.current?.triggerExitIntent()}>
-            <span className="pg-long">Simulate exit intent</span>
-            <span className="pg-short">Exit intent</span>
-          </button>
           <button onClick={restart}>Restart</button>
         </div>
       </header>
@@ -261,18 +257,11 @@ export default function App() {
             </Section>
 
             <Section title="Exit intent">
-              <Toggle label="Enabled" checked={config.exitIntent.enabled} onChange={(v) => set('exitIntent.enabled', v)} />
+              <Toggle label="Show when the form is closed" checked={config.exitIntent.enabled} onChange={(v) => set('exitIntent.enabled', v)} />
               {config.exitIntent.enabled && (
-                <>
-                  <Toggle
-                    label={device === 'desktop' ? 'On cursor leaving the page' : 'On back button or tab return'}
-                    checked={config.exitIntent.onLeaveIntent}
-                    onChange={(v) => set('exitIntent.onLeaveIntent', v)}
-                  />
-                  <Toggle label="On closing the overlay" checked={config.exitIntent.onClose} onChange={(v) => set('exitIntent.onClose', v)} />
-                  <Toggle label="Show form progress" checked={config.exitIntent.showProgress} onChange={(v) => set('exitIntent.showProgress', v)} />
-                </>
+                <Toggle label="Show form progress" checked={config.exitIntent.showProgress} onChange={(v) => set('exitIntent.showProgress', v)} />
               )}
+              <p className="pg-small">Appears when someone closes the form overlay (✕, outside click or Esc) before submitting.</p>
             </Section>
 
             <Section title="Images">

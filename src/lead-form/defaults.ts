@@ -51,7 +51,7 @@ export const defaultConfig: LeadFormConfig = {
   otp: { enabled: true, length: 4, resendSeconds: 30 },
   consent: { termsUrl: '#terms', privacyUrl: '#privacy' },
   success: { variant: 'proceed', proceedUrl: '#apply', counsellorName: 'DY Patil' },
-  exitIntent: { enabled: true, showProgress: true, onLeaveIntent: true, onClose: true },
+  exitIntent: { enabled: true, showProgress: true },
 };
 
 export const assets = {
