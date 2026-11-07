@@ -201,6 +201,19 @@ tr.is-main td { background: var(--green-soft); }
 .code .s { color: var(--green); }
 .code .n { color: var(--blue); }
 
+/* Lead capture */
+.capture { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; position: relative; }
+.capture li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.capture li:not(:last-child)::after { content: '→'; position: absolute; right: -11px; top: 22px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg); color: var(--faint); display: grid; place-items: center; font-size: 12px; z-index: 1; }
+.capture li.is-final { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); box-shadow: inset 0 3px 0 var(--green); }
+.capture__n { width: 26px; height: 26px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-text); display: grid; place-items: center; font: 600 12px var(--mono); }
+.capture li.is-final .capture__n { background: var(--green-soft); color: var(--green); }
+.capture__when { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.capture p { margin: 0; color: var(--muted); font-size: 13px; }
+.capture__what { font-size: 13.5px; flex: 1; padding-top: 6px; border-top: 1px dashed var(--line); margin-top: 4px; }
+.capture__status { align-self: flex-start; font: 500 11.5px var(--mono); padding: 2px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); }
+@media (max-width: 720px) { .capture { grid-template-columns: 1fr; } .capture li:not(:last-child)::after { content: '↓'; right: auto; left: 20px; top: auto; bottom: -11px; } }
+
 /* Urgency demos */
 .urg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
 .urg { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
@@ -318,7 +331,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <li><a href="#placements"><span>2</span>Where it appears</a>
         <ol><li><a href="#desktop">Desktop</a></li><li><a href="#mobile">Mobile</a></li></ol></li>
       <li><a href="#behaviour"><span>3</span>How it behaves</a>
-        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li><li><a href="#urgency">Urgency element</a></li></ol></li>
+        <ol><li><a href="#verify">Verify phone</a></li><li><a href="#new-lead">New lead</a></li><li><a href="#existing-lead">Existing lead</a></li><li><a href="#form-rules">Rules</a></li><li><a href="#lead-capture">Lead capture</a></li><li><a href="#urgency">Urgency element</a></li></ol></li>
       <li><a href="#exit"><span>4</span>Exit intent</a></li>
       <li><a href="#config"><span>5</span>Configuration</a></li>
       <li><a href="#tracking"><span>6</span>Tracking events</a>
@@ -341,7 +354,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M14 4v16"/></svg><p><b>Banner + overlays</b><span>Inline hero form plus a popup, sidebar or bottom drawer, chosen separately for desktop and mobile.</span></p></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg><p><b>Phone first, verified by OTP</b><span>Other fields unlock only after verification; existing leads are pre-filled.</span></p></div>
       <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><p><b>Exit intent on close</b><span>Closing an unsubmitted form shows a "Before you go" screen, every time.</span></p></div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><p><b>19 tracked events</b><span>Full funnel from view to submit, with no personal data in analytics.</span></p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><p><b>20 tracked events</b><span>Full funnel from view to submit, with no personal data in analytics.</span></p></div>
     </div>
 
     <!-- 1 -->
@@ -433,6 +446,39 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div><b>Success:</b> "Thank you, {first name}!" with phone, course and a 3-step "What happens next". Two versions: <i>Proceed with My Application</i> (button) or <i>A counsellor will call you</i> (no button).</div></li>
         <li><div>The urgency element is <b>display only</b>; it never blocks submission.</div></li>
       </ol>
+
+      <h3 id="lead-capture">Lead capture <span class="tag tag--neutral">when details reach the CRM</span></h3>
+      <p>We don't wait for Sign Up. A lead is created <b>as soon as the phone is verified</b> and then updated, so partly filled forms are not lost. All three calls update the <b>same lead</b> (matched by <code>lead_id</code> / phone); nothing is duplicated.</p>
+      <ol class="capture">
+        <li>
+          <span class="capture__n">1</span>
+          <div class="capture__when">Phone verified</div>
+          <p>Correct OTP entered.</p>
+          <div class="capture__what"><b>Sends</b> phone + page context (university, program, form, device, placement, UTMs). Existing leads reuse their record.</div>
+          <span class="capture__status">phone_verified</span>
+        </li>
+        <li>
+          <span class="capture__n">2</span>
+          <div class="capture__when">Form closed early</div>
+          <p>✕, click outside, Esc, or "No Thanks, Close" before submitting.</p>
+          <div class="capture__what"><b>Sends</b> every field filled <b>up to that point</b>: name, email, qualification, course.</div>
+          <span class="capture__status">partial</span>
+        </li>
+        <li class="is-final">
+          <span class="capture__n">3</span>
+          <div class="capture__when">Sign Up clicked <span class="tag tag--new">always</span></div>
+          <p>The user submits the form.</p>
+          <div class="capture__what"><b>Sends</b> all fields. This is the confirmed lead.</div>
+          <span class="capture__status">submitted</span>
+        </li>
+      </ol>
+      <ul class="rules rules--bullets">
+        <li><div><b>Nothing is sent before the phone is verified</b>; no lead without a verified number.</div></li>
+        <li><div>Step 2 sends only fields that have a value. Invalid values (e.g. a half-typed email) are sent as typed but flagged <code>invalid</code>.</div></li>
+        <li><div>Step 2 can happen more than once (close → reopen → close); each sends the latest values.</div></li>
+        <li><div>Step 3 must succeed: if submit fails, show an error and keep the form open with <b>Retry</b>.</div></li>
+        <li><div>A <code>submitted</code> lead is never downgraded to <code>partial</code> by a later close.</div></li>
+      </ul>
 
       <h3 id="urgency">Urgency element <span class="tag tag--neutral">one at a time</span></h3>
       <p>Each form shows <b>at most one</b> urgency element. Its numbers come from either <b>manual</b> values in the config or <b>real-time</b> data from an API.</p>
@@ -548,6 +594,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>form_phone_edited</code></td><td>"Edit" on the number</td><td>n/a</td></tr>
           <tr><td><code>form_existing_lead</code></td><td>Lookup found a past lead</td><td><code>fields_prefilled</code></td></tr>
           <tr><td><code>form_field_error</code></td><td>Validation error shown</td><td><code>field</code> <code>error</code></td></tr>
+          <tr><td><code>form_lead_captured</code></td><td>Lead created or updated in the CRM (phone verified · form closed early)</td><td><code>lead_id</code> <code>lead_stage</code> <code>fields_sent</code></td></tr>
           <tr><td><code>form_submit_clicked</code></td><td>Sign Up clicked</td><td><code>fields_complete</code></td></tr>
           <tr class="is-main"><td><code>form_submitted</code></td><td>Lead saved ✅ <b>main conversion</b></td><td><code>lead_id</code> <code>lead_type</code> <code>course</code> <code>qualification</code> <code>seconds_to_submit</code></td></tr>
           <tr><td><code>form_submit_failed</code></td><td>Submit API returned an error</td><td><code>error_code</code></td></tr>
@@ -598,7 +645,9 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>fields_complete</code></td><td>integer 0–5</td><td><code>5</code></td><td>submit_clicked</td><td>Valid fields at click time</td></tr>
           <tr><td><code>progress</code></td><td>integer 0–5</td><td><code>2</code></td><td>exit_*</td><td>Fields done when exit screen shows</td></tr>
           <tr><td><code>exit_trigger</code></td><td>enum</td><td><div class="opts"><code>close_button</code><code>outside_click</code><code>esc_key</code></div></td><td>exit_*</td><td>How the visitor tried to close</td></tr>
-          <tr><td><code>lead_id</code></td><td>string</td><td><code>"LD-104382"</code></td><td>submitted, success_cta_clicked</td><td>CRM lead ID from the submit API</td></tr>
+          <tr><td><code>lead_id</code></td><td>string</td><td><code>"LD-104382"</code></td><td>lead_captured, submitted, success_cta_clicked</td><td>CRM lead ID, returned when the phone is verified</td></tr>
+          <tr><td><code>lead_stage</code></td><td>enum</td><td><div class="opts"><code>phone_verified</code><code>partial</code></div></td><td>lead_captured</td><td>Which capture point fired</td></tr>
+          <tr><td><code>fields_sent</code></td><td>array of enum</td><td><code>["name","email"]</code></td><td>lead_captured</td><td>Fields included in that update</td></tr>
           <tr><td><code>course</code></td><td>string</td><td><code>"Online MBA in Product Management"</code></td><td>submitted</td><td>Course selected</td></tr>
           <tr><td><code>qualification</code></td><td>enum</td><td><div class="opts"><code>12th Pass</code><code>Diploma</code><code>Graduate</code><code>Post Graduate</code><code>Working Professional</code></div></td><td>submitted</td><td>Highest qualification</td></tr>
           <tr><td><code>seconds_to_submit</code></td><td>integer</td><td><code>95</code></td><td>submitted</td><td>From <code>form_started</code> to submit</td></tr>

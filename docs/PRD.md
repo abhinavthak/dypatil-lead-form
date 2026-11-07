@@ -123,6 +123,33 @@ After a correct OTP we check whether this number is already a lead. That decides
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
 7. The urgency element is **display only**; it never blocks submission.
 
+### Lead capture: when details are sent to the CRM
+
+We don't wait for Sign Up. A lead is created **as soon as the phone is verified** and then updated, so partly
+filled forms are not lost. All three calls update the **same lead** (matched by `lead_id` / phone); nothing is duplicated.
+
+| # | When | What we send | Lead status |
+| --- | --- | --- | --- |
+| 1 | **Phone verified** (correct OTP) | Phone + page context (university, program, form, device, placement, UTMs). For an existing lead, their record is reused | `phone_verified` |
+| 2 | **User closes the form** before submitting (✕, click outside, Esc, or "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
+| 3 | **User clicks Sign Up** (always) | All fields | `submitted` |
+
+```mermaid
+flowchart LR
+    A[OTP verified] -->|1 create lead| CRM[(CRM lead)]
+    B[Form closed early] -->|2 update with fields so far| CRM
+    C[Sign Up clicked] -->|3 final update| CRM
+```
+
+**Rules**
+
+- Nothing is sent before the phone is verified (no lead without a verified number).
+- Step 2 sends only fields that have a value; invalid values (e.g. a half-typed email) are sent as typed but flagged
+  `invalid` so sales can see them without trusting them.
+- Step 2 can happen more than once (close → reopen → close); each sends the latest values.
+- Step 3 is required and must succeed: if the submit call fails, show an error and keep the form open with **Retry**.
+- A lead marked `submitted` is never downgraded back to `partial` by a later close.
+
 ### Urgency element (one at a time)
 
 Each form shows **at most one** urgency element. Its numbers come from either **manual** values set in the config
@@ -224,6 +251,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `form_phone_edited` | "Edit" on the number | n/a |
 | `form_existing_lead` | Lookup found a past lead | `fields_prefilled` |
 | `form_field_error` | Validation error shown | `field`, `error` |
+| `form_lead_captured` | Lead created or updated in the CRM (phone verified · form closed early) | `lead_id`, `lead_stage`, `fields_sent` |
 | `form_submit_clicked` | Sign Up clicked | `fields_complete` |
 | `form_submitted` | Lead saved ✅ (**main conversion**) | `lead_id`, `lead_type`, `course`, `qualification`, `seconds_to_submit` |
 | `form_submit_failed` | Submit API returned an error | `error_code` |
@@ -272,7 +300,9 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `fields_complete` | integer 0–5 | `5` | submit_clicked | Valid fields at click time |
 | `progress` | integer 0–5 | `2` | exit_* | Fields done when exit screen shows |
 | `exit_trigger` | enum | `close_button` · `outside_click` · `esc_key` | exit_* | How the visitor tried to close the form |
-| `lead_id` | string | `"LD-104382"` | submitted, success_cta_clicked | CRM lead ID returned by the submit API |
+| `lead_id` | string | `"LD-104382"` | lead_captured, submitted, success_cta_clicked | CRM lead ID, returned when the phone is verified |
+| `lead_stage` | enum | `phone_verified` · `partial` | lead_captured | Which capture point fired |
+| `fields_sent` | array of enum | `["name","email"]` | lead_captured | Fields included in that update |
 | `course` | string | `"Online MBA in Product Management"` | submitted | Course selected |
 | `qualification` | enum | `12th Pass` · `Diploma` · `Graduate` · `Post Graduate` · `Working Professional` | submitted | Highest qualification |
 | `seconds_to_submit` | integer | `95` | submitted | Seconds from `form_started` to submit |
