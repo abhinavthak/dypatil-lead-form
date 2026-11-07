@@ -4,7 +4,7 @@ import { formatPhone, useLeadFlow } from './LeadFlow';
 import type { Field } from './LeadFlow';
 import { assets } from './defaults';
 import { formatDeadline, useCountdown } from './useCountdown';
-import { Chevron, Spinner, Users, VerifiedTick } from './icons';
+import { Chevron, Spinner, Users, VerifiedTick, trustIcons } from './icons';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -341,10 +341,12 @@ export function TrustFooter() {
   const { config } = useLeadFlow();
   if (!config.trust.enabled) return null;
   return (
-    <div className="lf-trust">
+    <div className={`lf-trust lf-trust--${config.trust.style ?? 'tint'}`}>
       {config.trust.badges.map((b) => (
         <div key={b.title} className="lf-trust__item">
-          <img src={b.icon} alt="" />
+          <span className="lf-trust__icon">
+            {b.icon in trustIcons ? trustIcons[b.icon as keyof typeof trustIcons] : <img src={b.icon} alt="" />}
+          </span>
           <div>
             <b>{b.title}</b>
             <span>{b.subtitle}</span>

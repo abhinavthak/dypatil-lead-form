@@ -29,10 +29,11 @@ export const defaultConfig: LeadFormConfig = {
   },
   trust: {
     enabled: true,
+    style: 'tint',
     badges: [
-      { icon: `${A}icon-ugc.png`, title: 'UGC Entitled', subtitle: 'Online degrees' },
-      { icon: `${A}icon-naac.png`, title: 'NAAC A++', subtitle: 'Accredited' },
-      { icon: `${A}icon-emi.png`, title: 'No-cost EMI', subtitle: 'Easy payments' },
+      { icon: 'ugc', title: 'UGC Entitled', subtitle: 'Online degrees' },
+      { icon: 'naac', title: 'NAAC A++', subtitle: 'Accredited' },
+      { icon: 'emi', title: 'No-cost EMI', subtitle: 'Easy payments' },
     ],
   },
   fields: {

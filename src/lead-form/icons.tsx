@@ -35,3 +35,31 @@ export const ArrowRight = () => (
 );
 
 export const Spinner = () => <span className="lf-spinner" aria-hidden />;
+
+const ti = { width: 16, height: 16, viewBox: '0 0 24 24', 'aria-hidden': true } as const;
+
+/** Trust-badge icons redrawn as vectors (transparent, recolourable via `color`). */
+export const trustIcons = {
+  ugc: (
+    <svg {...ti}>
+      <path fill="currentColor" d="M12 2l8 3v6.2c0 5-3.4 9.3-8 10.8-4.6-1.5-8-5.8-8-10.8V5l8-3z" />
+      <circle cx="12" cy="9.6" r="2.4" className="lf-ti-d" />
+      <path className="lf-ti-d" d="M7.8 16.2c.6-2.2 2.3-3.4 4.2-3.4s3.6 1.2 4.2 3.4c-1.2 1.1-2.6 1.8-4.2 1.8s-3-.7-4.2-1.8z" />
+    </svg>
+  ),
+  naac: (
+    <svg {...ti}>
+      <path fill="currentColor" d="M8.2 13.5L5 21l3.2-1.2L10 23l2.2-6.3zM15.8 13.5L19 21l-3.2-1.2L14 23l-2.2-6.3z" />
+      <circle cx="12" cy="9" r="7" fill="currentColor" />
+      <path className="lf-ti-d" d="M12 4.9l1.2 2.5 2.7.4-2 1.9.5 2.7L12 11.1l-2.4 1.3.5-2.7-2-1.9 2.7-.4z" />
+    </svg>
+  ),
+  emi: (
+    <svg {...ti}>
+      <rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="currentColor" />
+      <rect x="2.5" y="8.2" width="19" height="2.4" className="lf-ti-d" opacity=".85" />
+      <path fill="none" className="lf-ti-s" strokeWidth="1.8" strokeLinecap="round" d="M6 15h4" />
+      <circle cx="17" cy="15" r="1.6" className="lf-ti-d" />
+    </svg>
+  ),
+};

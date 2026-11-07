@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { LeadExperience, defaultConfig, useLeadOverlay } from '../lead-form';
-import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger } from '../lead-form';
+import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustStyle } from '../lead-form';
 import { DesktopPage, MobilePage } from './Pages';
 
 const STORE = 'dyp-lead-form-config-v1';
@@ -31,6 +31,7 @@ function loadConfig(): LeadFormConfig {
       const saved = JSON.parse(raw) as LeadFormConfig;
       // Keep the countdown live: a saved past deadline falls back to the design default.
       if (new Date(saved.urgency.countdown.deadline).getTime() < Date.now()) saved.urgency.countdown.deadline = defaultConfig.urgency.countdown.deadline;
+      if (!saved.trust?.style) saved.trust = defaultConfig.trust;
       return { ...defaultConfig, ...saved };
     }
   } catch {
@@ -194,6 +195,19 @@ export default function App() {
                 </>
               )}
               <Toggle label="Trust badges strip" checked={config.trust.enabled} onChange={(v) => set('trust.enabled', v)} />
+              {config.trust.enabled && (
+                <Select<TrustStyle>
+                  label="Trust strip background"
+                  value={config.trust.style ?? 'tint'}
+                  options={[
+                    ['tint', 'Brand tint (light maroon)'],
+                    ['grey', 'Grey (original design)'],
+                    ['white', 'White'],
+                    ['brand', 'Solid brand colour'],
+                  ]}
+                  onChange={(v) => set('trust.style', v)}
+                />
+              )}
             </Section>
 
             <Section title="Flow">

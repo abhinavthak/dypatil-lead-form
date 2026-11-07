@@ -14,8 +14,11 @@ export type OverlayStyle =
 
 export type OverlayTrigger = 'load' | 'delay' | 'scroll' | 'manual';
 
+export type TrustStyle = 'tint' | 'grey' | 'white' | 'brand';
+
 export interface TrustBadge {
-  icon: string; // image url
+  /** Built-in icon ('ugc' | 'naac' | 'emi') or an image URL. */
+  icon: string;
   title: string;
   subtitle: string;
 }
@@ -44,7 +47,7 @@ export interface LeadFormConfig {
     countdown: { enabled: boolean; label: string; deadline: string /* ISO */ };
     seats: { enabled: boolean; percent: number; batch: string };
   };
-  trust: { enabled: boolean; badges: TrustBadge[] };
+  trust: { enabled: boolean; style: TrustStyle; badges: TrustBadge[] };
   fields: {
     qualifications: string[];
     courses: string[];
