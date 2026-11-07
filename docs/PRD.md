@@ -1,6 +1,6 @@
 # PRD: Configurable Lead Form
 
-**Owner:** Abhinav Thakur · **Updated:** 7 Nov 2026 · **Status:** Prototype ready for review
+**Owner:** Abhinav Thakur · **Updated:** 7 Nov 2026 · **Status:** Prototype ready for review<br>
 **Live prototype:** https://abhinavthak.github.io/dypatil-lead-form/ · **Code:** this repo
 
 ---
@@ -44,7 +44,7 @@ Also available: plain popup, sidebar + top image, bottom drawer + top image, mob
 ## 3. How the form behaves
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[Form shown] --> B[Enter phone]
     B -->|10 valid digits| C[OTP sent automatically]
     C --> D{OTP correct?}
