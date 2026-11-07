@@ -11,6 +11,7 @@ export const defaultConfig: LeadFormConfig = {
     title: 'DY Patil University',
     subtitle: 'Get admission guidance and No-cost EMI options',
     primaryColor: '#9f1c34',
+    ctaColor: '#9f1c34',
   },
   banner: { enabled: true },
   overlay: {
@@ -30,6 +31,7 @@ export const defaultConfig: LeadFormConfig = {
   trust: {
     enabled: true,
     style: 'tint',
+    customColor: '#fff4dd',
     badges: [
       { icon: 'ugc', title: 'UGC Entitled', subtitle: 'Online degrees' },
       { icon: 'naac', title: 'NAAC A++', subtitle: 'Accredited' },

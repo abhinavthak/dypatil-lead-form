@@ -204,8 +204,18 @@ export default function App() {
                     ['grey', 'Grey (original design)'],
                     ['white', 'White'],
                     ['brand', 'Solid brand colour'],
+                    ['custom', 'Custom colour'],
                   ]}
                   onChange={(v) => set('trust.style', v)}
+                />
+              )}
+              {config.trust.enabled && (
+                <ColorField
+                  label="Trust strip colour"
+                  value={config.trust.style === 'custom' ? (config.trust.customColor ?? '#fff4dd') : ''}
+                  placeholder="Pick to customise"
+                  presets={['#fbeff1', '#f1f1f1', '#ffffff', '#fff4dd', '#eaf6ef', '#e8f0fe', '#9f1c34', '#1f1f23']}
+                  onChange={(v) => setConfig((c) => setIn(setIn(c, 'trust.customColor', v), 'trust.style', 'custom'))}
                 />
               )}
             </Section>
@@ -241,10 +251,18 @@ export default function App() {
             <Section title="Brand">
               <Text label="Title" value={config.brand.title} onChange={(v) => set('brand.title', v)} />
               <Text label="Subtitle" value={config.brand.subtitle} onChange={(v) => set('brand.subtitle', v)} />
-              <label className="pg-field pg-field--row">
-                <span>Primary colour</span>
-                <input type="color" value={config.brand.primaryColor} onChange={(e) => set('brand.primaryColor', e.target.value)} />
-              </label>
+              <ColorField
+                label="Primary colour"
+                value={config.brand.primaryColor}
+                presets={['#9f1c34', '#c62828', '#1a5fd0', '#0f7b5f', '#5b2a86']}
+                onChange={(v) => set('brand.primaryColor', v)}
+              />
+              <ColorField
+                label="CTA (Sign Up) colour"
+                value={config.brand.ctaColor || config.brand.primaryColor}
+                presets={['#9f1c34', '#111111', '#e8710a', '#1e9e50', '#1a5fd0', '#f5c518']}
+                onChange={(v) => set('brand.ctaColor', v)}
+              />
             </Section>
 
             <div className="pg-note">
@@ -312,6 +330,59 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
+const HEX = /^#[0-9a-f]{6}$/i;
+
+function ColorField({
+  label,
+  value,
+  presets,
+  placeholder,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  presets: string[];
+  placeholder?: string;
+  onChange(v: string): void;
+}) {
+  const [draft, setDraft] = useState(value);
+  useEffect(() => setDraft(value), [value]);
+  return (
+    <div className="pg-field">
+      <span>{label}</span>
+      <div className="pg-color">
+        <input type="color" value={HEX.test(value) ? value : '#ffffff'} onChange={(e) => onChange(e.target.value)} aria-label={`${label} picker`} />
+        <input
+          className="pg-color__hex"
+          value={draft}
+          placeholder={placeholder ?? '#000000'}
+          spellCheck={false}
+          onChange={(e) => {
+            const v = e.target.value.trim();
+            setDraft(v);
+            const full = v.startsWith('#') ? v : `#${v}`;
+            if (HEX.test(full)) onChange(full.toLowerCase());
+          }}
+          aria-label={`${label} hex`}
+        />
+      </div>
+      <div className="pg-swatches">
+        {presets.map((p) => (
+          <button
+            key={p}
+            type="button"
+            className={`pg-swatch${value.toLowerCase() === p ? ' on' : ''}`}
+            style={{ background: p }}
+            title={p}
+            aria-label={`${label} ${p}`}
+            onClick={() => onChange(p)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange(v: boolean): void }) {
   return (
     <label className="pg-toggle">

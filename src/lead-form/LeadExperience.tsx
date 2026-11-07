@@ -6,11 +6,19 @@ import { SuccessPanel } from './SuccessPanel';
 import { ExitPanel } from './ExitPanel';
 import { CloseX } from './icons';
 import { mockApi } from './mockApi';
+import { isDark } from './color';
 import type { Device, LeadApi, LeadData, LeadFormConfig, OverlayStyle } from './types';
 
 type View = 'form' | 'exit';
 
-const themeVars = (c: LeadFormConfig) => ({ '--lf-primary': c.brand.primaryColor }) as CSSProperties;
+const themeVars = (c: LeadFormConfig) => {
+  const cta = c.brand.ctaColor || c.brand.primaryColor;
+  return {
+    '--lf-primary': c.brand.primaryColor,
+    '--lf-cta': cta,
+    '--lf-cta-text': isDark(cta) ? '#fff' : '#111',
+  } as CSSProperties;
+};
 
 interface OverlayCtl {
   open: boolean;

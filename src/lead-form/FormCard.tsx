@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import type { CSSProperties } from 'react';
+import { isDark } from './color';
 import type { ClipboardEvent, KeyboardEvent } from 'react';
 import { formatPhone, useLeadFlow } from './LeadFlow';
 import type { Field } from './LeadFlow';
@@ -340,8 +342,11 @@ export function FormBody() {
 export function TrustFooter() {
   const { config } = useLeadFlow();
   if (!config.trust.enabled) return null;
+  const custom = config.trust.style === 'custom' && config.trust.customColor ? config.trust.customColor : null;
+  const trustClass = custom ? (isDark(custom) ? 'custom-dark' : 'custom-light') : (config.trust.style ?? 'tint');
+  const trustStyle = custom ? ({ '--lf-trust-bg': custom } as CSSProperties) : undefined;
   return (
-    <div className={`lf-trust lf-trust--${config.trust.style ?? 'tint'}`}>
+    <div className={`lf-trust lf-trust--${trustClass}`} style={trustStyle}>
       {config.trust.badges.map((b) => (
         <div key={b.title} className="lf-trust__item">
           <span className="lf-trust__icon">

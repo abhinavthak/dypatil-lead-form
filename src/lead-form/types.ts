@@ -14,7 +14,7 @@ export type OverlayStyle =
 
 export type OverlayTrigger = 'load' | 'delay' | 'scroll' | 'manual';
 
-export type TrustStyle = 'tint' | 'grey' | 'white' | 'brand';
+export type TrustStyle = 'tint' | 'grey' | 'white' | 'brand' | 'custom';
 
 export interface TrustBadge {
   /** Built-in icon ('ugc' | 'naac' | 'emi') or an image URL. */
@@ -28,6 +28,8 @@ export interface LeadFormConfig {
     title: string;
     subtitle: string;
     primaryColor: string;
+    /** Sign Up button colour. Falls back to `primaryColor`. Text colour is picked automatically. */
+    ctaColor?: string;
   };
   banner: {
     /** Show the inline form inside the hero banner. */
@@ -47,7 +49,13 @@ export interface LeadFormConfig {
     countdown: { enabled: boolean; label: string; deadline: string /* ISO */ };
     seats: { enabled: boolean; percent: number; batch: string };
   };
-  trust: { enabled: boolean; style: TrustStyle; badges: TrustBadge[] };
+  trust: {
+    enabled: boolean;
+    style: TrustStyle;
+    /** Background used when `style` is 'custom'. Text and icon colours adapt to it. */
+    customColor?: string;
+    badges: TrustBadge[];
+  };
   fields: {
     qualifications: string[];
     courses: string[];

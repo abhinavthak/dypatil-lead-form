@@ -132,10 +132,12 @@
 /* ---------- Submit / consent ---------- */
 .lf-grow { flex: 1; min-height: 22px; }
 .lf-submit {
-  height: 41px; border: 0; border-radius: 7px; background: var(--lf-primary); color: #fff;
+  height: 41px; border: 0; border-radius: 7px; background: var(--lf-cta, var(--lf-primary)); color: var(--lf-cta-text, #fff);
   font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 3px 8px rgba(159, 28, 52, 0.25); transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--lf-cta, var(--lf-primary)) 30%, transparent);
+  transition: background 0.15s, transform 0.1s, filter 0.15s;
 }
+.lf-submit:hover:not(:disabled) { filter: brightness(0.94); }
 .lf-submit:active:not(:disabled) { transform: translateY(1px); }
 .lf-submit:disabled { background: var(--lf-disabled); box-shadow: none; cursor: not-allowed; }
 .lf-consent { margin: 9px 0 14px; font-size: 9.5px; line-height: 14px; color: #333; text-align: center; }
@@ -158,6 +160,14 @@
   --lf-trust-bg: var(--lf-primary); --lf-trust-line: transparent; --lf-trust-chip: rgba(255, 255, 255, 0.16);
   --lf-trust-icon: #fff; --lf-trust-title: #fff; --lf-trust-sub: rgba(255, 255, 255, 0.75);
 }
+.lf-trust--custom-light {
+  --lf-trust-line: color-mix(in srgb, var(--lf-trust-bg) 82%, #000); --lf-trust-sub: #5f5f66;
+}
+.lf-trust--custom-dark {
+  --lf-trust-line: rgba(255, 255, 255, 0.22); --lf-trust-chip: rgba(255, 255, 255, 0.16); --lf-trust-icon: #fff;
+  --lf-trust-title: #fff; --lf-trust-sub: rgba(255, 255, 255, 0.75); --lf-trust-detail: var(--lf-trust-bg);
+}
+.lf-trust--custom-dark .lf-trust__icon { box-shadow: none; }
 .lf-trust__item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 0; }
 .lf-trust__item + .lf-trust__item { border-left: 1px solid var(--lf-trust-line); }
 .lf-trust--brand .lf-trust__item + .lf-trust__item { border-left-color: rgba(255, 255, 255, 0.22); }
@@ -285,7 +295,7 @@
   width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent;
   display: inline-block; animation: lf-spin 0.7s linear infinite; margin-right: 10px; color: #999;
 }
-.lf-submit .lf-spinner { color: #fff; margin: 0; }
+.lf-submit .lf-spinner { color: var(--lf-cta-text, #fff); margin: 0; }
 @keyframes lf-spin { to { transform: rotate(360deg); } }
 
 /* ---------- Compact (mobile widths) ---------- */

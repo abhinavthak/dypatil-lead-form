@@ -40,6 +40,12 @@ body { font-family: 'Poppins', system-ui, sans-serif; background: var(--pg-bg); 
 .pg-field--row { flex-direction: row; align-items: center; justify-content: space-between; }
 .pg-field--row input[type='number'] { width: 80px; }
 .pg-field--row input[type='color'] { width: 44px; height: 30px; padding: 2px; }
+.pg-color { display: flex; gap: 6px; align-items: center; }
+.pg-color input[type='color'] { width: 38px; height: 32px; padding: 2px; border: 1px solid var(--pg-line); border-radius: 7px; background: #fff; flex-shrink: 0; cursor: pointer; }
+.pg-color__hex { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important; text-transform: lowercase; }
+.pg-swatches { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.pg-swatch { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); cursor: pointer; padding: 0; }
+.pg-swatch.on { outline: 2px solid var(--pg-text); outline-offset: 2px; }
 .pg-toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12.5px; cursor: pointer; }
 .pg-toggle input { position: absolute; opacity: 0; pointer-events: none; }
 .pg-toggle i { width: 32px; height: 18px; border-radius: 999px; background: #cfcfd6; position: relative; flex-shrink: 0; transition: background .15s; }
