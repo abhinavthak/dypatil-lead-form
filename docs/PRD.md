@@ -27,17 +27,38 @@ sales only gets real leads.
 One form, several placements. A page can use the **banner** (inline in the hero), an **overlay**, or both.
 Both share one state: anything typed in one shows up in the other.
 
-| Desktop banner | Mobile banner |
-| --- | --- |
-| <img src="images/desktop-banner.png" width="520"> | <img src="images/mobile-hero.png" width="190"> |
+**Desktop and mobile are set up separately.** Each page picks one desktop overlay and one mobile overlay
+(e.g. a popup with side image on desktop + a bottom drawer on mobile). Screens narrower than 760px count as mobile.
 
-**Overlay styles**
+### 2a. Desktop
 
-| Popup + side image | Popup + top image | Sidebar | Mobile bottom drawer |
+| Banner (in hero, right side) |
+| --- |
+| <img src="images/desktop-banner.png" width="560"> |
+
+| Overlay style | Looks like | Behaviour |
+| --- | --- | --- |
+| **Popup** | <img src="images/popup.png" width="300"> | Centred 420px card, page dimmed and blurred behind |
+| **Popup + side image** | <img src="images/popup-side-image.png" width="300"> | 725px wide: promo image on the left, form on the right |
+| **Popup + top image** | <img src="images/popup-top-image.png" width="300"> | Popup with a promo banner on top |
+| **Sidebar** | <img src="images/sidebar.png" width="300"> | Slides in from the right, full height, 423px wide |
+| **Sidebar + top image** | <img src="images/sidebar-top-image.png" width="300"> | Sidebar with a promo banner on top |
+| **None** | n/a | Banner only |
+
+### 2b. Mobile
+
+| Banner (below hero) | Bottom drawer | Bottom drawer + top image | Popup |
 | --- | --- | --- | --- |
-| <img src="images/popup-side-image.png" width="260"> | <img src="images/popup-top-image.png" width="260"> | <img src="images/sidebar.png" width="260"> | <img src="images/mobile-drawer.png" width="130"> |
+| <img src="images/mobile-hero.png" width="170"> | <img src="images/mobile-drawer.png" width="170"> | <img src="images/mobile-drawer-top-image.png" width="170"> | <img src="images/mobile-popup.png" width="170"> |
+| Form card follows the hero | Slides up from the bottom, rounded top, larger ✕ for thumbs | Drawer with promo banner | Centred card, 16px side margins |
 
-Also available: plain popup, sidebar + top image, bottom drawer + top image, mobile popup.
+**Mobile overlay options:** Bottom drawer · Bottom drawer + top image · Popup · None (banner only).
+
+**Rules for both**
+
+- Promo images show only on the form; success and exit screens are plain cards (no image).
+- Overlay opens per the configured trigger (on load, after a delay, after a scroll depth, or only on CTA click),
+  and **Download Brochure** / **Apply Now** buttons on the page always open it.
 
 ---
 
@@ -85,16 +106,29 @@ Shown when a visitor who **hasn't submitted** tries to leave. It shows **every t
 ```mermaid
 flowchart LR
     A{Visitor tries to leave} --> B[Exit screen]
-    A1[Desktop: cursor leaves top of window] --> A
-    A2[Mobile: back button] --> A
-    A3[Mobile: fast scroll up] --> A
-    A4[Mobile: returns to tab] --> A
-    A5[Closes the form overlay] --> A
+    subgraph Desktop
+      A1[Cursor leaves top of window]
+    end
+    subgraph Mobile
+      A2[Back button]
+      A3[Fast scroll up]
+      A4[Returns to tab]
+    end
+    A5[Closes the form overlay]
+    A1 --> A
+    A2 --> A
+    A3 --> A
+    A4 --> A
+    A5 --> A
     B -->|Continue to Get a Call back| C[Back to the form]
     B -->|No Thanks, Close| D[Closed<br/>4s cool-down]
 ```
 
-<img src="images/exit-intent.png" width="560">
+| | Desktop | Mobile |
+| --- | --- | --- |
+| **Shown when** | Cursor leaves through the top of the window · visitor closes the overlay | Back button · fast scroll back up (25% of screen within 0.4s) · returns to the tab · closes the overlay |
+| **Appears as** | Centred card over the page (or inside the sidebar) | Bottom drawer (or centred popup, matching the mobile overlay) |
+| **Screen** | <img src="images/exit-intent.png" width="420"> | <img src="images/mobile-exit-intent.png" width="170"> |
 
 **Rules**
 
@@ -114,8 +148,8 @@ Everything below is set per page through one config object (exportable from the 
 | Area | Control | Options / default |
 | --- | --- | --- |
 | **Placement** | Banner (inline hero form) | On / Off |
-| | Desktop overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
-| | Mobile overlay | None · Bottom drawer · Bottom drawer + top image · Popup |
+| | **Desktop** overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
+| | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |
 | | Side / top image | Image URL |
 | **Urgency** | Social proof pill | On/Off · count ("146 learners requested a callback today") |
@@ -141,7 +175,7 @@ Everything below is set per page through one config object (exportable from the 
 Fire to the analytics layer (GTM `dataLayer` / Mixpanel). **Never send phone, name or email in events.**
 
 **Sent with every event:** `page_url`, `program`, `device` (desktop/mobile), `placement` (banner/overlay),
-`layout` (e.g. `popup-side-image`), `config_id` (A/B variant), `session_id`, `utm_*`.
+`layout` (desktop e.g. `popup-side-image`, mobile e.g. `bottom-drawer`), `config_id` (A/B variant), `session_id`, `utm_*`.
 
 | Event | When it fires | Extra properties |
 | --- | --- | --- |
