@@ -120,7 +120,10 @@ export default function App() {
         </div>
         <div className="pg-actions">
           <button onClick={() => ctlRef.current?.openForm()}>Open form</button>
-          <button onClick={() => ctlRef.current?.triggerExitIntent()}>Simulate exit intent</button>
+          <button onClick={() => ctlRef.current?.triggerExitIntent()}>
+            <span className="pg-long">Simulate exit intent</span>
+            <span className="pg-short">Exit intent</span>
+          </button>
           <button onClick={restart}>Restart</button>
         </div>
       </header>
@@ -211,7 +214,7 @@ export default function App() {
               {config.exitIntent.enabled && (
                 <>
                   <Toggle
-                    label={device === 'desktop' ? 'On cursor leaving the page' : 'On fast scroll back up'}
+                    label={device === 'desktop' ? 'On cursor leaving the page' : 'On back button, scroll up or tab return'}
                     checked={config.exitIntent.onLeaveIntent}
                     onChange={(v) => set('exitIntent.onLeaveIntent', v)}
                   />

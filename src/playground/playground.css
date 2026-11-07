@@ -78,12 +78,17 @@ body { font-family: 'Poppins', system-ui, sans-serif; background: var(--pg-bg); 
 .pg-why.is-mobile { padding: 40px 20px 48px; }
 .pg-why.is-mobile h2 { font-size: 24px; }
 .pg-why.is-mobile .pg-why__grid { grid-template-columns: 1fr; gap: 32px; margin-top: 32px; }
+.pg-short { display: none; }
+@media (max-width: 760px) { .pg-short { display: inline; } }
 .pg-foot { padding: 24px; text-align: center; font-size: 12px; color: #999; background: #f6f6f6; }
 
 @media (max-width: 760px) {
   .pg-panel { position: absolute; z-index: 10; top: 56px; bottom: 0; left: 0; width: min(300px, 88vw); box-shadow: 0 10px 40px rgba(0,0,0,.2); }
   .pg-main { position: relative; }
   .pg-brand { display: none; }
-  .pg-actions button:not(:first-child) { display: none; }
+  .pg-actions button:last-child { display: none; }
+  .pg-actions { gap: 6px; }
+  .pg-actions button { padding: 7px 9px; font-size: 12px; }
+  .pg-long { display: none; }
   .pg-stage { padding: 8px; }
 }
