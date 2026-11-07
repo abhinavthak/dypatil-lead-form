@@ -25,7 +25,7 @@ export const defaultConfig: LeadFormConfig = {
     topImage: `${A}top-image.jpg`,
   },
   urgency: {
-    types: ['countdown', 'seats'],
+    types: [], // none pre-selected; marketing picks up to two
     refreshSeconds: 30,
     socialProof: { source: 'manual', count: 146, text: 'learners requested a callback today', avatars: `${A}avatars.png` },
     countdown: { source: 'manual', label: 'Admissions close on', deadline: designDeadline() },

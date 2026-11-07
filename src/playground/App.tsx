@@ -36,6 +36,8 @@ function loadConfig(): LeadFormConfig {
       if (new Date(saved.urgency.countdown.deadline).getTime() < Date.now()) saved.urgency.countdown.deadline = defaultConfig.urgency.countdown.deadline;
       if (!saved.trust?.style) saved.trust = defaultConfig.trust;
       if (!Array.isArray(saved.urgency?.types)) saved.urgency = defaultConfig.urgency;
+      // v2: urgency elements are no longer pre-selected.
+      if ((saved as { _v?: number })._v !== 2) saved.urgency = { ...saved.urgency, types: [] };
       saved.banner = { ...defaultConfig.banner, ...saved.banner };
       saved.fields = { ...defaultConfig.fields, ...saved.fields };
       saved.brand = { ...defaultConfig.brand, ...saved.brand };
@@ -91,7 +93,7 @@ export default function App() {
           topImage: o.topImage.startsWith('blob:') ? defaultConfig.overlay.topImage : o.topImage,
         },
       };
-      localStorage.setItem(STORE, JSON.stringify(persistable));
+      localStorage.setItem(STORE, JSON.stringify({ ...persistable, _v: 2 }));
     } catch {
       /* ignore */
     }

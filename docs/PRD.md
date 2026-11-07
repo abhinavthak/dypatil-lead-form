@@ -154,7 +154,7 @@ flowchart LR
 
 ### Urgency elements (up to two at a time)
 
-Each form shows **up to two** urgency elements together (e.g. countdown + seats filled). Once two are selected, the
+Each form shows **up to two** urgency elements together (e.g. countdown + seats filled). **None are pre-selected**: marketing turns them on per page. Once two are selected, the
 third can't be picked until one is turned off. **Each element** gets its numbers from either **manual** values in the
 config or **real-time** data from an API, chosen separately (e.g. countdown manual, seats real-time).
 
@@ -211,7 +211,7 @@ Everything below is set per page through one config object (exportable from the 
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |
 | | Side / top promo image | **Upload** an image (or set an image URL) |
-| **Urgency** | Urgency elements (**up to two**) | Any two of: Social proof · Countdown · Seats filled (or none) |
+| **Urgency** | Urgency elements (**up to two**) | Any two of: Social proof · Countdown · Seats filled · **none selected by default** |
 | | Data source, **per element** | **Manual** · **Real-time** (API) |
 | | Refresh interval (real-time) | Seconds (30) |
 | | Manual values / fallback | Count (146) · deadline · % (82) + batch name |
