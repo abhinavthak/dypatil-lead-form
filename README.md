@@ -1,5 +1,7 @@
 # DY Patil — Configurable Lead Form (prototype)
 
+📄 **[Product requirements (PRD)](docs/PRD.md)**: placements, form behaviour, configuration and tracking events.
+
 React + TypeScript prototype built from the `D. Y Patil.zip` Figma exports. Copy, colours, spacing and imagery
 come straight from the screens (the hero, poster images, icons, success badge and hourglass are cropped from the PNGs
 into `public/assets/`).
