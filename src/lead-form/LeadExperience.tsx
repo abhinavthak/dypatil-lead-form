@@ -58,8 +58,9 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
   const configured = device === 'desktop' ? config.overlay.desktopStyle : config.overlay.mobileStyle;
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>('form');
-  const exitShown = useRef(false);
   const autoOpened = useRef(false);
+  /** When the exit screen was last dismissed; passive triggers wait a moment before showing it again. */
+  const lastExitDismiss = useRef(0);
 
   // When there is no overlay form, exit intent still needs a container.
   const style: OverlayStyle = configured !== 'none' ? configured : device === 'desktop' ? 'popup' : 'mobile-popup';
@@ -71,23 +72,34 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
     setOpen(true);
   }, [hasOverlayForm, onFocusBanner]);
 
+  /** Shows the exit screen every time the visitor tries to leave (never after they've submitted). */
   const triggerExitIntent = useCallback(() => {
-    if (!config.exitIntent.enabled || exitShown.current || flow.submitted) return;
-    exitShown.current = true;
+    if (!config.exitIntent.enabled || flow.submitted) return;
+    // Cooldown so one gesture (e.g. a long upward flick) doesn't reopen it immediately after dismissal.
+    if (Date.now() - lastExitDismiss.current < 4000) return;
     setView('exit');
     setOpen(true);
   }, [config.exitIntent.enabled, flow.submitted]);
 
   const requestClose = () => {
-    if (view === 'form' && !flow.submitted && config.exitIntent.enabled && config.exitIntent.onClose && !exitShown.current) {
-      exitShown.current = true;
+    if (view === 'exit' && !flow.submitted) return; // only "No Thanks, Close" or "Continue" leave the exit screen
+    if (view === 'form' && !flow.submitted && config.exitIntent.enabled && config.exitIntent.onClose) {
       setView('exit');
       return;
     }
     setOpen(false);
   };
 
+  const dismissExit = () => {
+    lastExitDismiss.current = Date.now();
+    setOpen(false);
+  };
+
   const continueFromExit = () => {
+    // Re-arm the mobile back-button trap that showing the screen may have used up.
+    if (device === 'mobile' && config.exitIntent.onLeaveIntent && !(history.state as { lfExitTrap?: boolean } | null)?.lfExitTrap) {
+      history.pushState({ ...(history.state ?? {}), lfExitTrap: true }, '');
+    }
     if (hasOverlayForm) return setView('form');
     setOpen(false);
     onFocusBanner?.();
@@ -95,7 +107,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
 
   // Reset one-shot guards whenever the configuration changes (playground).
   useEffect(() => {
-    exitShown.current = false;
+    lastExitDismiss.current = 0;
     autoOpened.current = false;
     setOpen(false);
   }, [config, device]);
@@ -187,7 +199,7 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
   return (
     <OverlayCtx.Provider value={ctl}>
       {children}
-      {open && <Overlay style={style} view={view} onClose={requestClose} onContinue={continueFromExit} onDismiss={() => setOpen(false)} />}
+      {open && <Overlay style={style} view={view} onClose={requestClose} onContinue={continueFromExit} onDismiss={dismissExit} />}
     </OverlayCtx.Provider>
   );
 }
@@ -238,14 +250,11 @@ function Overlay({
         role="dialog"
         aria-modal="true"
       >
-        <button
-          type="button"
-          className={`lf-close${image === 'top' ? ' lf-close--light' : ''}`}
-          aria-label="Close"
-          onClick={view === 'exit' && !submitted ? onDismiss : onClose}
-        >
-          <CloseX size={shell === 'drawer' ? 12 : 10} />
-        </button>
+        {!(view === 'exit' && !submitted) && (
+          <button type="button" className={`lf-close${image === 'top' ? ' lf-close--light' : ''}`} aria-label="Close" onClick={onClose}>
+            <CloseX size={shell === 'drawer' ? 12 : 10} />
+          </button>
+        )}
         {image === 'side' && <img className="lf-side-img" src={config.overlay.sideImage} alt="" />}
         <div className="lf-shell__main">
           {image === 'top' && <img className="lf-top-img" src={config.overlay.topImage} alt="" />}
