@@ -59,10 +59,13 @@
 /* Countdown row, measured from the desktop design (420px card): always one row,
    label left (10px + 11px date), 4 boxes right (~43 x 29px, 4.5px gaps). Never wraps. */
 .lf-urgency__row { display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 12px; min-width: 0; }
-.lf-urgency__label { font-size: 10px; color: #222; white-space: nowrap; }
-.lf-urgency__label b { color: var(--lf-primary); font-weight: 600; font-size: 11px; }
+/* Label may wrap onto 2 lines beside the boxes (large phone text settings) instead of pushing them off the card. */
+.lf-urgency__label { font-size: 10px; color: #222; flex: 1 1 auto; min-width: 0; line-height: 1.35; }
+.lf-urgency__label b { white-space: nowrap; }
+.lf-urgency__label b { color: var(--lf-primary); font-weight: 600; font-size: 11px; white-space: nowrap; }
 .lf-countdown { display: flex; gap: 4.5px; flex-shrink: 0; }
 .lf-countdown__box {
+  flex-shrink: 0; white-space: nowrap;
   min-width: 43px; height: 29px; padding: 0 6px; display: inline-flex; align-items: baseline; justify-content: center;
   padding-top: 4px; background: #fff; border: 1px solid #cfcfcf; border-radius: 8px;
   font-size: 17px; font-weight: 600; line-height: 21px; font-variant-numeric: tabular-nums;
