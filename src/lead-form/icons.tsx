@@ -62,4 +62,55 @@ export const trustIcons = {
       <circle cx="17" cy="15" r="1.6" className="lf-ti-d" />
     </svg>
   ),
+  cap: (
+    <svg {...ti}>
+      <path fill="currentColor" d="M12 3L1.5 8.5 12 14l8.5-4.45V16h2V8.5z" />
+      <path fill="currentColor" d="M5.5 12.2v3.6c0 1.9 2.9 3.7 6.5 3.7s6.5-1.8 6.5-3.7v-3.6L12 15.6z" />
+    </svg>
+  ),
+  star: (
+    <svg {...ti}>
+      <path fill="currentColor" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" />
+    </svg>
+  ),
+  users: (
+    <svg {...ti}>
+      <circle cx="9" cy="8" r="4" fill="currentColor" />
+      <path fill="currentColor" d="M1.5 20c.6-4 3.6-6.2 7.5-6.2s6.9 2.2 7.5 6.2z" />
+      <circle cx="17.5" cy="8.5" r="3" fill="currentColor" opacity=".55" />
+      <path fill="currentColor" opacity=".55" d="M17 13.6c3 .2 5 2 5.5 5.4h-4.3c-.3-2.1-1.1-3.9-2.4-5.2z" />
+    </svg>
+  ),
+  briefcase: (
+    <svg {...ti}>
+      <rect x="2.5" y="7" width="19" height="13" rx="2.5" fill="currentColor" />
+      <path fill="none" stroke="currentColor" strokeWidth="2" d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7" />
+      <rect x="2.5" y="11.5" width="19" height="1.6" className="lf-ti-d" opacity=".8" />
+    </svg>
+  ),
+  clock: (
+    <svg {...ti}>
+      <circle cx="12" cy="12" r="10" fill="currentColor" />
+      <path fill="none" className="lf-ti-s" strokeWidth="2" strokeLinecap="round" d="M12 6.5V12l3.5 2.2" />
+    </svg>
+  ),
+  rupee: (
+    <svg {...ti}>
+      <circle cx="12" cy="12" r="10" fill="currentColor" />
+      <path fill="none" className="lf-ti-s" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M8.5 7.5h7M8.5 10.5h7M10.5 7.5c2.6 0 3.6 1.3 3.6 2.9s-1.3 2.9-3.6 2.9H9.5l4.6 4.2" />
+    </svg>
+  ),
+};
+
+/** Labels for the built-in trust icons (used by the editor). */
+export const trustIconNames: Record<keyof typeof trustIcons, string> = {
+  ugc: 'Shield (UGC)',
+  naac: 'Award (NAAC)',
+  emi: 'Card (EMI)',
+  cap: 'Graduation cap',
+  star: 'Star (rating)',
+  users: 'People (alumni)',
+  briefcase: 'Briefcase (placements)',
+  clock: 'Clock (flexible)',
+  rupee: 'Rupee (fees)',
 };

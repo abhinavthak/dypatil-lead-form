@@ -223,10 +223,12 @@ Everything below is set per page through one config object (exportable from the 
 | | Data source | **Manual** · **Real-time** (API) |
 | | Refresh interval (real-time) | Seconds (30) |
 | | Manual values / fallback | Count (146) · deadline · % (82) + batch name |
-| **Trust** | Trust strip | On/Off · badges (icon, title, subtitle) |
+| **Trust** | Trust strip | On / Off |
+| | Badges (**1–3**, editable) | Title · subtitle · icon: built-in (Shield · Award · Card · Graduation cap · Star · People · Briefcase · Clock · Rupee) or **upload** your own |
 | | Strip background | Brand tint · Grey · White · Solid brand · **Custom colour** |
 | **Look** | Title / subtitle | Text |
 | | Primary colour | Any colour (accents, focus, icons) |
+| | **CTA text** | Any label (default "Sign Up", e.g. "Get Free Counselling") |
 | | **CTA colour** | Any colour (Sign Up button; button text is always white) |
 | **Flow** | Verify phone with OTP | On (default) / Off: with Off, fields are never locked |
 | | Success screen | Proceed with application · Wait for callback |

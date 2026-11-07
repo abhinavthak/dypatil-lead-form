@@ -40,6 +40,8 @@ export interface LeadFormConfig {
     primaryColor: string;
     /** Sign Up button colour. Falls back to `primaryColor`. Text colour is picked automatically. */
     ctaColor?: string;
+    /** Submit button label. */
+    ctaText: string;
   };
   banner: {
     /** Show the inline form inside the hero banner. */

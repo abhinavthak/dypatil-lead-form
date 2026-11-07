@@ -12,6 +12,7 @@ export const defaultConfig: LeadFormConfig = {
     subtitle: 'Get admission guidance and No-cost EMI options',
     primaryColor: '#9f1c34',
     ctaColor: '#9f1c34',
+    ctaText: 'Sign Up',
   },
   banner: { enabled: true, closable: true, showImage: false, image: `${A}top-image.jpg` },
   overlay: {

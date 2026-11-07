@@ -1,9 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { LeadExperience, defaultConfig, useLeadOverlay } from '../lead-form';
-import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustStyle, UrgencyType } from '../lead-form';
+import type { Device, LeadFormConfig, OverlayStyle, OverlayTrigger, TrustBadge, TrustStyle, UrgencyType } from '../lead-form';
 import { DesktopPage, MobilePage } from './Pages';
 import { assets } from '../lead-form/defaults';
+import { trustIconNames, trustIcons } from '../lead-form/icons';
 
 const STORE = 'dyp-lead-form-config-v1';
 const DESKTOP_W = 1430;
@@ -36,6 +37,7 @@ function loadConfig(): LeadFormConfig {
       if (!saved.urgency?.type) saved.urgency = defaultConfig.urgency;
       saved.banner = { ...defaultConfig.banner, ...saved.banner };
       saved.fields = { ...defaultConfig.fields, ...saved.fields };
+      saved.brand = { ...defaultConfig.brand, ...saved.brand };
       return { ...defaultConfig, ...saved };
     }
   } catch {
@@ -80,6 +82,7 @@ export default function App() {
       const o = config.overlay;
       const persistable = {
         ...config,
+        trust: { ...config.trust, badges: config.trust.badges.map((b, i) => (b.icon.startsWith('blob:') ? { ...b, icon: defaultConfig.trust.badges[i]?.icon ?? 'star' } : b)) },
         banner: { ...config.banner, image: config.banner.image.startsWith('blob:') ? defaultConfig.banner.image : config.banner.image },
         overlay: {
           ...o,
@@ -272,6 +275,9 @@ export default function App() {
                   onChange={(v) => setConfig((c) => setIn(setIn(c, 'trust.customColor', v), 'trust.style', 'custom'))}
                 />
               )}
+              {config.trust.enabled && (
+                <TrustEditor badges={config.trust.badges} onChange={(b) => set('trust.badges', b)} />
+              )}
             </Section>
 
             <Section title="Course">
@@ -352,6 +358,7 @@ export default function App() {
                 presets={['#9f1c34', '#c62828', '#1a5fd0', '#0f7b5f', '#5b2a86']}
                 onChange={(v) => set('brand.primaryColor', v)}
               />
+              <Text label="CTA button text" value={config.brand.ctaText} onChange={(v) => set('brand.ctaText', v)} />
               <ColorField
                 label="CTA (Sign Up) colour"
                 value={config.brand.ctaColor || config.brand.primaryColor}
@@ -425,6 +432,66 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
+function TrustEditor({ badges, onChange }: { badges: TrustBadge[]; onChange(b: TrustBadge[]): void }) {
+  const fileRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const update = (i: number, patch: Partial<TrustBadge>) => onChange(badges.map((b, j) => (j === i ? { ...b, ...patch } : b)));
+  const isBuiltIn = (icon: string) => icon in trustIcons;
+  return (
+    <div className="pg-field">
+      <span>Trust badges ({badges.length}/3)</span>
+      <div className="pg-badges">
+        {badges.map((b, i) => (
+          <div key={i} className="pg-badge">
+            <div className="pg-badge__top">
+              <span className="pg-badge__icon">{isBuiltIn(b.icon) ? trustIcons[b.icon as keyof typeof trustIcons] : <img src={b.icon} alt="" />}</span>
+              <select
+                aria-label={`Badge ${i + 1} icon`}
+                value={isBuiltIn(b.icon) ? b.icon : 'custom'}
+                onChange={(e) => (e.target.value === 'custom' ? fileRefs.current[i]?.click() : update(i, { icon: e.target.value }))}
+              >
+                {Object.entries(trustIconNames).map(([k, label]) => (
+                  <option key={k} value={k}>
+                    {label}
+                  </option>
+                ))}
+                <option value="custom">{isBuiltIn(b.icon) ? 'Upload icon…' : 'Uploaded icon'}</option>
+              </select>
+              <button type="button" className="pg-badge__btn" title="Upload icon" aria-label={`Upload icon for badge ${i + 1}`} onClick={() => fileRefs.current[i]?.click()}>
+                ⤒
+              </button>
+              {badges.length > 1 && (
+                <button type="button" className="pg-badge__btn" title="Remove badge" aria-label={`Remove badge ${i + 1}`} onClick={() => onChange(badges.filter((_, j) => j !== i))}>
+                  ✕
+                </button>
+              )}
+              <input
+                ref={(el) => {
+                  fileRefs.current[i] = el;
+                }}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                hidden
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) update(i, { icon: URL.createObjectURL(f) });
+                  e.target.value = '';
+                }}
+              />
+            </div>
+            <input aria-label={`Badge ${i + 1} title`} value={b.title} placeholder="Title" onChange={(e) => update(i, { title: e.target.value })} />
+            <input aria-label={`Badge ${i + 1} subtitle`} value={b.subtitle} placeholder="Subtitle" onChange={(e) => update(i, { subtitle: e.target.value })} />
+          </div>
+        ))}
+      </div>
+      {badges.length < 3 && (
+        <button type="button" className="pg-add" onClick={() => onChange([...badges, { icon: 'star', title: 'New badge', subtitle: 'Subtitle' }])}>
+          + Add badge
+        </button>
+      )}
+    </div>
+  );
+}
+
 function ImageField({
   label,
   hint,

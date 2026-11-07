@@ -366,7 +366,7 @@ export function FormBody() {
       </div>
       <div className="lf-grow" />
       <button type="submit" className="lf-submit" disabled={!canSubmit} aria-disabled={!canSubmit}>
-        {submitting ? <Spinner /> : 'Sign Up'}
+        {submitting ? <Spinner /> : config.brand.ctaText?.trim() || 'Sign Up'}
       </button>
       <p className="lf-consent">
         By submitting this form, you agree to our <a href={config.consent.termsUrl}>Terms of Service</a> &amp;{' '}
