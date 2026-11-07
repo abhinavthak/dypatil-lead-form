@@ -42,6 +42,7 @@ export const defaultConfig: LeadFormConfig = {
     ],
   },
   fields: {
+    defaultCourse: 'Online MBA in Product Management',
     qualifications: ['12th Pass', 'Diploma', 'Graduate', 'Post Graduate', 'Working Professional'],
     courses: [
       'Online MBA in Product Management',

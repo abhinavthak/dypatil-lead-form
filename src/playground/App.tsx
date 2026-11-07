@@ -35,6 +35,7 @@ function loadConfig(): LeadFormConfig {
       if (!saved.trust?.style) saved.trust = defaultConfig.trust;
       if (!saved.urgency?.type) saved.urgency = defaultConfig.urgency;
       saved.banner = { ...defaultConfig.banner, ...saved.banner };
+      saved.fields = { ...defaultConfig.fields, ...saved.fields };
       return { ...defaultConfig, ...saved };
     }
   } catch {
@@ -271,6 +272,16 @@ export default function App() {
                   onChange={(v) => setConfig((c) => setIn(setIn(c, 'trust.customColor', v), 'trust.style', 'custom'))}
                 />
               )}
+            </Section>
+
+            <Section title="Course">
+              <Select<string>
+                label="Pre-selected course (this landing page)"
+                value={config.fields.defaultCourse}
+                options={[['', 'None (visitor picks)'], ...config.fields.courses.map((c) => [c, c] as [string, string])]}
+                onChange={(v) => set('fields.defaultCourse', v)}
+              />
+              <p className="pg-small">The form opens with this course selected; visitors can change it from the dropdown.</p>
             </Section>
 
             <Section title="Flow">

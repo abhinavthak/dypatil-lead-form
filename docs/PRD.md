@@ -123,6 +123,7 @@ After a correct OTP we check whether this number is already a lead. That decides
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
 7. The urgency element is **display only**; it never blocks submission.
+8. **Course is pre-selected** from the landing page's configured course (e.g. the Product Management page opens with *Online MBA in Product Management*). The visitor can change it from the dropdown once the phone is verified; if no course is configured, the dropdown starts empty.
 
 ### Lead capture: when details are sent to the CRM
 
@@ -131,7 +132,7 @@ filled forms are not lost. All three calls update the **same lead** (matched by 
 
 | # | When | What we send | Lead status |
 | --- | --- | --- | --- |
-| 1 | **Phone verified** (correct OTP) | Phone + page context (university, program, form, device, placement, UTMs). For an existing lead, their record is reused | `phone_verified` |
+| 1 | **Phone verified** (correct OTP) | Phone + pre-selected course + page context (university, program, form, device, placement, UTMs). For an existing lead, their record is reused | `phone_verified` |
 | 2 | **User closes the form** before submitting: banner ✕, or overlay ✕ / click outside / Esc (incl. "No Thanks, Close" on the exit screen) | Every field filled **up to that point** (name, email, qualification, course) | `partial` |
 | 3 | **User clicks Sign Up** (always) | All fields | `submitted` |
 
@@ -231,7 +232,8 @@ Everything below is set per page through one config object (exportable from the 
 | | Success screen | Proceed with application · Wait for callback |
 | **Exit intent** | Show when the form is closed | On / Off |
 | | Show progress | On / Off |
-| **Data** | Qualification & course lists | Lists of options |
+| **Data** | Pre-selected course | One course from the list (per landing page) · None |
+| | Qualification & course lists | Lists of options |
 | | Terms / Privacy links | URLs |
 
 ---
@@ -261,7 +263,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `form_field_error` | Validation error shown | `field`, `error` |
 | `form_lead_captured` | Lead created or updated in the CRM (phone verified · form closed early) | `lead_id`, `lead_stage`, `fields_sent` |
 | `form_submit_clicked` | Sign Up clicked | `fields_complete` |
-| `form_submitted` | Lead saved ✅ (**main conversion**) | `lead_id`, `lead_type`, `course`, `qualification`, `seconds_to_submit` |
+| `form_submitted` | Lead saved ✅ (**main conversion**) | `lead_id`, `lead_type`, `course`, `course_changed`, `qualification`, `seconds_to_submit` |
 | `form_submit_failed` | Submit API returned an error | `error_code` |
 | `form_success_cta_clicked` | "Proceed with My Application" clicked | `lead_id` |
 | `form_exit_shown` | Exit screen shown | `exit_trigger`, `progress` |
@@ -312,6 +314,7 @@ Every event is pushed to the analytics layer (GTM `dataLayer` → GA4 / Mixpanel
 | `lead_stage` | enum | `phone_verified` · `partial` | lead_captured | Which capture point fired |
 | `fields_sent` | array of enum | `["name","email"]` | lead_captured | Fields included in that update |
 | `course` | string | `"Online MBA in Product Management"` | submitted | Course selected |
+| `course_changed` | boolean | `false` | submitted | Visitor changed the pre-selected course |
 | `qualification` | enum | `12th Pass` · `Diploma` · `Graduate` · `Post Graduate` · `Working Professional` | submitted | Highest qualification |
 | `seconds_to_submit` | integer | `95` | submitted | Seconds from `form_started` to submit |
 | `error_code` | string | `"http_500"` · `"timeout"` · `"otp_provider_down"` | submit_failed | Why submission failed |

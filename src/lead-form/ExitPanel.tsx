@@ -2,8 +2,9 @@ import { useLeadFlow } from './LeadFlow';
 import { assets } from './defaults';
 
 export function ExitPanel({ onContinue, onClose }: { onContinue(): void; onClose(): void }) {
-  const { config, progress } = useLeadFlow();
-  const showProgress = config.exitIntent.showProgress && progress > 0;
+  const { config, progress, values } = useLeadFlow();
+  // A pre-selected course alone doesn't mean the visitor has started.
+  const showProgress = config.exitIntent.showProgress && progress > 0 && values.phone !== '';
   return (
     <div className="lf-panel lf-exit" role="dialog" aria-label="Before you go">
       <img className="lf-exit__icon" src={assets.hourglass} alt="" />

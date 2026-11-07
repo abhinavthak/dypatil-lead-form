@@ -450,6 +450,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
         <li><div><b>Sign Up</b> stays grey until every field is valid and the phone is verified.</div></li>
         <li><div><b>Success:</b> "Thank you, {first name}!" with phone, course and a 3-step "What happens next". Two versions: <i>Proceed with My Application</i> (button) or <i>A counsellor will call you</i> (no button).</div></li>
         <li><div>The urgency element is <b>display only</b>; it never blocks submission.</div></li>
+        <li><div><b>Course is pre-selected</b> from the landing page's configured course (e.g. the Product Management page opens with <i>Online MBA in Product Management</i>). The visitor can change it from the dropdown once the phone is verified; if no course is configured, the dropdown starts empty.</div></li>
       </ol>
 
       <h3 id="lead-capture">Lead capture <span class="tag tag--neutral">when details reach the CRM</span></h3>
@@ -459,7 +460,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <span class="capture__n">1</span>
           <div class="capture__when">Phone verified</div>
           <p>Correct OTP entered.</p>
-          <div class="capture__what"><b>Sends</b> phone + page context (university, program, form, device, placement, UTMs). Existing leads reuse their record.</div>
+          <div class="capture__what"><b>Sends</b> phone + pre-selected course + page context (university, program, form, device, placement, UTMs). Existing leads reuse their record.</div>
           <span class="capture__status">phone_verified</span>
         </li>
         <li>
@@ -575,7 +576,8 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td>Success screen</td><td><div class="opts"><span class="opt">Proceed with application</span><span class="opt">Wait for callback</span></div></td></tr>
           <tr><td class="area" rowspan="2">Exit intent</td><td>Show when the form is closed</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
           <tr><td>Show progress</td><td><div class="opts"><span class="opt">On</span><span class="opt">Off</span></div></td></tr>
-          <tr><td class="area" rowspan="2">Data</td><td>Qualification &amp; course lists</td><td><div class="opts"><span class="opt">Lists of options</span></div></td></tr>
+          <tr><td class="area" rowspan="3">Data</td><td>Pre-selected course</td><td><div class="opts"><span class="opt is-new">One course from the list (per landing page)</span><span class="opt">None</span></div></td></tr>
+          <tr><td>Qualification &amp; course lists</td><td><div class="opts"><span class="opt">Lists of options</span></div></td></tr>
           <tr><td>Terms / Privacy links</td><td><div class="opts"><span class="opt">URLs</span></div></td></tr>
         </tbody>
       </table></div>
@@ -617,7 +619,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>form_field_error</code></td><td>Validation error shown</td><td><code>field</code> <code>error</code></td></tr>
           <tr><td><code>form_lead_captured</code></td><td>Lead created or updated in the CRM (phone verified · form closed early)</td><td><code>lead_id</code> <code>lead_stage</code> <code>fields_sent</code></td></tr>
           <tr><td><code>form_submit_clicked</code></td><td>Sign Up clicked</td><td><code>fields_complete</code></td></tr>
-          <tr class="is-main"><td><code>form_submitted</code></td><td>Lead saved ✅ <b>main conversion</b></td><td><code>lead_id</code> <code>lead_type</code> <code>course</code> <code>qualification</code> <code>seconds_to_submit</code></td></tr>
+          <tr class="is-main"><td><code>form_submitted</code></td><td>Lead saved ✅ <b>main conversion</b></td><td><code>lead_id</code> <code>lead_type</code> <code>course</code> <code>course_changed</code> <code>qualification</code> <code>seconds_to_submit</code></td></tr>
           <tr><td><code>form_submit_failed</code></td><td>Submit API returned an error</td><td><code>error_code</code></td></tr>
           <tr><td><code>form_success_cta_clicked</code></td><td>"Proceed with My Application" clicked</td><td><code>lead_id</code></td></tr>
           <tr><td><code>form_exit_shown</code></td><td>Exit screen shown</td><td><code>exit_trigger</code> <code>progress</code></td></tr>
@@ -670,6 +672,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
           <tr><td><code>lead_stage</code></td><td>enum</td><td><div class="opts"><code>phone_verified</code><code>partial</code></div></td><td>lead_captured</td><td>Which capture point fired</td></tr>
           <tr><td><code>fields_sent</code></td><td>array of enum</td><td><code>["name","email"]</code></td><td>lead_captured</td><td>Fields included in that update</td></tr>
           <tr><td><code>course</code></td><td>string</td><td><code>"Online MBA in Product Management"</code></td><td>submitted</td><td>Course selected</td></tr>
+          <tr><td><code>course_changed</code></td><td>boolean</td><td><code>false</code></td><td>submitted</td><td>Visitor changed the pre-selected course</td></tr>
           <tr><td><code>qualification</code></td><td>enum</td><td><div class="opts"><code>12th Pass</code><code>Diploma</code><code>Graduate</code><code>Post Graduate</code><code>Working Professional</code></div></td><td>submitted</td><td>Highest qualification</td></tr>
           <tr><td><code>seconds_to_submit</code></td><td>integer</td><td><code>95</code></td><td>submitted</td><td>From <code>form_started</code> to submit</td></tr>
           <tr><td><code>error_code</code></td><td>string</td><td><div class="opts"><code>"http_500"</code><code>"timeout"</code><code>"otp_provider_down"</code></div></td><td>submit_failed</td><td>Why submission failed</td></tr>

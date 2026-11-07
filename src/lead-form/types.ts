@@ -80,6 +80,8 @@ export interface LeadFormConfig {
   fields: {
     qualifications: string[];
     courses: string[];
+    /** Course pre-selected for this landing page ('' = none). The visitor can still change it. */
+    defaultCourse: string;
   };
   otp: { enabled: boolean; length: number; resendSeconds: number };
   consent: { termsUrl: string; privacyUrl: string };

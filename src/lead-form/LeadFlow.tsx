@@ -51,6 +51,12 @@ export function useLeadFlow() {
 
 const empty: LeadData = { phone: '', name: '', email: '', qualification: '', course: '' };
 
+/** Starting values: the landing page's course is pre-selected (if it's in the list). */
+const initialValues = (config: LeadFormConfig): LeadData => {
+  const c = config.fields.defaultCourse;
+  return { ...empty, course: c && config.fields.courses.includes(c) ? c : '' };
+};
+
 /**
  * Holds one lead's state, shared by every form surface on the page (banner + overlay),
  * so progress typed in one carries over to the other.
@@ -68,7 +74,7 @@ export function LeadFlowProvider({
   onSubmitted?: (lead: LeadData) => void;
   children: ReactNode;
 }) {
-  const [values, setValues] = useState<LeadData>(empty);
+  const [values, setValues] = useState<LeadData>(() => initialValues(config));
   const [touched, setTouched] = useState<Partial<Record<Field, boolean>>>({});
   const [autofilled, setAutofilled] = useState<Partial<Record<Field, boolean>>>({});
   const [phoneStatus, setPhoneStatus] = useState<PhoneStatus>('editing');
@@ -86,6 +92,14 @@ export function LeadFlowProvider({
     const id = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(id);
   }, [phoneStatus]);
+
+  // Config changed (e.g. a different landing page / playground edit): re-apply the pre-selected course
+  // unless the visitor has already picked one themselves.
+  const courseTouched = useRef(false);
+  useEffect(() => {
+    if (courseTouched.current) return;
+    setValues((v) => ({ ...v, course: initialValues(config).course }));
+  }, [config]);
 
   const otpOn = config.otp.enabled;
 
@@ -149,6 +163,7 @@ export function LeadFlowProvider({
           else prefillExisting(value);
         }
       }
+      if (field === 'course') courseTouched.current = true;
       setAutofilled((a) => (a[field] ? { ...a, [field]: false } : a));
       setValues((v) => ({ ...v, [field]: value }));
     },
@@ -206,14 +221,15 @@ export function LeadFlowProvider({
 
   const reset = useCallback(() => {
     phoneRef.current = '';
-    setValues(empty);
+    courseTouched.current = false;
+    setValues(initialValues(config));
     setTouched({});
     setAutofilled({});
     setPhoneStatus('editing');
     setOtpState('');
     setOtpError(false);
     setSubmitted(false);
-  }, []);
+  }, [config]);
 
   const value: LeadFlowValue = {
     config,
