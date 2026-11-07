@@ -55,10 +55,11 @@
 
 /* ---------- Urgency band ---------- */
 .lf-urgency { margin-top: 12px; background: var(--lf-urgency-bg); padding: 12px 24px; display: flex; flex-direction: column; gap: 8px; }
-.lf-urgency__row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* Wraps: when label + timer don't fit on one line, the timer moves below the label instead of overflowing. */
+.lf-urgency__row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 8px; min-width: 0; }
 .lf-urgency__label { font-size: 11.5px; color: #222; white-space: nowrap; }
 .lf-urgency__label b { color: var(--lf-primary); font-weight: 600; font-size: 12px; }
-.lf-countdown { display: flex; gap: 5px; }
+.lf-countdown { display: flex; gap: 5px; flex-shrink: 0; }
 .lf-countdown__box {
   min-width: 44px; height: 29px; padding: 0 4px; display: inline-flex; align-items: baseline; justify-content: center;
   padding-top: 4px; background: #fff; border: 1px solid #cfcfcf; border-radius: 7px;
@@ -338,8 +339,10 @@
   .lf-head { padding: 16px 14px 0; }
   .lf-urgency { padding: 8px 14px; }
   .lf-body { padding: 10px 14px 0; }
-  .lf-urgency__label { font-size: 9.5px; }
-  .lf-urgency__label b { font-size: 10px; }
+  .lf-urgency__row { flex-direction: column; align-items: stretch; }
+  .lf-urgency__label { font-size: 10.5px; text-align: center; }
+  .lf-urgency__label b { font-size: 11px; }
+  .lf-countdown { justify-content: center; }
   .lf-countdown__box { min-width: 29px; }
 }
 
