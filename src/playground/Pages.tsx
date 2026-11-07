@@ -35,7 +35,7 @@ export function DesktopPage({ bannerOn, hero = assets.heroDesktop }: { bannerOn:
   const { openForm } = useLeadOverlay();
   return (
     <div className="pg-page">
-      <section className="pg-hero-d" style={{ backgroundImage: `url(${hero})` }}>
+      <section className="pg-hero-d" style={{ backgroundImage: `linear-gradient(to bottom, rgba(61,7,16,0) 636px, #3d0710 670px), url(${hero})` }}>
         {!bannerOn && <div className="pg-hero-d__mask" />}
         <button className="pg-hotspot" style={{ left: 80, top: 573, width: 242, height: 56 }} onClick={openForm} aria-label="Download Brochure" />
         <div className="pg-hero-d__form" id="lead-banner">

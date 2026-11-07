@@ -32,9 +32,12 @@ Both share one state: anything typed in one shows up in the other.
 
 ### 2a. Desktop
 
-| Banner (in hero, right side) |
-| --- |
-| <img src="images/desktop-banner.png" width="560"> |
+| Banner (in hero, right side) | Banner with image |
+| --- | --- |
+| <img src="images/desktop-banner.png" width="420"> | <img src="images/desktop-banner-image.png" width="420"> |
+
+The banner form can show an **optional promo image across its top**, uploaded by the user (same slot as the
+"+ top image" overlays). It shows only with the form, not on the success screen.
 
 | Overlay style | Looks like | Behaviour |
 | --- | --- | --- |
@@ -47,10 +50,10 @@ Both share one state: anything typed in one shows up in the other.
 
 ### 2b. Mobile
 
-| Banner (below hero) | Bottom drawer | Bottom drawer + top image | Popup |
-| --- | --- | --- | --- |
-| <img src="images/mobile-hero.png" width="170"> | <img src="images/mobile-drawer.png" width="170"> | <img src="images/mobile-drawer-top-image.png" width="170"> | <img src="images/mobile-popup.png" width="170"> |
-| Form card follows the hero | Slides up from the bottom, rounded top, larger ✕ for thumbs | Drawer with promo banner | Centred card, 16px side margins |
+| Hero | Banner with image | Bottom drawer | Bottom drawer + top image | Popup |
+| --- | --- | --- | --- | --- |
+| <img src="images/mobile-hero.png" width="150"> | <img src="images/mobile-banner-image.png" width="150"> | <img src="images/mobile-drawer.png" width="150"> | <img src="images/mobile-drawer-top-image.png" width="150"> | <img src="images/mobile-popup.png" width="150"> |
+| Banner form follows the hero | Optional uploaded image on the banner form | Slides up from the bottom, rounded top, larger ✕ for thumbs | Drawer with promo banner | Centred card, 16px side margins |
 
 **Mobile overlay options:** Bottom drawer · Bottom drawer + top image · Popup · None (banner only).
 
@@ -167,6 +170,7 @@ Everything below is set per page through one config object (exportable from the 
 | Area | Control | Options / default |
 | --- | --- | --- |
 | **Placement** | Banner (inline hero form) | On / Off |
+| | Banner form image | On / Off · **upload** an image (or URL) |
 | | **Desktop** overlay | None · Popup · Popup + side image · Popup + top image · Sidebar · Sidebar + top image |
 | | **Mobile** overlay (set independently) | None · Bottom drawer · Bottom drawer + top image · Popup |
 | | Open overlay | On load · After N seconds (3) · After N% scroll (40) · Only on CTA click |

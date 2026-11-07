@@ -30,6 +30,9 @@
   display: flex;
 }
 .lf-card--banner { min-height: 600px; }
+.lf-card--banner.has-image { min-height: 0; }
+.lf-card__col { display: flex; flex-direction: column; width: 100%; }
+.lf-card__col > .lf-panel { flex: 1 0 auto; min-height: 0; }
 .lf-panel { display: flex; flex-direction: column; width: 100%; min-height: 100%; }
 
 .lf-head { padding: 20px 24px 0; text-align: center; }

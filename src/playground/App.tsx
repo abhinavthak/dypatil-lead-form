@@ -33,6 +33,7 @@ function loadConfig(): LeadFormConfig {
       // Keep the countdown live: a saved past deadline falls back to the design default.
       if (new Date(saved.urgency.countdown.deadline).getTime() < Date.now()) saved.urgency.countdown.deadline = defaultConfig.urgency.countdown.deadline;
       if (!saved.trust?.style) saved.trust = defaultConfig.trust;
+      saved.banner = { ...defaultConfig.banner, ...saved.banner };
       return { ...defaultConfig, ...saved };
     }
   } catch {
@@ -77,6 +78,7 @@ export default function App() {
       const o = config.overlay;
       const persistable = {
         ...config,
+        banner: { ...config.banner, image: config.banner.image.startsWith('blob:') ? defaultConfig.banner.image : config.banner.image },
         overlay: {
           ...o,
           sideImage: o.sideImage.startsWith('blob:') ? defaultConfig.overlay.sideImage : o.sideImage,
@@ -147,6 +149,18 @@ export default function App() {
           <aside className="pg-panel">
             <Section title="Placement">
               <Toggle label="Banner (inline hero form)" checked={config.banner.enabled} onChange={(v) => set('banner.enabled', v)} />
+              {config.banner.enabled && (
+                <Toggle label="Image at top of banner form" checked={config.banner.showImage} onChange={(v) => set('banner.showImage', v)} />
+              )}
+              {config.banner.enabled && config.banner.showImage && (
+                <ImageField
+                  label="Banner form image"
+                  hint="Wide, ~1200×290"
+                  value={config.banner.image}
+                  onChange={(v) => set('banner.image', v)}
+                  onReset={() => set('banner.image', defaultConfig.banner.image)}
+                />
+              )}
               <Select
                 label="Desktop overlay"
                 value={config.overlay.desktopStyle}

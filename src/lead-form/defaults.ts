@@ -13,7 +13,7 @@ export const defaultConfig: LeadFormConfig = {
     primaryColor: '#9f1c34',
     ctaColor: '#9f1c34',
   },
-  banner: { enabled: true },
+  banner: { enabled: true, showImage: false, image: `${A}top-image.jpg` },
   overlay: {
     desktopStyle: 'popup',
     mobileStyle: 'bottom-drawer',

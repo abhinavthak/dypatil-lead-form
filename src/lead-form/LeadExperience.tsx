@@ -198,7 +198,16 @@ function Controller({ config, device, scrollRoot, onFocusBanner, children }: Lea
 export function BannerForm() {
   const { submitted, config } = useLeadFlow();
   if (!config.banner.enabled) return null;
-  return <div className="lf lf-card lf-card--banner" style={themeVars(config)}>{submitted ? <SuccessPanel /> : <FormPanel />}</div>;
+  // Like the overlays, the promo image only shows with the form (not on the success screen).
+  const image = config.banner.showImage && config.banner.image && !submitted ? config.banner.image : null;
+  return (
+    <div className={`lf lf-card lf-card--banner${image ? ' has-image' : ''}`} style={themeVars(config)}>
+      <div className="lf-card__col">
+        {image && <img className="lf-top-img" src={image} alt="" />}
+        {submitted ? <SuccessPanel /> : <FormPanel />}
+      </div>
+    </div>
+  );
 }
 
 function Overlay({

@@ -34,6 +34,9 @@ export interface LeadFormConfig {
   banner: {
     /** Show the inline form inside the hero banner. */
     enabled: boolean;
+    /** Promo image across the top of the banner form card. */
+    showImage: boolean;
+    image: string;
   };
   overlay: {
     desktopStyle: OverlayStyle;
