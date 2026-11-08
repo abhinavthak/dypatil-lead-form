@@ -112,7 +112,7 @@ After a correct OTP we check whether this number is already a lead. That decides
 **Rules**
 
 1. **Phone first.** Name, email, qualification and course are **disabled** (greyed out, no lock icon) until the phone is verified.
-   Tapping a locked field sends the user back to the phone/OTP step.
+   Hovering (or tapping, on mobile) a disabled field shows a tooltip with the reason: *"Verify your phone number first to fill this"*, or *"Enter the OTP sent to your phone to fill this"* once the OTP is sent. Tapping also sends the user back to the phone/OTP step.
 2. **OTP** is sent as soon as a valid 10-digit Indian mobile (starts 6–9) is entered. 4 big boxes, auto-advance,
    paste supported, resend after 30s, **Edit** to change the number.
 3. **New vs existing lead:** after verification we look the number up. New → empty fields; existing → pre-fill

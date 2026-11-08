@@ -222,6 +222,27 @@ function useLocked() {
   return config.otp.enabled && phoneStatus !== 'verified';
 }
 
+/** Why a field is disabled, worded for the step the visitor is on. */
+function useLockReason() {
+  const { phoneStatus } = useLeadFlow();
+  return phoneStatus === 'otp' || phoneStatus === 'verifying' || phoneStatus === 'sending'
+    ? 'Enter the OTP sent to your phone to fill this'
+    : 'Verify your phone number first to fill this';
+}
+
+/** Shows the reason on hover (CSS) and briefly on tap, since phones have no hover. */
+function useTapTip() {
+  const [shown, setShown] = useState(false);
+  const timer = useRef<number>();
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const flash = () => {
+    setShown(true);
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setShown(false), 2200);
+  };
+  return { shown, flash };
+}
+
 /** Clicking a locked field sends the visitor back to the phone / OTP step. */
 const focusPhoneStep = (el: HTMLElement) => {
   const body = el.closest('.lf-body');
@@ -232,14 +253,26 @@ const focusPhoneStep = (el: HTMLElement) => {
 function TextField({ field, placeholder, type = 'text' }: { field: Field; placeholder: string; type?: string }) {
   const { values, errors, autofilled, setValue, blur } = useLeadFlow();
   const locked = useLocked();
+  const reason = useLockReason();
+  const tip = useTapTip();
   const err = locked ? undefined : errors[field];
   const filled = !!values[field] && !err;
   return (
-    <div className="lf-fieldwrap" onClick={locked ? (e) => focusPhoneStep(e.currentTarget) : undefined}>
+    <div
+      className={`lf-fieldwrap${locked ? ' has-tip' : ''}${tip.shown ? ' tip-on' : ''}`}
+      data-tip={locked ? reason : undefined}
+      onClick={
+        locked
+          ? (e) => {
+              tip.flash();
+              focusPhoneStep(e.currentTarget);
+            }
+          : undefined
+      }
+    >
       <label className={`lf-field${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}${autofilled[field] ? ' is-auto' : ''}${locked ? ' is-locked' : ''}`}>
         <input
           disabled={locked}
-          title={locked ? 'Verify your phone number first' : undefined}
           type={type}
           value={values[field]}
           placeholder={placeholder}
@@ -258,14 +291,26 @@ function TextField({ field, placeholder, type = 'text' }: { field: Field; placeh
 function SelectField({ field, placeholder, options }: { field: Field; placeholder: string; options: string[] }) {
   const { values, errors, setValue, blur } = useLeadFlow();
   const locked = useLocked();
+  const reason = useLockReason();
+  const tip = useTapTip();
   const err = locked ? undefined : errors[field];
   const filled = !!values[field];
   return (
-    <div className="lf-fieldwrap" onClick={locked ? (e) => focusPhoneStep(e.currentTarget) : undefined}>
+    <div
+      className={`lf-fieldwrap${locked ? ' has-tip' : ''}${tip.shown ? ' tip-on' : ''}`}
+      data-tip={locked ? reason : undefined}
+      onClick={
+        locked
+          ? (e) => {
+              tip.flash();
+              focusPhoneStep(e.currentTarget);
+            }
+          : undefined
+      }
+    >
       <label className={`lf-field lf-field--select${err ? ' is-error' : ''}${filled ? ' is-filled' : ''}${locked ? ' is-locked' : ''}`}>
         <select
           disabled={locked}
-          title={locked ? 'Verify your phone number first' : undefined}
           value={values[field]}
           aria-label={placeholder}
           className={filled ? '' : 'is-placeholder'}
