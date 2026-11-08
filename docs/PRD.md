@@ -118,8 +118,8 @@ After a correct OTP we check whether this number is already a lead. That decides
 3. **New vs existing lead:** after verification we look the number up. New → empty fields; existing → pre-fill
    what we know (the user can still edit it) and update the existing lead on submit.
 4. **Validation** shows when the user leaves a field they've typed in (*Enter Valid Name*, *Enter Valid Email Id*).
-   Untouched empty fields never show errors; the grey Sign Up already signals "not done".
-5. **Sign Up** stays grey until every field is valid and the phone is verified.
+   Untouched empty fields never show errors; the dulled Sign Up already signals "not done".
+5. **Sign Up** stays disabled until every field is valid and the phone is verified. Disabled = the **CTA colour dulled** (about 45%), not grey; it turns full colour when ready. Hovering it (or tapping, on mobile) shows what's left: *"Verify your phone number to continue"*, *"Enter the OTP to continue"*, or *"Add your email and highest qualification to continue"*.
 6. **Success:** "Thank you, {first name}!" with phone, course and a 3-step "What happens next".
    Two versions: *Proceed with My Application* (button) or *A counsellor will call you* (no button).
 7. Urgency elements are **display only**; they never block submission.

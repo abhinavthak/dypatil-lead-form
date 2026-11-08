@@ -171,7 +171,29 @@
 }
 .lf-submit:hover:not(:disabled) { filter: brightness(0.94); }
 .lf-submit:active:not(:disabled) { transform: translateY(1px); }
-.lf-submit:disabled { background: var(--lf-disabled); box-shadow: none; cursor: not-allowed; }
+.lf-submit { width: 100%; }
+/* Disabled = dulled CTA colour (not grey), so the brand colour and the intended action stay visible. */
+.lf-submit:disabled {
+  background: color-mix(in srgb, var(--lf-cta, var(--lf-primary)) 45%, #fff);
+  box-shadow: none; cursor: not-allowed; pointer-events: none;
+}
+.lf-submitwrap { position: relative; display: flex; }
+.lf-submitwrap.has-tip { cursor: not-allowed; }
+/* Reuse the field tooltip look for the CTA. */
+.lf-submitwrap.has-tip::after {
+  content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translate(-50%, 4px);
+  background: #1f1f23; color: #fff; font-size: 11px; font-weight: 500; line-height: 1.35;
+  width: max-content; max-width: 100%; text-align: center;
+  padding: 6px 10px; border-radius: 7px; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 5;
+}
+.lf-submitwrap.has-tip::before {
+  content: ''; position: absolute; left: 50%; bottom: calc(100% + 3px); transform: translate(-50%, 4px);
+  border: 5px solid transparent; border-top-color: #1f1f23; opacity: 0; transition: opacity .15s, transform .15s; z-index: 5; pointer-events: none;
+}
+.lf-submitwrap.has-tip:hover::after, .lf-submitwrap.has-tip:hover::before,
+.lf-submitwrap.tip-on::after, .lf-submitwrap.tip-on::before { opacity: 1; transform: translate(-50%, 0); }
+.lf-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .lf-consent { margin: 9px 0 14px; font-size: 9.5px; line-height: 14px; color: #333; text-align: center; }
 .lf-consent a { color: #111; font-weight: 500; text-decoration: underline; }
 

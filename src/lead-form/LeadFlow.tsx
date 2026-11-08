@@ -32,6 +32,8 @@ interface LeadFlowValue {
   submitted: boolean;
   canSubmit: boolean;
   progress: number; // completed fields out of 5
+  /** Fields still missing or invalid (phone = not yet verified when OTP is on). */
+  incomplete: Field[];
   setValue(field: Field, value: string): void;
   blur(field: Field): void;
   setOtp(code: string): void;
@@ -115,6 +117,7 @@ export function LeadFlowProvider({
   const isValid = (f: Field) => validators[f](values[f]) === null;
   const phoneDone = otpOn ? phoneStatus === 'verified' : isValid('phone');
   const progress = FIELDS.filter((f) => (f === 'phone' ? phoneDone : isValid(f))).length;
+  const incomplete = FIELDS.filter((f) => !(f === 'phone' ? phoneDone : isValid(f)));
   const canSubmit = progress === FIELDS.length && !submitting;
 
   const startOtp = useCallback(
@@ -245,6 +248,7 @@ export function LeadFlowProvider({
     submitting,
     submitted,
     canSubmit,
+    incomplete,
     progress,
     setValue,
     blur,

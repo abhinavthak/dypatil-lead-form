@@ -381,8 +381,30 @@ function PhoneField() {
   );
 }
 
+const fieldNames: Record<Field, string> = {
+  phone: 'phone number',
+  name: 'full name',
+  email: 'email',
+  qualification: 'highest qualification',
+  course: 'course',
+};
+
+/** Why the CTA is disabled, in plain words. */
+function submitReason(incomplete: Field[], phoneStatus: string, otpOn: boolean) {
+  if (otpOn && incomplete.includes('phone')) {
+    return phoneStatus === 'otp' || phoneStatus === 'verifying' ? 'Enter the OTP to continue' : 'Verify your phone number to continue';
+  }
+  const rest = incomplete.filter((f) => f !== 'phone').map((f) => fieldNames[f]);
+  if (incomplete.includes('phone')) rest.unshift(fieldNames.phone);
+  if (rest.length === 0) return '';
+  const list = rest.length === 1 ? rest[0] : `${rest.slice(0, -1).join(', ')} and ${rest[rest.length - 1]}`;
+  return `Add your ${list} to continue`;
+}
+
 export function FormBody() {
-  const { config, phoneStatus, canSubmit, submitting, submit } = useLeadFlow();
+  const { config, phoneStatus, canSubmit, submitting, submit, incomplete } = useLeadFlow();
+  const ctaTip = useTapTip();
+  const ctaReason = submitReason(incomplete, phoneStatus, config.otp.enabled);
   const showOtp = config.otp.enabled && (phoneStatus === 'otp' || phoneStatus === 'verifying');
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -417,9 +439,17 @@ export function FormBody() {
         <SelectField field="course" placeholder="Select Course *" options={config.fields.courses} />
       </div>
       <div className="lf-grow" />
-      <button type="submit" className="lf-submit" disabled={!canSubmit} aria-disabled={!canSubmit}>
-        {submitting ? <Spinner /> : config.brand.ctaText?.trim() || 'Sign Up'}
-      </button>
+      {/* Disabled CTA: dulled brand colour + a tooltip saying what's left (hover, or tap on mobile). */}
+      <div
+        className={`lf-submitwrap${!canSubmit && !submitting ? ' has-tip' : ''}${ctaTip.shown ? ' tip-on' : ''}`}
+        data-tip={!canSubmit && !submitting ? ctaReason : undefined}
+        onClick={!canSubmit && !submitting ? ctaTip.flash : undefined}
+      >
+        <button type="submit" className="lf-submit" disabled={!canSubmit} aria-disabled={!canSubmit}>
+          {submitting ? <Spinner /> : config.brand.ctaText?.trim() || 'Sign Up'}
+        </button>
+        {!canSubmit && !submitting && <span className="lf-sr">{ctaReason}</span>}
+      </div>
       <p className="lf-consent">
         By submitting this form, you agree to our <a href={config.consent.termsUrl}>Terms of Service</a> &amp;{' '}
         <a href={config.consent.privacyUrl}>Privacy Policy</a> and to be contacted by us via Call/Email/WhatsApp/SMS.
