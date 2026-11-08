@@ -91,7 +91,7 @@ flowchart TD
 | Enter OTP | Wrong OTP |
 | --- | --- |
 | <img src="images/otp-entry.png" width="190"> | <img src="images/otp-wrong.png" width="190"> |
-| Typing 10 digits sends the OTP. Other fields stay locked 🔒. | Boxes turn red, "Incorrect OTP". Typing again starts a fresh attempt; resend after 30s. |
+| Typing 10 digits sends the OTP. Other fields stay disabled (greyed out). | Boxes turn red, "Incorrect OTP". Typing again starts a fresh attempt; resend after 30s. |
 
 After a correct OTP we check whether this number is already a lead. That decides which journey follows.
 
@@ -111,7 +111,7 @@ After a correct OTP we check whether this number is already a lead. That decides
 
 **Rules**
 
-1. **Phone first.** Name, email, qualification and course are **locked** (greyed, 🔒) until the phone is verified.
+1. **Phone first.** Name, email, qualification and course are **disabled** (greyed out, no lock icon) until the phone is verified.
    Tapping a locked field sends the user back to the phone/OTP step.
 2. **OTP** is sent as soon as a valid 10-digit Indian mobile (starts 6–9) is entered. 4 big boxes, auto-advance,
    paste supported, resend after 30s, **Edit** to change the number.

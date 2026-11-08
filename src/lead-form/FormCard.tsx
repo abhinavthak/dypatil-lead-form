@@ -229,13 +229,6 @@ const focusPhoneStep = (el: HTMLElement) => {
   target?.focus();
 };
 
-const Lock = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9aa0a8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <rect x="5" y="11" width="14" height="10" rx="2" />
-    <path d="M8 11V8a4 4 0 018 0v3" />
-  </svg>
-);
-
 function TextField({ field, placeholder, type = 'text' }: { field: Field; placeholder: string; type?: string }) {
   const { values, errors, autofilled, setValue, blur } = useLeadFlow();
   const locked = useLocked();
@@ -256,7 +249,6 @@ function TextField({ field, placeholder, type = 'text' }: { field: Field; placeh
           onChange={(e) => setValue(field, e.target.value)}
           onBlur={() => blur(field)}
         />
-        {locked && <Lock />}
       </label>
       {err && <span className="lf-err">{err}</span>}
     </div>
@@ -292,7 +284,7 @@ function SelectField({ field, placeholder, options }: { field: Field; placeholde
             </option>
           ))}
         </select>
-        {locked ? <Lock /> : <Chevron />}
+        <Chevron />
       </label>
       {err && <span className="lf-err">{err}</span>}
     </div>

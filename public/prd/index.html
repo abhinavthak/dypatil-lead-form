@@ -422,7 +422,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
 
       <h3 id="verify">Step 1 · Verify the phone <span class="tag tag--neutral">everyone</span></h3>
       <div class="gallery g-4">
-        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-entry.jpg" width="371" height="616" alt="OTP boxes below the phone field; other fields locked" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1.1</span><b>Enter OTP</b>Typing 10 digits sends the OTP. Other fields stay locked 🔒.</figcaption></figure>
+        <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-entry.jpg" width="371" height="616" alt="OTP boxes below the phone field; other fields locked" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1.1</span><b>Enter OTP</b>Typing 10 digits sends the OTP. Other fields stay disabled (greyed out).</figcaption></figure>
         <figure class="shot"><button class="shot__img" type="button"><img src="images/otp-wrong.jpg" width="371" height="616" alt="Wrong OTP with red boxes" loading="lazy" decoding="async"></button><figcaption><span class="shot__step">1.2</span><b>Wrong OTP</b>Boxes turn red. Typing again starts a fresh attempt; resend after 30s.</figcaption></figure>
       </div>
       <p>After a correct OTP we check whether this number is already a lead. That decides which journey follows.</p>
@@ -443,7 +443,7 @@ dialog.lightbox button { position: fixed; top: 16px; right: 16px; width: 40px; h
 
       <h3 id="form-rules">Rules</h3>
       <ol class="rules">
-        <li><div><b>Phone first.</b> Name, email, qualification and course are <b>locked</b> (greyed, 🔒) until the phone is verified. Tapping a locked field sends the user back to the phone/OTP step.</div></li>
+        <li><div><b>Phone first.</b> Name, email, qualification and course are <b>disabled</b> (greyed out, no lock icon) until the phone is verified. Tapping a locked field sends the user back to the phone/OTP step.</div></li>
         <li><div><b>OTP</b> is sent as soon as a valid 10-digit Indian mobile (starts 6–9) is entered. 4 big boxes, auto-advance, paste supported, resend after 30s, <b>Edit</b> to change the number.</div></li>
         <li><div><b>New vs existing lead.</b> After verification we look the number up. New → empty fields; existing → pre-fill what we know (still editable) and update the existing lead on submit.</div></li>
         <li><div><b>Validation</b> shows when the user leaves a field they've typed in (<i>Enter Valid Name</i>, <i>Enter Valid Email Id</i>). Untouched empty fields never show errors.</div></li>
