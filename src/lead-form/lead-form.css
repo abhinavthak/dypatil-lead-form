@@ -147,7 +147,7 @@
 .lf-link--u { text-decoration: underline; width: fit-content; }
 
 /* ---------- Submit / consent ---------- */
-.lf-grow { flex: 1; min-height: 18px; }
+.lf-grow { flex: 1; min-height: 28px; }
 .lf-submit {
   height: 41px; border: 0; border-radius: 7px; background: var(--lf-cta, var(--lf-primary)); color: var(--lf-cta-text, #fff);
   font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;
